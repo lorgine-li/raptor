@@ -1,6 +1,5 @@
 package com.ppdai.framework.raptor.util;
 
-
 import com.ppdai.framework.raptor.metric.TagName;
 import org.apache.commons.lang3.StringUtils;
 
