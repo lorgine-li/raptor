@@ -26,9 +26,12 @@ public enum URLParamType {
     basePath("basePath", "/"),
     appId("appId", ""),
     exceptionClassHeader("x-exception-class", RaptorServiceException.class.getName()),
-    //    responsePayloadSize("responsePayloadSize", 0),
-    statusCode("code", 0),;
-
+    statusCode("code", 0),
+    connectTimeout("connectTimeout", 2000),
+    socketTimeout("socketTimeout", 10000),
+    connectionRequestTimeout("connectionRequestTimeout", -1),
+    //
+    ;
     private String name;
     private String value;
     private long longValue;

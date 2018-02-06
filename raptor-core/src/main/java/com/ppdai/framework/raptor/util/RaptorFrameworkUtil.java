@@ -30,7 +30,7 @@ public class RaptorFrameworkUtil {
                 + " method=" + request.getMethodName();
     }
 
-    public static Response buildErrorResponse(long requestId, Exception e) {
+    public static Response buildErrorResponse(String requestId, Exception e) {
         DefaultResponse response = new DefaultResponse(requestId);
         response.setException(e);
         return response;

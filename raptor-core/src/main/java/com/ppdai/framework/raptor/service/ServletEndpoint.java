@@ -105,7 +105,7 @@ public class ServletEndpoint extends HttpServlet implements Endpoint {
         RpcContext.getContext().setRequest(request);
         Provider<?> provider = this.providers.get(getProviderKey(request));
         if (provider != null) {
-            request.setArguments(getRequestArguments(httpRequest, request, provider));
+            request.setArgument(getRequestArgument(httpRequest, request, provider));
         }
         return request;
     }
@@ -131,13 +131,13 @@ public class ServletEndpoint extends HttpServlet implements Endpoint {
         return attachments;
     }
 
-    protected Object getRequestArguments(HttpServletRequest httpRequest, Request request, Provider<?> provider) {
-        Method method = provider.lookupMethod(request.getMethodName());
+    protected Object getRequestArgument(HttpServletRequest httpRequest, Request request, Provider<?> provider) {
+        Method method = provider.lookupMethod(request.getMethodName(), null);
         if (method == null) {
             throw new RaptorServiceException(String.format("Can not find method %s#%s", request.getInterfaceName(), request.getMethodName()));
         }
         if (method.getParameterCount() == 0) {
-            return new Object[0];
+            return null;
         } else if (method.getParameterCount() == 1) {
             Serialization serialization = this.getSerialization(httpRequest);
             try {

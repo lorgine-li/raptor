@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,21 +17,20 @@ public class DefaultResponse implements Response, Serializable {
     private int code = -1;
     private Object value;
     private Exception exception;
-    private long requestId;
+    private String requestId;
 
     private Map<String, String> attachments = new HashMap<>();
 
     public DefaultResponse() {
     }
 
-    public DefaultResponse(long requestId) {
+    public DefaultResponse(String requestId) {
         this.requestId = requestId;
     }
 
     public Object getValue() {
         if (exception != null) {
-            throw (exception instanceof RuntimeException) ? (RuntimeException) exception : new RaptorServiceException(
-                    exception.getMessage(), exception);
+            throw (exception instanceof RuntimeException) ? (RuntimeException) exception : new RaptorServiceException(exception.getMessage(), exception);
         }
         return value;
     }

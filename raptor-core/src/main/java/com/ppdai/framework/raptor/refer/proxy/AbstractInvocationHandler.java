@@ -1,4 +1,4 @@
-package com.ppdai.framework.raptor.client.proxy;
+package com.ppdai.framework.raptor.refer.proxy;
 
 import com.ppdai.framework.raptor.exception.RaptorServiceException;
 import com.ppdai.framework.raptor.rpc.DefaultRequest;
@@ -6,7 +6,6 @@ import com.ppdai.framework.raptor.rpc.Request;
 import com.ppdai.framework.raptor.rpc.RpcContext;
 import com.ppdai.framework.raptor.util.RaptorFrameworkUtil;
 import com.ppdai.framework.raptor.util.ExceptionUtil;
-import com.ppdai.framework.raptor.util.ReflectUtil;
 import com.ppdai.framework.raptor.util.RequestIdGenerator;
 import lombok.extern.slf4j.Slf4j;
 
@@ -32,7 +31,14 @@ public abstract class AbstractInvocationHandler<T> implements InvocationHandler 
         request.setRequestId(RequestIdGenerator.getRequestId());
         request.setInterfaceName(this.interfaceClass.getName());
         request.setMethodName(method.getName());
-        request.setArguments(args);
+        if (args.length == 0) {
+            request.setArgument(null);
+        } else if (args.length == 1) {
+            request.setArgument(args[0]);
+        } else {
+            throw new RaptorServiceException("Method arguments has more then one.");
+        }
+        request.setReturnType(method.getReturnType().getName());
 
         RpcContext rpcContext = RpcContext.getContext();
         rpcContext.setRequest(request);
@@ -71,5 +77,5 @@ public abstract class AbstractInvocationHandler<T> implements InvocationHandler 
 
     public abstract Object doInvoke(Request request);
 
-    protected abstract Object invokeLocal(Method method, Object[] args);
+    protected abstract Object invokeLocal(Method method, Object[] args) throws Exception;
 }

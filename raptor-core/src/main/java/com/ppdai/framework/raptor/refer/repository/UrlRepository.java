@@ -1,4 +1,4 @@
-package com.ppdai.framework.raptor.client.repository;
+package com.ppdai.framework.raptor.refer.repository;
 
 import com.ppdai.framework.raptor.rpc.URL;
 import org.apache.commons.lang3.StringUtils;

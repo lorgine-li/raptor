@@ -11,7 +11,7 @@ public interface Response {
 
     Exception getException();
 
-    long getRequestId();
+    String getRequestId();
 
     int getCode();
 

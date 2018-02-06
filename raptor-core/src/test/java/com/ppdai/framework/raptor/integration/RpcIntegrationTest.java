@@ -1,8 +1,10 @@
 package com.ppdai.framework.raptor.integration;
 
-import com.ppdai.framework.raptor.client.ApacheHttpClientAdaptor;
-import com.ppdai.framework.raptor.client.proxy.DefaultInvocationHandler;
-import com.ppdai.framework.raptor.client.proxy.JdkProxyFactory;
+import com.ppdai.framework.raptor.refer.DefaultRefer;
+import com.ppdai.framework.raptor.refer.Refer;
+import com.ppdai.framework.raptor.refer.client.ApacheHttpClient;
+import com.ppdai.framework.raptor.refer.proxy.ReferInvocationHandler;
+import com.ppdai.framework.raptor.refer.proxy.JdkProxyFactory;
 import com.ppdai.framework.raptor.proto.Helloworld;
 import com.ppdai.framework.raptor.proto.Simple;
 import com.ppdai.framework.raptor.proto.SimpleImpl;
@@ -13,8 +15,6 @@ import com.ppdai.framework.raptor.service.Provider;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
 import org.junit.Test;
-
-import java.util.concurrent.TimeUnit;
 
 @Slf4j
 public class RpcIntegrationTest {
@@ -33,7 +33,7 @@ public class RpcIntegrationTest {
         Provider<Simple> provider = new DefaultProvider<>(Simple.class, simple);
         servletEndpoint.export(provider);
 
-        TimeUnit.SECONDS.sleep(1000);
+        //TODO 访求测试
     }
 
     @Test
@@ -43,8 +43,11 @@ public class RpcIntegrationTest {
         testServer();
 
         String url = "http://localhost:8080/raptor/" + Simple.class.getName();
-        ApacheHttpClientAdaptor<Simple> clientAdaptor = new ApacheHttpClientAdaptor<>(Simple.class, URL.valueOf(url));
-        DefaultInvocationHandler<Simple> invocationHandler = new DefaultInvocationHandler<>(Simple.class, clientAdaptor);
+        ApacheHttpClient apacheHttpClient = new ApacheHttpClient();
+        apacheHttpClient.init();
+
+        DefaultRefer<Simple> refer = new DefaultRefer<>(Simple.class, apacheHttpClient, URL.valueOf(url));
+        ReferInvocationHandler<Simple> invocationHandler = new ReferInvocationHandler<>(Simple.class, refer);
 
         Simple proxy = new JdkProxyFactory().getProxy(Simple.class, invocationHandler);
         Helloworld.HelloRequest helloRequest = Helloworld.HelloRequest.newBuilder().setName("ppdai").build();

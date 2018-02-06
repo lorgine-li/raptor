@@ -20,7 +20,7 @@ public class DefaultProvider<T> extends AbstractProvider<T> {
     @Override
     protected Response invoke(Request request) {
         DefaultResponse response = new DefaultResponse();
-        Method method = lookupMethod(request.getMethodName());
+        Method method = lookupMethod(request.getMethodName(), null);
         if (method == null) {
             RaptorServiceException exception =
                     new RaptorServiceException("Service method not exist: "
@@ -32,7 +32,7 @@ public class DefaultProvider<T> extends AbstractProvider<T> {
         }
 
         try {
-            Object value = method.invoke(this.serviceInstance, request.getArguments());
+            Object value = method.invoke(this.serviceInstance, request.getArgument());
             response.setValue(value);
         } catch (Exception e) {
             if (e.getCause() != null) {

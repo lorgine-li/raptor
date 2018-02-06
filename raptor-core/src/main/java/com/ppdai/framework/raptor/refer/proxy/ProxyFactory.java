@@ -1,4 +1,4 @@
-package com.ppdai.framework.raptor.client.proxy;
+package com.ppdai.framework.raptor.refer.proxy;
 
 import java.lang.reflect.InvocationHandler;
 

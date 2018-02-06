@@ -1,5 +1,6 @@
 package com.ppdai.framework.raptor.rpc;
 
+import java.nio.ByteBuffer;
 import java.util.Map;
 
 /**
@@ -11,7 +12,9 @@ public interface Request {
 
     String getMethodName();
 
-    Object getArguments();
+    Object getArgument();
+
+    String getReturnType();
 
     Map<String, String> getAttachments();
 
