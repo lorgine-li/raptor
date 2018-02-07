@@ -26,7 +26,16 @@ public abstract class AbstractProvider<T> implements Provider<T> {
     public AbstractProvider(Class<T> interfaceClass, T serviceInstance) {
         this.interfaceClass = interfaceClass;
         this.serviceInstance = serviceInstance;
+    }
+
+    @Override
+    public void init() {
         initMethodMap(interfaceClass);
+    }
+
+    @Override
+    public void destroy() {
+
     }
 
     @Override
@@ -82,17 +91,6 @@ public abstract class AbstractProvider<T> implements Provider<T> {
             }
         }
     }
-
-    @Override
-    public void destroy() {
-
-    }
-
-    @Override
-    public void init() {
-
-    }
-
     @Override
     public T getImpl() {
         return this.serviceInstance;

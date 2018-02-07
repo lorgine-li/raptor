@@ -2,6 +2,7 @@ package com.ppdai.framework.raptor.service;
 
 import com.ppdai.framework.raptor.common.RaptorConstants;
 import com.ppdai.framework.raptor.common.URLParamType;
+import com.ppdai.framework.raptor.exception.RaptorFrameworkException;
 import com.ppdai.framework.raptor.exception.RaptorServiceException;
 import com.ppdai.framework.raptor.rpc.*;
 import com.ppdai.framework.raptor.serialize.ProtobufSerializationFactory;
@@ -10,7 +11,6 @@ import com.ppdai.framework.raptor.serialize.SerializationFactory;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -43,15 +43,19 @@ public class ServletEndpoint extends HttpServlet implements Endpoint {
     }
 
     @Override
-    public void init() throws ServletException {
-        super.init();
+    public void init() {
+        try {
+            super.init();
+        } catch (Exception e) {
+            throw new RaptorFrameworkException("ServletEndpoint init error.", e);
+        }
         if (this.serializationFactory == null)
             this.serializationFactory = new ProtobufSerializationFactory();
     }
 
     @Override
     protected void doPost(HttpServletRequest httpRequest, HttpServletResponse httpResponse) throws ServletException, IOException {
-        String key = getProviderKey(getInterfaceName(httpRequest), getVersion(httpRequest));
+        String key = getProviderKey(getInterfaceName(httpRequest));
         Provider<?> provider = this.providers.get(key);
         Request request = convert(httpRequest);
         if (provider == null) {
@@ -80,7 +84,7 @@ public class ServletEndpoint extends HttpServlet implements Endpoint {
     @Override
     public URL export(Provider<?> provider, URL serviceUrl) {
         URL newServiceUrl = doExport(provider, serviceUrl);
-        String key = getProviderKey(provider.getInterface().getName(), newServiceUrl.getParameter(URLParamType.version.name()));
+        String key = getProviderKey(provider.getInterface().getName());
         providers.put(key, provider);
         return newServiceUrl;
     }
@@ -134,7 +138,7 @@ public class ServletEndpoint extends HttpServlet implements Endpoint {
     protected Object getRequestArgument(HttpServletRequest httpRequest, Request request, Provider<?> provider) {
         Method method = provider.lookupMethod(request.getMethodName(), null);
         if (method == null) {
-            throw new RaptorServiceException(String.format("Can not find method %s#%s", request.getInterfaceName(), request.getMethodName()));
+            throw new RaptorServiceException(String.format("Can not find method %s/%s", request.getInterfaceName(), request.getMethodName()));
         }
         if (method.getParameterCount() == 0) {
             return null;
@@ -155,12 +159,8 @@ public class ServletEndpoint extends HttpServlet implements Endpoint {
         return this.serializationFactory.newInstance(httpRequest.getHeader(URLParamType.serialization.getName()));
     }
 
-    protected String getVersion(HttpServletRequest httpRequest) {
-        return httpRequest.getHeader(URLParamType.version.name());
-    }
-
     protected String getProviderKey(Request request) {
-        return getProviderKey(request.getInterfaceName(), MapUtils.getString(request.getAttachments(), URLParamType.version.name()));
+        return getProviderKey(request.getInterfaceName());
     }
 
     protected void transportResponse(Request request, Response response, HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
@@ -189,8 +189,8 @@ public class ServletEndpoint extends HttpServlet implements Endpoint {
         }
     }
 
-    protected String getProviderKey(String interfaceName, String version) {
-        return StringUtils.isBlank(version) ? interfaceName : interfaceName + "?version=" + version;
+    protected String getProviderKey(String interfaceName) {
+        return interfaceName;
     }
 
 }

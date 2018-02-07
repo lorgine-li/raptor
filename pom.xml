@@ -17,6 +17,7 @@
 
     <modules>
         <module>raptor-core</module>
+        <module>raptor-springboot</module>
     </modules>
     <dependencyManagement>
         <dependencies>

@@ -23,7 +23,7 @@ public enum URLParamType {
     requestId("requestId", "0"),
     parameterTypes("parameterTypes", null),
     returnType("returnType", null),
-    basePath("basePath", "/"),
+    basePath("basePath", "/raptor"),
     appId("appId", ""),
     exceptionClassHeader("x-exception-class", RaptorServiceException.class.getName()),
     statusCode("code", 0),

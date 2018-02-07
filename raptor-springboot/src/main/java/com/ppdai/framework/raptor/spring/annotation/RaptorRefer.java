@@ -1,4 +1,4 @@
-package com.ppdai.framework.raptor.annotation;
+package com.ppdai.framework.raptor.spring.annotation;
 
 import java.lang.annotation.*;
 

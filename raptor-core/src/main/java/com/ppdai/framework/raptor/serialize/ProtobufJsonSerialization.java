@@ -8,8 +8,6 @@ import java.io.UnsupportedEncodingException;
 
 public class ProtobufJsonSerialization extends ProtobufSerialization {
 
-    public static final String NAME = "protobuf.json";
-
     @Override
     public byte[] serializeMessage(Message message) {
         try {
@@ -27,10 +25,5 @@ public class ProtobufJsonSerialization extends ProtobufSerialization {
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException("Unsupported Encoding " + RaptorConstants.DEFAULT_CHARACTER, e);
         }
-    }
-
-    @Override
-    public String getName() {
-        return NAME;
     }
 }

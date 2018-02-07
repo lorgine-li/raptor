@@ -113,11 +113,12 @@ public abstract class AbstractHttpClient implements Client {
 
     protected URI buildUri(Request request, URL serviceUrl) {
         try {
-            String basePath = serviceUrl.getParameter(URLParamType.basePath.name(), URLParamType.basePath.getValue());
-            if (StringUtils.isBlank(basePath)) {
-                basePath = "";
+            String path = StringUtils.removeEnd(serviceUrl.getPath(), RaptorConstants.PATH_SEPARATOR);
+            if (StringUtils.isBlank(path)) {
+                path = URLParamType.basePath.getValue()
+                        + RaptorConstants.PATH_SEPARATOR + request.getInterfaceName()
+                        + RaptorConstants.PATH_SEPARATOR + request.getMethodName();
             }
-            String path = basePath + serviceUrl.getPath() + RaptorConstants.PATH_SEPARATOR + request.getMethodName();
 
             return new URI(serviceUrl.getProtocol(), null,
                     serviceUrl.getHost(), serviceUrl.getPort(), path, null, null);
