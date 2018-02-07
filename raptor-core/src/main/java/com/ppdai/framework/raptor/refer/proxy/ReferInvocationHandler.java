@@ -6,10 +6,11 @@ import com.ppdai.framework.raptor.rpc.Response;
 
 import java.lang.reflect.Method;
 
-public class ReferInvocationHandler<T> extends AbstractInvocationHandler<T> {
-    private Refer<T> refer;
+public class ReferInvocationHandler extends AbstractInvocationHandler {
 
-    public ReferInvocationHandler(Class<T> interfaceClass, Refer<T> refer) {
+    private Refer<?> refer;
+
+    public ReferInvocationHandler(Class<?> interfaceClass, Refer<?> refer) {
         super(interfaceClass);
         this.refer = refer;
     }

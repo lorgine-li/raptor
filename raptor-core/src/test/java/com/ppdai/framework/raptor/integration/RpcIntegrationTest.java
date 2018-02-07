@@ -83,7 +83,7 @@ public class RpcIntegrationTest {
         apacheHttpClient.init();
 
         DefaultRefer<Simple> refer = new DefaultRefer<>(Simple.class, apacheHttpClient, URL.valueOf(url));
-        ReferInvocationHandler<Simple> invocationHandler = new ReferInvocationHandler<>(Simple.class, refer);
+        ReferInvocationHandler invocationHandler = new ReferInvocationHandler(Simple.class, refer);
 
         Simple proxy = new JdkProxyFactory().getProxy(Simple.class, invocationHandler);
         Helloworld.HelloRequest helloRequest = Helloworld.HelloRequest.newBuilder().setName("ppdai").build();

@@ -5,7 +5,8 @@ import java.lang.annotation.*;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface RaptorRefer {
+public @interface RaptorClient {
 
-    String urlKey() default "";
+    String url() default "";
+
 }

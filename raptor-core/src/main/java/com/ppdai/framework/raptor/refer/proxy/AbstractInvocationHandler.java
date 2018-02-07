@@ -5,7 +5,6 @@ import com.ppdai.framework.raptor.rpc.DefaultRequest;
 import com.ppdai.framework.raptor.rpc.Request;
 import com.ppdai.framework.raptor.rpc.RpcContext;
 import com.ppdai.framework.raptor.util.RaptorFrameworkUtil;
-import com.ppdai.framework.raptor.util.ExceptionUtil;
 import com.ppdai.framework.raptor.util.RequestIdGenerator;
 import lombok.extern.slf4j.Slf4j;
 
@@ -13,18 +12,18 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
 @Slf4j
-public abstract class AbstractInvocationHandler<T> implements InvocationHandler {
+public abstract class AbstractInvocationHandler implements InvocationHandler {
 
-    protected Class<T> interfaceClass;
+    protected Class<?> interfaceClass;
 
-    public AbstractInvocationHandler(Class<T> interfaceClass) {
+    public AbstractInvocationHandler(Class<?> interfaceClass) {
         this.interfaceClass = interfaceClass;
     }
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         if (isLocalMethod(method)) {
-            this.invokeLocal(method, args);
+            return this.invokeLocal(method, args);
         }
 
         DefaultRequest request = new DefaultRequest();
@@ -44,22 +43,9 @@ public abstract class AbstractInvocationHandler<T> implements InvocationHandler 
         rpcContext.setRequest(request);
         try {
             return doInvoke(request);
-        } catch (RuntimeException e) {
-            if (ExceptionUtil.isBizException(e)) {
-                Throwable t = e.getCause();
-                // 只抛出Exception，防止抛出远程的Error
-                if (t != null && t instanceof Exception) {
-                    throw t;
-                } else {
-                    String msg = t == null
-                            ? "Biz exception cause is null. origin error message : " + e.getMessage()
-                            : ("Biz exception cause is throwable error:" + t.getClass() + ", error message:" + t.getMessage());
-                    throw new RaptorServiceException(msg);
-                }
-            } else {
-                log.error("InvocationHandler invoke Error: interface={}, request={}", request.getInterfaceName(), RaptorFrameworkUtil.toString(request), e);
-                throw e;
-            }
+        } catch (Exception e) {
+            log.error("InvocationHandler invoke Error: interface={}, request={}", request.getInterfaceName(), RaptorFrameworkUtil.toString(request), e);
+            throw e;
         }
     }
 

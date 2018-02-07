@@ -200,7 +200,9 @@ public class URL {
     }
 
     public void addParameters(Map<String, String> params) {
-        parameters.putAll(params);
+        if (params != null) {
+            parameters.putAll(params);
+        }
     }
 
     public void addParameterIfAbsent(String name, String value) {
@@ -306,8 +308,10 @@ public class URL {
     }
 
     public String getUri() {
-        return protocol + RaptorConstants.PROTOCOL_SEPARATOR + host + RaptorConstants.HOST_PORT_SEPARATOR + port
-                + RaptorConstants.PATH_SEPARATOR + StringUtils.removeStart(path, RaptorConstants.PATH_SEPARATOR);
+        String uri = StringUtils.defaultString(protocol) + RaptorConstants.PROTOCOL_SEPARATOR;
+        uri += StringUtils.defaultString(host) + RaptorConstants.HOST_PORT_SEPARATOR + port;
+        uri += RaptorConstants.PATH_SEPARATOR + StringUtils.defaultString(StringUtils.removeStart(path, RaptorConstants.PATH_SEPARATOR));
+        return uri;
     }
 
     /**
@@ -325,7 +329,8 @@ public class URL {
 
     public String toFullStr() {
         StringBuilder builder = new StringBuilder();
-        builder.append(getUri()).append("?");
+        String uri = StringUtils.removeEnd(getUri(), RaptorConstants.PATH_SEPARATOR);
+        builder.append(uri).append("?");
         ArrayList<String> keys = new ArrayList<>(parameters.keySet());
         keys.sort(new Comparator<String>() {
             @Override
@@ -333,13 +338,13 @@ public class URL {
                 return o1.compareTo(o2);
             }
         });
+        ArrayList<String> parameterPairs = new ArrayList<>();
         for (String key : keys) {
             String name = StringTools.urlEncode(key);
             String value = StringTools.urlEncode(parameters.get(key));
-
-            builder.append(name).append("=").append(value).append("&");
+            parameterPairs.add(name + "=" + value);
         }
-
+        builder.append(StringUtils.join(parameterPairs.toArray(), "&"));
         return builder.toString();
     }
 
