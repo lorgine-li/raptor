@@ -26,7 +26,6 @@ public class URL {
 
     private int port;
 
-    // packageName + serviceName
     private String path;
 
     private Map<String, String> parameters;
@@ -57,7 +56,7 @@ public class URL {
         String host = null;
         int port = 0;
         String path = null;
-        Map<String, String> parameters = new HashMap<String, String>();
+        Map<String, String> parameters = new HashMap<>();
         int i = url.indexOf("?"); // seperator between body and parameters
         if (i >= 0) {
             String[] parts = url.substring(i + 1).split("\\&");
@@ -104,34 +103,17 @@ public class URL {
         return new URL(protocol, host, port, path, parameters);
     }
 
+    public boolean isValid() {
+        return StringUtils.isNoneBlank(this.host);
+    }
+
     public URL createCopy() {
-        Map<String, String> params = new HashMap<String, String>();
+        Map<String, String> params = new HashMap<>();
         if (this.parameters != null) {
             params.putAll(this.parameters);
         }
 
         return new URL(protocol, host, port, path, params);
-    }
-
-    public boolean canServe(URL referUrl) {
-        if (referUrl == null || !this.getPath().equals(referUrl.getPath())) {
-            return false;
-        }
-
-        if (!ObjectUtils.equals(protocol, referUrl.protocol)) {
-            return false;
-        }
-
-        if (!StringUtils.equals(this.getParameter(URLParamType.nodeType.getName()), RaptorConstants.NODE_TYPE_SERVICE)) {
-            return false;
-        }
-
-        String version = getParameter(URLParamType.version.getName(), URLParamType.version.getValue());
-        String refVersion = referUrl.getParameter(URLParamType.version.getName(), URLParamType.version.getValue());
-        if (!version.equals(refVersion)) {
-            return false;
-        }
-        return true;
     }
 
     public String getProtocol() {
@@ -150,7 +132,7 @@ public class URL {
         this.host = host;
     }
 
-    public Integer getPort() {
+    public int getPort() {
         return port;
     }
 
@@ -271,67 +253,25 @@ public class URL {
         return Boolean.parseBoolean(value);
     }
 
-
-    public Integer getMethodParameter(String methodName, String name, int defaultValue) {
-        String key = getMethodParameterKey(methodName, name);
-        Number n = getNumbers().get(key);
-        if (n != null) {
-            return n.intValue();
-        }
-        String value = getMethodParameter(methodName, name);
-        if (value == null || value.length() == 0) {
-            return defaultValue;
-        }
-        int i = Integer.parseInt(value);
-        getNumbers().put(key, i);
-        return i;
-    }
-
-    public String getMethodParameter(String methodName, String name) {
-        String value = getParameter(getMethodParameterKey(methodName, name));
-        if (value == null || value.length() == 0) {
-            return getParameter(name);
-        }
-        return value;
-    }
-
-    public String getMethodParameter(String methodName, String name, String defaultValue) {
-        String value = getMethodParameter(methodName, name);
-        if (value == null || value.length() == 0) {
-            return defaultValue;
-        }
-        return value;
-    }
-
-    private String getMethodParameterKey(String methodName, String name) {
-        return RaptorConstants.METHOD_CONFIG_PREFIX + methodName + "." + name;
-    }
-
     public String getUri() {
-        String uri = StringUtils.defaultString(protocol) + RaptorConstants.PROTOCOL_SEPARATOR;
-        uri += StringUtils.defaultString(host) + RaptorConstants.HOST_PORT_SEPARATOR + port;
-        uri += RaptorConstants.PATH_SEPARATOR + StringUtils.defaultString(StringUtils.removeStart(path, RaptorConstants.PATH_SEPARATOR));
-        return uri;
-    }
-
-    /**
-     * 返回一个service or referer的identity,如果两个url的identity相同，则表示相同的一个service或者refer
-     *
-     * @return
-     */
-    public String getIdentity() {
-        String uri = getUri();
-        if (StringUtils.isNotBlank(getVersion())) {
-            uri += "?version=" + getVersion();
+        String uri = "";
+        if (StringUtils.isNotBlank(this.protocol)) {
+            uri += this.protocol + RaptorConstants.PROTOCOL_SEPARATOR;
+        }
+        uri += StringUtils.defaultString(host);
+        if (this.port > 0) {
+            uri += RaptorConstants.HOST_PORT_SEPARATOR + this.port;
+        }
+        if (StringUtils.isNotBlank(path)) {
+            uri += RaptorConstants.PATH_SEPARATOR + StringUtils.removeStart(path, RaptorConstants.PATH_SEPARATOR);
         }
         return uri;
     }
 
     public String toFullStr() {
-        StringBuilder builder = new StringBuilder();
-        String uri = StringUtils.removeEnd(getUri(), RaptorConstants.PATH_SEPARATOR);
-        builder.append(uri).append("?");
+        String fullStr = getUri();
         ArrayList<String> keys = new ArrayList<>(parameters.keySet());
+        //参数排序
         keys.sort(new Comparator<String>() {
             @Override
             public int compare(String o1, String o2) {
@@ -344,8 +284,10 @@ public class URL {
             String value = StringTools.urlEncode(parameters.get(key));
             parameterPairs.add(name + "=" + value);
         }
-        builder.append(StringUtils.join(parameterPairs.toArray(), "&"));
-        return builder.toString();
+        if (parameterPairs.size() > 0) {
+            fullStr += "?" + StringUtils.join(parameterPairs.toArray(), "&");
+        }
+        return fullStr;
     }
 
     public String toString() {
@@ -355,16 +297,6 @@ public class URL {
 
     public boolean hasParameter(String key) {
         return StringUtils.isNotBlank(getParameter(key));
-    }
-
-    /**
-     * comma separated clientHost:port pairs, e.g. "127.0.0.1:3000"
-     *
-     * @return
-     */
-    public String getServerPortStr() {
-        return host + ":" + port;
-
     }
 
     @Override

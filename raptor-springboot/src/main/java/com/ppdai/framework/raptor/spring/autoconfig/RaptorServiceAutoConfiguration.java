@@ -23,7 +23,7 @@ import java.util.Map;
 @Import({RaptorServiceProcessor.class})
 @Configuration
 @EnableConfigurationProperties({ServletEndpointProperties.class})
-public class RaptorServiceConfiguration {
+public class RaptorServiceAutoConfiguration {
     @Autowired
     private Environment env;
 

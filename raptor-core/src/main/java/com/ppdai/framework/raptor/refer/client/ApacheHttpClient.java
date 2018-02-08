@@ -23,18 +23,19 @@ import java.io.IOException;
 @Slf4j
 public class ApacheHttpClient extends AbstractHttpClient {
 
-    private int connectTimeout = 2000;
-    private int socketTimeout = 10000;
+    private int connectTimeout = -1;
+    private int socketTimeout = -1;
     private int connectionRequestTimeout = -1;
     private int retryCount = 0;
     private boolean requestSentRetryEnabled = false;
-    private int poolMaxTotal = 500;
-    private int poolMaxPreRoute = 20;
+    private int poolMaxTotal = 100;
+    private int poolMaxPreRoute = 10;
 
     private CloseableHttpClient client;
 
     public ApacheHttpClient() {
     }
+
     public ApacheHttpClient(CloseableHttpClient client) {
         this.client = client;
     }

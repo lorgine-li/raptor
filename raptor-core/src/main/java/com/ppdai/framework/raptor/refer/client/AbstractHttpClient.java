@@ -113,15 +113,26 @@ public abstract class AbstractHttpClient implements Client {
 
     protected URI buildUri(Request request, URL serviceUrl) {
         try {
+            String protocol = serviceUrl.getProtocol();
+            if (StringUtils.isBlank(protocol)) {
+                protocol = RaptorConstants.HTTP;
+            }
+
             String path = StringUtils.removeEnd(serviceUrl.getPath(), RaptorConstants.PATH_SEPARATOR);
             if (StringUtils.isBlank(path)) {
                 path = URLParamType.basePath.getValue()
                         + RaptorConstants.PATH_SEPARATOR + request.getInterfaceName()
                         + RaptorConstants.PATH_SEPARATOR + request.getMethodName();
+            } else {//path要以'/'开头
+                path = RaptorConstants.PATH_SEPARATOR + StringUtils.removeStart(path, RaptorConstants.PATH_SEPARATOR);
             }
 
-            return new URI(serviceUrl.getProtocol(), null,
-                    serviceUrl.getHost(), serviceUrl.getPort(), path, null, null);
+            int port = serviceUrl.getPort();
+            if (port <= 0) {
+                port = -1;
+            }
+            return new URI(protocol, null,
+                    serviceUrl.getHost(), port, path, null, null);
         } catch (Exception e) {
             throw new RaptorFrameworkException("build request uri error.", e);
         }

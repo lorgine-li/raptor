@@ -4,6 +4,7 @@ import java.util.regex.Pattern;
 
 public class RaptorConstants {
 
+    public static final String HTTP = "http";
     public static final String DEFAULT_PATH_PREFIX = "raptor";
     public static final String METRIC_NAME = "raptor";
     public static final String SEPARATOR_ARRAY = ",";

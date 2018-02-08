@@ -1,0 +1,4 @@
+# Auto Configure
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.ppdai.framework.raptor.spring.autoconfig.RaptorClientAutoConfiguration,\
+com.ppdai.framework.raptor.spring.autoconfig.RaptorServiceAutoConfiguration
