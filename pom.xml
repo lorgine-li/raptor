@@ -18,6 +18,8 @@
     <modules>
         <module>raptor-core</module>
         <module>raptor-springboot</module>
+        <module>raptor-codegen</module>
+        <module>raptor-demo</module>
     </modules>
     <dependencyManagement>
         <dependencies>
