@@ -19,7 +19,7 @@ public enum URLParamType {
     clientHost("clientHost", ""),
     filter("filter", false),
     requestId("requestId", "0"),
-    basePath("basePath", "/raptor"),
+    basePath("basePath", "raptor"),
     exceptionClassHeader("x-exception-class", RaptorServiceException.class.getName()),
     statusCode("code", 0),
     connectTimeout("connectTimeout", 2000),

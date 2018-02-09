@@ -50,7 +50,7 @@ public abstract class AbstractHttpClient implements Client {
         HttpResponse httpResponse = null;
         HttpPost httpPost = null;
         try {
-            httpPost = buildHttpRequest(request, serviceUrl);
+            httpPost = buildHttpPost(request, serviceUrl);
 
             for (Header header : buildHeaders(request, serviceUrl)) {
                 httpPost.addHeader(new BasicHeader(header.getName(), header.getValue()));
@@ -93,7 +93,7 @@ public abstract class AbstractHttpClient implements Client {
         return response;
     }
 
-    public HttpPost buildHttpRequest(Request request, URL serviceUrl) {
+    public HttpPost buildHttpPost(Request request, URL serviceUrl) {
         URI uri = buildUri(request, serviceUrl);
         HttpPost post = new HttpPost(uri);
 
@@ -109,33 +109,36 @@ public abstract class AbstractHttpClient implements Client {
     }
 
 
-    protected abstract HttpResponse doSendRequest(HttpPost request, URL serviceUrl) throws IOException;
+    protected abstract HttpResponse doSendRequest(HttpPost httpPost, URL serviceUrl) throws IOException;
 
     protected URI buildUri(Request request, URL serviceUrl) {
         try {
-            String protocol = serviceUrl.getProtocol();
-            if (StringUtils.isBlank(protocol)) {
-                protocol = RaptorConstants.HTTP;
-            }
+            String protocol = StringUtils.isNotBlank(serviceUrl.getProtocol()) ? serviceUrl.getProtocol() : RaptorConstants.HTTP;
 
-            String path = StringUtils.removeEnd(serviceUrl.getPath(), RaptorConstants.PATH_SEPARATOR);
-            if (StringUtils.isBlank(path)) {
-                path = URLParamType.basePath.getValue()
-                        + RaptorConstants.PATH_SEPARATOR + request.getInterfaceName()
-                        + RaptorConstants.PATH_SEPARATOR + request.getMethodName();
-            } else {//path要以'/'开头
-                path = RaptorConstants.PATH_SEPARATOR + StringUtils.removeStart(path, RaptorConstants.PATH_SEPARATOR);
-            }
+            String path = buildPath(request, serviceUrl);
 
-            int port = serviceUrl.getPort();
-            if (port <= 0) {
-                port = -1;
-            }
+            int port = serviceUrl.getPort() > 0 ? serviceUrl.getPort() : -1;
+
             return new URI(protocol, null,
                     serviceUrl.getHost(), port, path, null, null);
         } catch (Exception e) {
             throw new RaptorFrameworkException("build request uri error.", e);
         }
+    }
+
+    protected String buildPath(Request request, URL serviceUrl) {
+        //前后的'/'去掉
+        String path = StringUtils.removeStart(serviceUrl.getPath(), RaptorConstants.PATH_SEPARATOR);
+        path = StringUtils.removeEnd(path, RaptorConstants.PATH_SEPARATOR);
+
+        if (StringUtils.isBlank(path)) {
+            path = URLParamType.basePath.getValue() + RaptorConstants.PATH_SEPARATOR + request.getInterfaceName();
+        }
+        //前面加上'/'
+        path = RaptorConstants.PATH_SEPARATOR + path + RaptorConstants.PATH_SEPARATOR + request.getMethodName();
+
+        return path;
+
     }
 
     protected List<Header> buildHeaders(Request request, URL serviceUrl) {
@@ -154,10 +157,9 @@ public abstract class AbstractHttpClient implements Client {
 
     protected String getSerializationType(Request request, URL serviceUrl) {
         String key = URLParamType.serialization.getName();
-        String serializationType = serviceUrl.getParameter(key);
-        serializationType = StringUtils.isNotBlank(serializationType) ? serializationType : request.getAttachments().get(key);
-        serializationType = StringUtils.isNotBlank(serializationType) ? serializationType : serviceUrl.getParameter(key);
+        String serializationType = request.getAttachments().get(key);
         serializationType = StringUtils.isNotBlank(serializationType) ? serializationType : RpcContext.getContext().getRpcAttachment(key);
+        serializationType = StringUtils.isNotBlank(serializationType) ? serializationType : serviceUrl.getParameter(key);
         serializationType = StringUtils.isNotBlank(serializationType) ? serializationType : URLParamType.serialization.getValue();
         return serializationType;
     }

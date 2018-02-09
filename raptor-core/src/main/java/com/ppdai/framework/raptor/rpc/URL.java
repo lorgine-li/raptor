@@ -116,6 +116,43 @@ public class URL {
         return new URL(protocol, host, port, path, params);
     }
 
+    public String getUri() {
+        String uri = "";
+        if (StringUtils.isNotBlank(this.protocol)) {
+            uri += this.protocol + RaptorConstants.PROTOCOL_SEPARATOR;
+        }
+        uri += StringUtils.defaultString(host);
+        if (this.port > 0) {
+            uri += RaptorConstants.HOST_PORT_SEPARATOR + this.port;
+        }
+        if (StringUtils.isNotBlank(path)) {
+            uri += RaptorConstants.PATH_SEPARATOR + StringUtils.removeStart(path, RaptorConstants.PATH_SEPARATOR);
+        }
+        return uri;
+    }
+
+    public String toFullStr() {
+        String fullStr = getUri();
+        ArrayList<String> keys = new ArrayList<>(parameters.keySet());
+        //参数排序
+        keys.sort(new Comparator<String>() {
+            @Override
+            public int compare(String o1, String o2) {
+                return o1.compareTo(o2);
+            }
+        });
+        ArrayList<String> parameterPairs = new ArrayList<>();
+        for (String key : keys) {
+            String name = StringTools.urlEncode(key);
+            String value = StringTools.urlEncode(parameters.get(key));
+            parameterPairs.add(name + "=" + value);
+        }
+        if (parameterPairs.size() > 0) {
+            fullStr += "?" + StringUtils.join(parameterPairs.toArray(), "&");
+        }
+        return fullStr;
+    }
+
     public String getProtocol() {
         return protocol;
     }
@@ -253,50 +290,12 @@ public class URL {
         return Boolean.parseBoolean(value);
     }
 
-    public String getUri() {
-        String uri = "";
-        if (StringUtils.isNotBlank(this.protocol)) {
-            uri += this.protocol + RaptorConstants.PROTOCOL_SEPARATOR;
-        }
-        uri += StringUtils.defaultString(host);
-        if (this.port > 0) {
-            uri += RaptorConstants.HOST_PORT_SEPARATOR + this.port;
-        }
-        if (StringUtils.isNotBlank(path)) {
-            uri += RaptorConstants.PATH_SEPARATOR + StringUtils.removeStart(path, RaptorConstants.PATH_SEPARATOR);
-        }
-        return uri;
-    }
-
-    public String toFullStr() {
-        String fullStr = getUri();
-        ArrayList<String> keys = new ArrayList<>(parameters.keySet());
-        //参数排序
-        keys.sort(new Comparator<String>() {
-            @Override
-            public int compare(String o1, String o2) {
-                return o1.compareTo(o2);
-            }
-        });
-        ArrayList<String> parameterPairs = new ArrayList<>();
-        for (String key : keys) {
-            String name = StringTools.urlEncode(key);
-            String value = StringTools.urlEncode(parameters.get(key));
-            parameterPairs.add(name + "=" + value);
-        }
-        if (parameterPairs.size() > 0) {
-            fullStr += "?" + StringUtils.join(parameterPairs.toArray(), "&");
-        }
-        return fullStr;
+    public boolean hasParameter(String key) {
+        return StringUtils.isNotBlank(getParameter(key));
     }
 
     public String toString() {
         return getUri();
-    }
-
-
-    public boolean hasParameter(String key) {
-        return StringUtils.isNotBlank(getParameter(key));
     }
 
     @Override

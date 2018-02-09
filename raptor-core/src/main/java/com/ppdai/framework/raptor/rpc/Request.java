@@ -1,6 +1,5 @@
 package com.ppdai.framework.raptor.rpc;
 
-import java.nio.ByteBuffer;
 import java.util.Map;
 
 /**

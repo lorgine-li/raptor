@@ -41,10 +41,10 @@ public class ApacheHttpClient extends AbstractHttpClient {
     }
 
     @Override
-    protected HttpResponse doSendRequest(HttpPost request, URL serviceUrl) throws IOException {
-        request.setConfig(getRequestConfig(serviceUrl));
+    protected HttpResponse doSendRequest(HttpPost httpPost, URL serviceUrl) throws IOException {
+        httpPost.setConfig(getRequestConfig(serviceUrl));
         CloseableHttpClient httpClient = this.getClient();
-        return httpClient.execute(request);
+        return httpClient.execute(httpPost);
     }
 
     @Override

@@ -59,7 +59,10 @@ public class RpcIntegrationTest {
     }
 
     @Test
-    public void testRestCall() throws IOException {
+    public void testRestCall() throws Exception {
+        //启动服务端
+        testServer();
+
         // 访求测试
         CloseableHttpClient httpclient = HttpClients.createDefault();
         HttpPost post = new HttpPost("http://localhost:8080/raptor/com.ppdai.framework.raptor.proto.Simple/sayHello");
@@ -74,7 +77,6 @@ public class RpcIntegrationTest {
 
     @Test
     public void testRpcCall() throws Exception {
-
         //启动服务端
         testServer();
 
