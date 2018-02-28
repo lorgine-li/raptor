@@ -24,7 +24,7 @@ public class ClientTest {
     private Simple simple2;
 
     @Test
-    public void testSayHello() {
+    public void testInit() {
         Assert.assertNotNull(simple1);
         Assert.assertNotNull(simple2);
 

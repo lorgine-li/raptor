@@ -41,6 +41,7 @@ public abstract class AbstractProvider<T> implements Provider<T> {
     @Override
     public Response call(Request request) {
         return invoke(request);
+        //TODO 将序列化提前到这里
     }
 
     protected abstract Response invoke(Request request);
@@ -91,6 +92,7 @@ public abstract class AbstractProvider<T> implements Provider<T> {
             }
         }
     }
+
     @Override
     public T getImpl() {
         return this.serviceInstance;

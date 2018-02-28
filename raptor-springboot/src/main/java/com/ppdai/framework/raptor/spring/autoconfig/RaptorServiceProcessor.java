@@ -3,9 +3,9 @@ package com.ppdai.framework.raptor.spring.autoconfig;
 import com.ppdai.framework.raptor.annotation.RaptorInterface;
 import com.ppdai.framework.raptor.exception.RaptorServiceException;
 import com.ppdai.framework.raptor.rpc.URL;
-import com.ppdai.framework.raptor.service.DefaultProvider;
 import com.ppdai.framework.raptor.service.Endpoint;
 import com.ppdai.framework.raptor.service.Provider;
+import com.ppdai.framework.raptor.service.ProviderBuilder;
 import com.ppdai.framework.raptor.spring.annotation.RaptorService;
 import com.ppdai.framework.raptor.spring.utils.AopHelper;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +30,9 @@ public class RaptorServiceProcessor implements BeanPostProcessor {
 
     @Autowired
     private ApplicationContext applicationContext;
+
+    @Autowired
+    private ProviderBuilder providerBuilder;
 
     @Override
     public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
@@ -73,11 +76,9 @@ public class RaptorServiceProcessor implements BeanPostProcessor {
         return RaptorInterfaces;
     }
 
-
     @SuppressWarnings("unchecked")
-    private void registryRaptorService(Class<?> interfaceClass, Object bean) {
-        Provider<?> provider = new DefaultProvider(interfaceClass, bean);
-        provider.init();
+    private void registryRaptorService(Class interfaceClass, Object bean) {
+        Provider provider = providerBuilder.build(interfaceClass, bean);
         Map<String, Endpoint> endpointMap = applicationContext.getBeansOfType(Endpoint.class);
         for (Endpoint endpoint : endpointMap.values()) {
             URL url = endpoint.export(provider);

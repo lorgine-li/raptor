@@ -1,11 +1,13 @@
 package com.ppdai.framework.raptor.spring.autoconfig;
 
-import com.ppdai.framework.raptor.refer.ReferBuilder;
+import com.ppdai.framework.raptor.filter.refer.ReferFilter;
+import com.ppdai.framework.raptor.refer.ReferProxyBuilder;
 import com.ppdai.framework.raptor.refer.client.ApacheHttpClient;
 import com.ppdai.framework.raptor.refer.client.Client;
 import com.ppdai.framework.raptor.refer.repository.UrlRepository;
 import com.ppdai.framework.raptor.spring.properties.ApacheHttpClientProperties;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -15,6 +17,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.env.Environment;
+
+import java.util.List;
 
 @Configuration
 @EnableConfigurationProperties({ApacheHttpClientProperties.class})
@@ -47,14 +51,13 @@ public class RaptorClientAutoConfiguration implements EnvironmentAware {
     }
 
     @Bean
-    public ReferBuilder createReferBuilder(Client client) {
-        return new ReferBuilder(client);
+    public ReferProxyBuilder createReferProxyBuilder(Client client, ObjectProvider<List<ReferFilter>> referFilters) {
+        return ReferProxyBuilder.newBuilder().addFilters(referFilters.getIfAvailable()).client(client);
     }
 
     @Bean
-    public RaptorClientRegistry createClientRegistry(UrlRepository urlRepository, ReferBuilder referBuilder) {
-        RaptorClientRegistry raptorClientRegistry = new RaptorClientRegistry(urlRepository, referBuilder);
-        return raptorClientRegistry;
+    public RaptorClientRegistry createClientRegistry(UrlRepository urlRepository, ReferProxyBuilder referProxyBuilder) {
+        return new RaptorClientRegistry(urlRepository, referProxyBuilder);
     }
 
     @Override

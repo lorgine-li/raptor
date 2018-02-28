@@ -2,10 +2,7 @@ package com.ppdai.framework.raptor.spring.autoconfig;
 
 import com.ppdai.framework.raptor.exception.RaptorFrameworkException;
 import com.ppdai.framework.raptor.exception.RaptorServiceException;
-import com.ppdai.framework.raptor.refer.Refer;
-import com.ppdai.framework.raptor.refer.ReferBuilder;
-import com.ppdai.framework.raptor.refer.proxy.JdkProxyFactory;
-import com.ppdai.framework.raptor.refer.proxy.ReferInvocationHandler;
+import com.ppdai.framework.raptor.refer.ReferProxyBuilder;
 import com.ppdai.framework.raptor.refer.repository.UrlRepository;
 import com.ppdai.framework.raptor.rpc.URL;
 import com.ppdai.framework.raptor.util.ReflectUtil;
@@ -16,20 +13,22 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * 客户端代理Registry
+ */
 @Getter
 @Setter
 public class RaptorClientRegistry {
 
     private UrlRepository urlRepository;
-    private ReferBuilder referBuilder;
+    private ReferProxyBuilder referProxyBuilder;
 
     private Map<String, Object> clientCache = new ConcurrentHashMap<>();
 
-    public RaptorClientRegistry(UrlRepository urlRepository, ReferBuilder referBuilder) {
+    public RaptorClientRegistry(UrlRepository urlRepository, ReferProxyBuilder referProxyBuilder) {
         this.urlRepository = urlRepository;
-        this.referBuilder = referBuilder;
+        this.referProxyBuilder = referProxyBuilder;
     }
-
 
     public Object getOrCreateClientProxy(String interfaceName, String url) {
         URL serviceUrl = getURL(interfaceName, url);
@@ -58,17 +57,16 @@ public class RaptorClientRegistry {
         return serviceUrl;
     }
 
+    @SuppressWarnings("unchecked")
     public Object createClientProxy(String interfaceName, URL serviceUrl) {
-        Class<?> clazz;
+        Class clazz;
         try {
             clazz = ReflectUtil.forName(interfaceName);
         } catch (ClassNotFoundException e) {
             throw new RaptorFrameworkException("Can't find class " + interfaceName);
         }
 
-        Refer<?> refer = referBuilder.build(clazz, serviceUrl);
-        ReferInvocationHandler invocationHandler = new ReferInvocationHandler(clazz, refer);
-        return new JdkProxyFactory().getProxy(clazz, invocationHandler);
+        return referProxyBuilder.build(clazz, serviceUrl);
     }
 
     private String getCacheKey(String interfaceName, URL serviceUrl) {

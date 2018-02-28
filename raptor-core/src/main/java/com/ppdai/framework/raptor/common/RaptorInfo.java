@@ -26,6 +26,7 @@ public class RaptorInfo {
         return raptorInfo;
     }
 
+    private String appId;
     private String version;
     private String metricPrefix = RaptorConstants.METRIC_NAME;
 

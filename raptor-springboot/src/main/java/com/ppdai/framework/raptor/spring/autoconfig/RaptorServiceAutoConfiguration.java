@@ -1,13 +1,18 @@
 package com.ppdai.framework.raptor.spring.autoconfig;
 
 import com.ppdai.framework.raptor.common.RaptorConstants;
+import com.ppdai.framework.raptor.filter.provider.ProviderAccessLogFilter;
+import com.ppdai.framework.raptor.filter.provider.ProviderFilter;
 import com.ppdai.framework.raptor.rpc.URL;
+import com.ppdai.framework.raptor.service.ProviderBuilder;
 import com.ppdai.framework.raptor.service.ServletEndpoint;
 import com.ppdai.framework.raptor.spring.properties.ServletEndpointProperties;
 import com.ppdai.framework.raptor.util.NetUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -59,4 +64,14 @@ public class RaptorServiceAutoConfiguration {
         return registrationBean;
     }
 
+    @Bean
+    public ProviderBuilder createProviderBuilder(ObjectProvider<List<ProviderFilter>> providerFilters) {
+        return ProviderBuilder.newBuilder().addFilters(providerFilters.getIfAvailable());
+    }
+
+    @Bean
+    @ConditionalOnProperty(name = "raptor.provider.filter.accessLog", havingValue = "true", matchIfMissing = true)
+    public ProviderAccessLogFilter createAccessLogFilter() {
+        return new ProviderAccessLogFilter();
+    }
 }

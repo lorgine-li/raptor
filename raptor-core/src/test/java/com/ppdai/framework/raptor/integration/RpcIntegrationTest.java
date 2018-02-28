@@ -1,17 +1,13 @@
 package com.ppdai.framework.raptor.integration;
 
-import com.ppdai.framework.raptor.refer.DefaultRefer;
-import com.ppdai.framework.raptor.refer.Refer;
-import com.ppdai.framework.raptor.refer.client.ApacheHttpClient;
-import com.ppdai.framework.raptor.refer.proxy.ReferInvocationHandler;
-import com.ppdai.framework.raptor.refer.proxy.JdkProxyFactory;
 import com.ppdai.framework.raptor.proto.Helloworld;
 import com.ppdai.framework.raptor.proto.Simple;
 import com.ppdai.framework.raptor.proto.SimpleImpl;
+import com.ppdai.framework.raptor.refer.ReferProxyBuilder;
 import com.ppdai.framework.raptor.rpc.URL;
-import com.ppdai.framework.raptor.service.DefaultProvider;
 import com.ppdai.framework.raptor.service.JettyServletEndpoint;
 import com.ppdai.framework.raptor.service.Provider;
+import com.ppdai.framework.raptor.service.ProviderBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.entity.EntityBuilder;
@@ -25,8 +21,6 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.io.IOException;
 
 @Slf4j
 public class RpcIntegrationTest {
@@ -53,8 +47,8 @@ public class RpcIntegrationTest {
     public void testServer() throws Exception {
         //初始化service
         Simple simple = new SimpleImpl();
-        Provider<Simple> provider = new DefaultProvider<>(Simple.class, simple);
-        provider.init();
+        Provider<Simple> provider = ProviderBuilder.newBuilder().build(Simple.class, simple);
+
         servletEndpoint.export(provider);
     }
 
@@ -81,13 +75,9 @@ public class RpcIntegrationTest {
         testServer();
 
         String url = "http://localhost:8080";
-        ApacheHttpClient apacheHttpClient = new ApacheHttpClient();
-        apacheHttpClient.init();
 
-        DefaultRefer<Simple> refer = new DefaultRefer<>(Simple.class, apacheHttpClient, URL.valueOf(url));
-        ReferInvocationHandler invocationHandler = new ReferInvocationHandler(Simple.class, refer);
+        Simple proxy = ReferProxyBuilder.newBuilder().build(Simple.class, URL.valueOf(url));
 
-        Simple proxy = new JdkProxyFactory().getProxy(Simple.class, invocationHandler);
         Helloworld.HelloRequest helloRequest = Helloworld.HelloRequest.newBuilder().setName("ppdai").build();
         try {
             Helloworld.HelloReply helloReply = proxy.sayHello(helloRequest);

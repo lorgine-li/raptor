@@ -131,7 +131,6 @@ public class ServletEndpoint extends HttpServlet implements Endpoint {
             String headerValue = httpRequest.getHeader(headName);
             attachments.put(headName, headerValue);
         }
-        attachments.put(URLParamType.clientHost.getName(), httpRequest.getRemoteAddr());
         return attachments;
     }
 
@@ -163,6 +162,7 @@ public class ServletEndpoint extends HttpServlet implements Endpoint {
         return getProviderKey(request.getInterfaceName());
     }
 
+    //TODO 将序列化逻辑放到provider中
     protected void transportResponse(Request request, Response response, HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
         httpResponse.setStatus(RaptorConstants.HTTP_OK);
         try (OutputStream out = httpResponse.getOutputStream()) {
