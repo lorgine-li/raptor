@@ -30,7 +30,7 @@ public class ProviderAccessLogFilter extends AbstractAccessLogFilter implements 
                 return response;
             } finally {
                 long requestTime = System.currentTimeMillis() - t;
-                logAccess(provider.getServiceUrl(), request, response, requestTime);
+                logAccess(serviceUrl, request, response, requestTime);
             }
         }
         return provider.call(request);

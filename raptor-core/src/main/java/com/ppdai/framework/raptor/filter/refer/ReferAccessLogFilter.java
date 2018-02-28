@@ -30,7 +30,7 @@ public class ReferAccessLogFilter extends AbstractAccessLogFilter implements Ref
                 return response;
             } finally {
                 long requestTime = System.currentTimeMillis() - t;
-                logAccess(refer.getServiceUrl(), request, response, requestTime);
+                logAccess(serviceUrl, request, response, requestTime);
             }
         }
         return refer.call(request);

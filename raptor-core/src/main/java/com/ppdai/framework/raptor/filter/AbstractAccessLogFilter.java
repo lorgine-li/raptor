@@ -4,12 +4,20 @@ import com.ppdai.framework.raptor.common.RaptorConstants;
 import com.ppdai.framework.raptor.rpc.Request;
 import com.ppdai.framework.raptor.rpc.Response;
 import com.ppdai.framework.raptor.rpc.URL;
+import lombok.Getter;
+import lombok.Setter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class AbstractAccessLogFilter extends AbstractFilter {
 
+    @Getter
+    @Setter
+    private Logger logger = LoggerFactory.getLogger(AbstractAccessLogFilter.class);
+
     protected abstract String getNodeType();
 
-    protected void logAccess(URL serviceUrl, Request request, Response response, long requestTime) {
+    protected String logAccess(URL serviceUrl, Request request, Response response, long requestTime) {
         StringBuilder builder = new StringBuilder(128);
         //side 客户端/服务端
         append(builder, getNodeType());
@@ -37,6 +45,9 @@ public abstract class AbstractAccessLogFilter extends AbstractFilter {
         append(builder, getStatusCode(response));
         //requestTime
         append(builder, String.valueOf(requestTime));
+        String logMessage = builder.toString();
+        logger.info(logMessage);
+        return logMessage;
     }
 
     protected void append(StringBuilder builder, Object field) {

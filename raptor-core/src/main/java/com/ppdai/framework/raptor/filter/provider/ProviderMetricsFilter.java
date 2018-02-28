@@ -1,11 +1,13 @@
 package com.ppdai.framework.raptor.filter.provider;
 
-import com.ppdai.framework.raptor.filter.AbstractFilter;
+import com.ppdai.framework.raptor.common.RaptorConstants;
+import com.ppdai.framework.raptor.filter.AbstractMetricFilter;
 import com.ppdai.framework.raptor.rpc.Request;
 import com.ppdai.framework.raptor.rpc.Response;
+import com.ppdai.framework.raptor.rpc.URL;
 import com.ppdai.framework.raptor.service.Provider;
 
-public class ProviderMetricsFilter extends AbstractFilter implements ProviderFilter {
+public class ProviderMetricsFilter extends AbstractMetricFilter implements ProviderFilter {
 
     @Override
     public int getOrder() {
@@ -14,8 +16,12 @@ public class ProviderMetricsFilter extends AbstractFilter implements ProviderFil
 
     @Override
     public Response filter(Provider<?> provider, Request request) {
-        //TODO 记录metric
-        return provider.call(request);
+        URL serviceUrl = provider.getServiceUrl();
+        return doFilter(serviceUrl, provider, request);
     }
 
+    @Override
+    protected String getNodeType() {
+        return RaptorConstants.NODE_TYPE_SERVICE;
+    }
 }
