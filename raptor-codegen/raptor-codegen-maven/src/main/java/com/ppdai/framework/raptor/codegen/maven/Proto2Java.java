@@ -48,7 +48,7 @@ public class Proto2Java extends AbstractMojo {
      */
     @Parameter(
             property = "includeStdTypes",
-            defaultValue = "false"
+            defaultValue = "true"
     )
     private Boolean includeStdTypes;
 
