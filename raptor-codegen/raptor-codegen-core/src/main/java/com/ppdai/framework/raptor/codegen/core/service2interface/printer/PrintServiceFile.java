@@ -2,7 +2,7 @@ package com.ppdai.framework.raptor.codegen.core.service2interface.printer;
 
 import com.google.common.collect.Lists;
 import com.google.protobuf.DescriptorProtos.MethodDescriptorProto;
-import com.ppdai.framework.raptor.codegen.core.service2interface.CommonUtils;
+import com.ppdai.framework.raptor.codegen.core.utils.CommonUtils;
 
 import java.util.List;
 import java.util.Map;
