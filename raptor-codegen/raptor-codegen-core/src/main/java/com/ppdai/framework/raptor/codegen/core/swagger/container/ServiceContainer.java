@@ -1,17 +1,16 @@
 package com.ppdai.framework.raptor.codegen.core.swagger.container;
 
 import com.google.protobuf.DescriptorProtos;
-import com.ppdai.framework.raptor.codegen.core.swagger.type.FieldType;
 import com.ppdai.framework.raptor.codegen.core.swagger.type.MethodType;
 import com.ppdai.framework.raptor.codegen.core.swagger.type.ServiceType;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
  * Created by zhangyicong on 18-2-27.
+ * 存放从proto文件中提取的service类型
  */
 public class ServiceContainer {
 

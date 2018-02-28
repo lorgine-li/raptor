@@ -4,7 +4,6 @@ import org.apache.maven.plugin.testing.AbstractMojoTestCase;
 import org.junit.Test;
 
 import java.io.File;
-import java.util.Arrays;
 
 /**
  * Created by zhangyicong on 18-2-27.

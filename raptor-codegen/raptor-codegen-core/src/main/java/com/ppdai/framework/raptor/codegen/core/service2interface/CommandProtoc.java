@@ -38,7 +38,8 @@ public class CommandProtoc {
                     .add("--include_std_types")
                     .add("-I" + discoveryRoot)
                     .add("--descriptor_set_out=" + descriptorPath.toAbsolutePath().toString());
-            if (protocDependenciesPath.exists()) {//todo
+
+            if (protocDependenciesPath.exists()) { //todo
                 File[] files = protocDependenciesPath.listFiles();
                 for (File file : files) {
                     if (file.isDirectory()) {

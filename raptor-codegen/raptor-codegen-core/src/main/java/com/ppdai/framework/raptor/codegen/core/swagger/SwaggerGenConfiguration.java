@@ -14,6 +14,7 @@ public class SwaggerGenConfiguration {
     private String extension;
     private File protocDependenciesPath;
     private File outputDirectory;
+    private String apiVersion;
 
     public String getProtocVersion() {
         return protocVersion;
@@ -69,5 +70,13 @@ public class SwaggerGenConfiguration {
 
     public void setOutputDirectory(File outputDirectory) {
         this.outputDirectory = outputDirectory;
+    }
+
+    public String getApiVersion() {
+        return apiVersion;
+    }
+
+    public void setApiVersion(String apiVersion) {
+        this.apiVersion = apiVersion;
     }
 }

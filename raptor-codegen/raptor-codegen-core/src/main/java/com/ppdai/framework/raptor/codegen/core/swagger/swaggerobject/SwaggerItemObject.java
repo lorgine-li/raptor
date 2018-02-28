@@ -14,7 +14,9 @@ public class SwaggerItemObject {
     private String format;
     @JsonProperty("$ref")
     private String ref;
+    @JsonProperty("enum")
     private List<String> swaggerEnum;
+    @JsonProperty("default")
     private String swaggerDefault;
 
     public String getType() {

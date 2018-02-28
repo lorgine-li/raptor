@@ -138,6 +138,9 @@ public class Proto2Swagger extends AbstractMojo {
         if (protocDependenciesPath != null)
             configuration.setProtocDependenciesPath(protocDependenciesPath);
 
+        if (project != null)
+            configuration.setApiVersion(project.getVersion());
+
         return configuration;
     }
 

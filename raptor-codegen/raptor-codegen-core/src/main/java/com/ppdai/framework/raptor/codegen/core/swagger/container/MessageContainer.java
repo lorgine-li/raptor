@@ -10,6 +10,7 @@ import java.util.Map;
 
 /**
  * Created by zhangyicong on 18-2-27.
+ * 存放从proto文件中提取的message类型
  */
 public class MessageContainer {
 
@@ -20,10 +21,10 @@ public class MessageContainer {
         this.packageName = packageName;
     }
 
-    public void addMessageProto(DescriptorProtos.DescriptorProto descriptorProto) {
+    public void addMessageProto(String parent, DescriptorProtos.DescriptorProto descriptorProto) {
         MessageType messageType = new MessageType();
         messageType.setName(descriptorProto.getName());
-        messageType.setFQPN(packageName + "." + messageType.getName());
+        messageType.setFQPN(packageName + "." + (parent != null ? parent + "." : "")+ messageType.getName());
 
         Map<String, FieldType> fieldTypeMap = new LinkedHashMap<>();
         messageType.setFields(fieldTypeMap);
@@ -32,6 +33,8 @@ public class MessageContainer {
             FieldType fieldType = new FieldType();
             fieldType.setName(ffdp.getName());
             fieldType.setType(ffdp.getType());
+            fieldType.setLabel(ffdp.getLabel());
+            fieldType.setTypeName(ffdp.getTypeName().replaceAll("^\\.", ""));
             fieldTypeMap.put(fieldType.getName(), fieldType);
         }
 

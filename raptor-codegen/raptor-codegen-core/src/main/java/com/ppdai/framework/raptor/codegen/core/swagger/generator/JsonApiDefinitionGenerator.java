@@ -1,8 +1,8 @@
-package com.ppdai.framework.raptor.codegen.core.swagger;
+package com.ppdai.framework.raptor.codegen.core.swagger.generator;
 
 import com.google.common.collect.Lists;
-import com.ppdai.framework.raptor.codegen.core.service2interface.CommandProtoc;
-import com.ppdai.framework.raptor.codegen.core.service2interface.InterfaceGenerator;
+import com.ppdai.framework.raptor.codegen.core.swagger.SwaggerGenConfiguration;
+import com.ppdai.framework.raptor.codegen.core.swagger.tool.Proto2SwaggerJson;
 import com.ppdai.framework.raptor.codegen.core.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,18 +15,19 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * Created by zhangyicong on 18-2-27.
  */
-public class ApiDefinitionGenerator {
+public class JsonApiDefinitionGenerator {
 
-    public static final Logger LOGGER = LoggerFactory.getLogger(ApiDefinitionGenerator.class);
+    public static final Logger LOGGER = LoggerFactory.getLogger(JsonApiDefinitionGenerator.class);
 
     private File outputDirectory;
     private File[] inputDirectories;
     private File protocDependenciesPath;
     private String extension;
+    private String apiVersion = "version not set";
 
     private List<File> allProtoFile = Lists.newArrayList();
 
-    public ApiDefinitionGenerator(SwaggerGenConfiguration configuration) {
+    public JsonApiDefinitionGenerator(SwaggerGenConfiguration configuration) {
         checkNotNull(configuration.getOutputDirectory());
         this.outputDirectory = configuration.getOutputDirectory();
 
@@ -39,14 +40,22 @@ public class ApiDefinitionGenerator {
         checkNotNull(configuration.getExtension());
         this.extension = configuration.getExtension();
 
+        if (configuration.getApiVersion() != null) {
+            this.apiVersion = configuration.getApiVersion();
+        }
     }
 
     public void generate() throws Exception {
         LOGGER.info(">>>>>>>>>>>>>>>  Started performing swagger generate   ");
         for (int i = 0; i < inputDirectories.length; i++) {
             File inputDirectory = inputDirectories[i];
-            Utils.collectSpecificFiles(inputDirectory,extension,allProtoFile);
-            CommonProto2Swagger proto2Swagger = CommonProto2Swagger.forConfig(inputDirectory.getAbsolutePath(), outputDirectory.getAbsolutePath(), protocDependenciesPath);
+            Utils.collectSpecificFiles(inputDirectory, extension, allProtoFile);
+
+            Proto2SwaggerJson proto2Swagger = Proto2SwaggerJson.forConfig(inputDirectory.getAbsolutePath(),
+                    outputDirectory.getAbsolutePath(),
+                    protocDependenciesPath,
+                    apiVersion);
+
             for (File file : allProtoFile) {
                 if (file.exists()) {
                     String protoFilePath = file.getPath();

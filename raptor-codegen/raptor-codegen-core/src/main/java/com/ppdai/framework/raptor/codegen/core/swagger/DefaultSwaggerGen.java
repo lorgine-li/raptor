@@ -1,5 +1,6 @@
 package com.ppdai.framework.raptor.codegen.core.swagger;
 
+import com.ppdai.framework.raptor.codegen.core.swagger.generator.JsonApiDefinitionGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,7 +23,7 @@ public class DefaultSwaggerGen {
 
         try {
 
-            new ApiDefinitionGenerator(configuration)
+            new JsonApiDefinitionGenerator(configuration)
                     .generate();
 
         } catch (Exception e) {
