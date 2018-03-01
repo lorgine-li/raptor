@@ -11,11 +11,10 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import static com.ppdai.framework.raptor.codegen.core.service2interface.CommonUtils.upperCamelCaseProcess;
+import static com.ppdai.framework.raptor.codegen.core.utils.CommonUtils.upperCamelCaseProcess;
 
 public class CommonProto2Java {
 
@@ -120,9 +119,9 @@ public class CommonProto2Java {
                 .forEach(temp -> enumDescList.addAll(temp.getEnumTypeList()));
 
         ProtocolStringList dependencyList = fdp.getDependencyList();
-        for (Iterator<String> it = dependencyList.iterator(); it.hasNext(); ) {
-            String dependencyPath = discoveryRoot + "/" + it.next();
-            importProcess(dependencyPath,messageDescList);
+        for (String aDependencyList : dependencyList) {
+            String dependencyPath = discoveryRoot + "/" + aDependencyList;
+            importProcess(dependencyPath, messageDescList);
         }
 
         enumProcess(enumDescList, javaPackage, outerClassName);

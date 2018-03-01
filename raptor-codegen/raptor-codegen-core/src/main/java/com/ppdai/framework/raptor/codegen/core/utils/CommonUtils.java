@@ -1,4 +1,4 @@
-package com.ppdai.framework.raptor.codegen.core.service2interface;
+package com.ppdai.framework.raptor.codegen.core.utils;
 
 import org.apache.commons.lang3.StringUtils;
 
