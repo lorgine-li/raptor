@@ -23,8 +23,8 @@ public class MessageContainer {
 
     public void addMessageProto(String parent, DescriptorProtos.DescriptorProto descriptorProto) {
         MessageType messageType = new MessageType();
-        messageType.setName(descriptorProto.getName());
-        messageType.setFQPN(packageName + "." + (parent != null ? parent + "." : "")+ messageType.getName());
+        messageType.setName((parent != null ? parent + "." : "") + descriptorProto.getName());
+        messageType.setFQPN(packageName + "." + messageType.getName());
 
         Map<String, FieldType> fieldTypeMap = new LinkedHashMap<>();
         messageType.setFields(fieldTypeMap);
@@ -34,7 +34,8 @@ public class MessageContainer {
             fieldType.setName(ffdp.getName());
             fieldType.setType(ffdp.getType());
             fieldType.setLabel(ffdp.getLabel());
-            fieldType.setTypeName(ffdp.getTypeName().replaceAll("^\\.", ""));
+            fieldType.setTypeName(ffdp.getTypeName().replaceAll("^\\.", "")
+                    .replace(packageName + ".", ""));
             fieldTypeMap.put(fieldType.getName(), fieldType);
         }
 

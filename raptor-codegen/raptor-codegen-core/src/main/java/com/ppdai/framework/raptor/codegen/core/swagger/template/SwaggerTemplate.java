@@ -25,7 +25,8 @@ public class SwaggerTemplate {
      * @param serviceContainer
      */
     private void renderServices(SwaggerObject swaggerObject,
-                               ServiceContainer serviceContainer) {
+                               ServiceContainer serviceContainer,
+                               MessageContainer messageContainer) {
 
         for (ServiceType serviceType : serviceContainer.getServiceTypeList()) {
             for (MethodType methodType : serviceType.getMethodTypeList()) {
@@ -56,7 +57,8 @@ public class SwaggerTemplate {
 
                 // set schema
                 SwaggerSchemaObject swaggerSchemaObject = new SwaggerSchemaObject();
-                swaggerSchemaObject.setRef("#/definitions/" + methodType.getInputType());
+                swaggerSchemaObject.setRef("#/definitions/" +
+                        messageContainer.findMessageTypeByFQPN(methodType.getInputType()).getName());
                 swaggerParameterObject.setSchema(swaggerSchemaObject);
 
                 // set responses
@@ -66,7 +68,8 @@ public class SwaggerTemplate {
                 // set responses schema
                 SwaggerSchemaObject reponseSchema = new SwaggerSchemaObject();
                 swaggerResponseObject.setSchema(reponseSchema);
-                reponseSchema.setRef("#/definitions/" + methodType.getOutputType());
+                reponseSchema.setRef("#/definitions/" +
+                        messageContainer.findMessageTypeByFQPN(methodType.getOutputType()).getName());
 
                 responses.put("200", swaggerResponseObject);
                 swaggerOperationObject.setResponses(responses);
@@ -79,7 +82,7 @@ public class SwaggerTemplate {
 
     private void addEnum2Definitions(SwaggerObject swaggerObject, EnumType enumType) {
         SwaggerSchemaObject swaggerSchemaObject = new SwaggerSchemaObject();
-        swaggerObject.getDefinitions().put(enumType.getFQPN(), swaggerSchemaObject);
+        swaggerObject.getDefinitions().put(enumType.getName(), swaggerSchemaObject);
 
         swaggerSchemaObject.setType("string");
         swaggerSchemaObject.setSwaggerEnum(new ArrayList<>(enumType.getValues()));
@@ -87,7 +90,7 @@ public class SwaggerTemplate {
 
     private void addType2Definitions(SwaggerObject swaggerObject, MessageType messageType) {
         SwaggerSchemaObject swaggerSchemaObject = new SwaggerSchemaObject();
-        swaggerObject.getDefinitions().put(messageType.getFQPN(), swaggerSchemaObject);
+        swaggerObject.getDefinitions().put(messageType.getName(), swaggerSchemaObject);
 
         swaggerSchemaObject.setType("object");
 
@@ -222,7 +225,7 @@ public class SwaggerTemplate {
                 new SwaggerInfoObject(fdp.getName(), apiVersion));
 
         // render path
-        renderServices(swaggerObject, serviceContainer);
+        renderServices(swaggerObject, serviceContainer, messageContainer);
         // render type and enum
         renderDefinitions(swaggerObject, messageContainer, enumContainer);
 

@@ -3,8 +3,6 @@ package com.ppdai.framework.raptor.codegen.core.swagger.tool;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.protobuf.DescriptorProtos;
-import com.ppdai.framework.raptor.codegen.core.service2interface.CommandProtoc;
-import com.ppdai.framework.raptor.codegen.core.swagger.container.EnumContainer;
 import com.ppdai.framework.raptor.codegen.core.swagger.template.SwaggerTemplate;
 import com.ppdai.framework.raptor.codegen.core.swagger.swaggerobject.SwaggerObject;
 import org.apache.commons.io.FileUtils;

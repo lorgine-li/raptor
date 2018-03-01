@@ -1,6 +1,9 @@
 syntax = "proto3";
 
 package com.ppdai.framework.raptor.proto;
+
+import "common/Result.proto";
+
 service Simple {
     rpc sayHello (HelloRequest) returns (HelloReply) {
     }
@@ -8,8 +11,39 @@ service Simple {
 
 message HelloRequest {
     string name = 1;
+    enum Corpus {
+        UNIVERSAL = 0;
+        WEB = 1;
+        IMAGES = 2;
+        LOCAL = 3;
+        NEWS = 4;
+        PRODUCTS = 5;
+        VIDEO = 6;
+    }
+    Corpus corpus = 2;
+    repeated string snippets = 3;
+    repeated Cat cats = 4;
+    message Result {
+        enum Corpus {
+            UNIVERSAL = 0;
+            WEB = 1;
+            IMAGES = 2;
+            LOCAL = 3;
+            NEWS = 4;
+            PRODUCTS = 5;
+            VIDEO = 6;
+        }
+        string url = 1;
+        Corpus corpus = 2;
+    }
+    Result result = 5;
 }
 
 message HelloReply {
     string message = 1;
+    repeated Result results = 2;
+}
+
+message Cat {
+    string color = 1;
 }

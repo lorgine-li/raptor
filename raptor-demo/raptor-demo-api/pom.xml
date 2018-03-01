@@ -32,6 +32,7 @@
                 <executions>
                     <execution>
                         <goals>
+                            <goal>proto2java</goal>
                             <goal>proto2swagger</goal>
                         </goals>
                     </execution>

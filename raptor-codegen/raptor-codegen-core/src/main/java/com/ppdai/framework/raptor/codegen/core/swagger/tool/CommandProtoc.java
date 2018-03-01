@@ -1,4 +1,4 @@
-package com.ppdai.framework.raptor.codegen.core.service2interface;
+package com.ppdai.framework.raptor.codegen.core.swagger.tool;
 
 
 import com.google.common.collect.ImmutableList;

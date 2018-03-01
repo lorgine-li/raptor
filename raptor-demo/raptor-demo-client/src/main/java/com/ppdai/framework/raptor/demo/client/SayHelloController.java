@@ -18,7 +18,13 @@ public class SayHelloController {
     @RequestMapping("/sayhello")
     public Object routeSayHello(@RequestParam("name") String name) {
         Helloworld.HelloRequest helloRequest = Helloworld.HelloRequest.newBuilder()
-                .setName(name).build();
+                .setName(name)
+                .setCorpus(Helloworld.HelloRequest.Corpus.UNIVERSAL)
+                .addSnippets("snippets1")
+                .addCats(Helloworld.Cat.newBuilder().setColor("black").build())
+                .setResult(Helloworld.HelloRequest.Result.newBuilder().setCorpus(Helloworld.HelloRequest.Result.Corpus.IMAGES).build())
+                .build();
+
         Helloworld.HelloReply helloReply = simple.sayHello(helloRequest);
         return helloReply != null ? helloReply.toString() : "null";
     }

@@ -22,8 +22,8 @@ public class EnumContainer {
                              DescriptorProtos.EnumDescriptorProto descriptorProto) {
 
         EnumType enumType = new EnumType();
-        enumType.setName(descriptorProto.getName());
-        enumType.setFQPN(packageName + "." + (parent != null ? parent + "." : "") + enumType.getName());
+        enumType.setName((parent != null ? parent + "." : "") + descriptorProto.getName());
+        enumType.setFQPN(packageName + "." + enumType.getName());
 
         Set<String> values = new LinkedHashSet<>();
         enumType.setValues(values);
