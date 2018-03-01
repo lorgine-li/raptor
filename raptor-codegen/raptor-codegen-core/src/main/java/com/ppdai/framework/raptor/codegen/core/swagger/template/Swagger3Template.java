@@ -9,6 +9,7 @@ import com.ppdai.framework.raptor.codegen.core.swagger.container.MessageContaine
 import com.ppdai.framework.raptor.codegen.core.swagger.container.ServiceContainer;
 import com.ppdai.framework.raptor.codegen.core.swagger.swagger3object.*;
 import com.ppdai.framework.raptor.codegen.core.swagger.tool.ContainerUtil;
+import com.ppdai.framework.raptor.codegen.core.swagger.tool.TypeFormatUtil;
 import com.ppdai.framework.raptor.codegen.core.swagger.type.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -115,80 +116,7 @@ public class Swagger3Template implements SwaggerTemplate {
         swaggerSchemaObject.setProperties(properties);
 
         for (FieldType fieldType : messageType.getFieldTypeList()) {
-            String type = "", format = "UNKNOWN", ref = null;
-            Map<String, Object> typeSchema = new HashMap<>(2);
-
-            switch (fieldType.getType()) {
-                case TYPE_BYTES:
-                    type = "string";
-                    format = "byte";
-                    break;
-                case TYPE_INT32:
-                case TYPE_SINT32:
-                case TYPE_SFIXED32:
-                    type = "integer";
-                    format = "int32";
-                    break;
-                case TYPE_UINT32:
-                    type = "integer";
-                    format = "int64";
-                    break;
-                case TYPE_FIXED32:
-                    type = "integer";
-                    format = "int64";
-                    break;
-                case TYPE_INT64:
-                case TYPE_SINT64:
-                case TYPE_SFIXED64:
-                    type = "integer";
-                    format = "int64";
-                    break;
-                case TYPE_UINT64:
-                case TYPE_FIXED64:
-                    type = "string";
-                    format = "uint64";
-                    break;
-                case TYPE_FLOAT:
-                    type = "number";
-                    format = "float";
-                    break;
-                case TYPE_DOUBLE:
-                    type = "number";
-                    format = "double";
-                    break;
-                case TYPE_BOOL:
-                    type = "boolean";
-                    format = "boolean";
-                    break;
-                case TYPE_STRING:
-                    type = "string";
-                    format = "";
-                    break;
-                case TYPE_ENUM:
-                    ref = "#/components/schemas/" + fieldType.getTypeName();
-                    break;
-                case TYPE_MESSAGE:
-                case TYPE_GROUP:
-                    ref = "#/components/schemas/" + fieldType.getTypeName();
-                    break;
-            }
-
-            if (ref == null) { // primitive type
-                typeSchema.put("type", type);
-                typeSchema.put("format", format);
-            } else { // complex type
-                typeSchema.put("$ref", ref);
-            }
-
-            switch (fieldType.getLabel()) {
-                case LABEL_REPEATED:
-                    Map<String, Object> subTypeSchema = new HashMap<>(typeSchema);
-                    typeSchema.clear();
-                    typeSchema.put("type", "array");
-                    typeSchema.put("items", subTypeSchema);
-                    break;
-            }
-
+            Map<String, Object> typeSchema = TypeFormatUtil.formatTypeSwagger3(fieldType);
             properties.put(fieldType.getName(), typeSchema);
         }
     }

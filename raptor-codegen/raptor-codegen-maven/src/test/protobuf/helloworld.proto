@@ -3,6 +3,7 @@ syntax = "proto3";
 package com.ppdai.framework.raptor.proto;
 
 import "common/Result.proto";
+import "google/protobuf/timestamp.proto";
 
 service Simple {
     rpc sayHello (HelloRequest) returns (HelloReply) {
@@ -51,6 +52,7 @@ message HelloRequest {
     sfixed64 tsfixed64 = 17;
     bytes tbytes = 18;
     bool tbool = 19;
+    google.protobuf.Timestamp time = 20;
 }
 
 message HelloReply {
