@@ -37,11 +37,26 @@ message HelloRequest {
         Corpus corpus = 2;
     }
     Result result = 5;
+    double tDouble = 6;
+    float tFloat = 7;
+    int32 tint32 = 8;
+    int64 tint64 = 9;
+    uint32 tunit32 = 10;
+    uint64 tunit64 = 11;
+    sint32 tsint32 = 12;
+    sint64 tsint64 = 13;
+    fixed32 tfixed32 = 14;
+    fixed64 tfixed64 = 15;
+    sfixed32 tsfixed32 = 16;
+    sfixed64 tsfixed64 = 17;
+    bytes tbytes = 18;
+    bool tbool = 19;
 }
 
 message HelloReply {
     string message = 1;
-    repeated Result results = 2;
+    HelloRequest.Corpus corpus = 2;
+    repeated Result results = 3;
 }
 
 message Cat {

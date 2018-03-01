@@ -3,8 +3,10 @@ package com.ppdai.framework.raptor.codegen.core.swagger.tool;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.protobuf.DescriptorProtos;
+import com.ppdai.framework.raptor.codegen.core.swagger.template.Swagger2Template;
+import com.ppdai.framework.raptor.codegen.core.swagger.template.Swagger3Template;
+import com.ppdai.framework.raptor.codegen.core.swagger.swagger3object.SwaggerObject;
 import com.ppdai.framework.raptor.codegen.core.swagger.template.SwaggerTemplate;
-import com.ppdai.framework.raptor.codegen.core.swagger.swaggerobject.SwaggerObject;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +20,8 @@ public class Proto2SwaggerJson {
 
     private static final Logger logger = LoggerFactory.getLogger(Proto2SwaggerJson.class);
 
+    private final String swaggerVersion;
+
     private final String apiVersion;
 
     private final String discoveryRoot;
@@ -26,25 +30,35 @@ public class Proto2SwaggerJson {
 
     private final CommandProtoc commandProtoc;
 
-    private final SwaggerTemplate swaggerTemplate = new SwaggerTemplate();
+    private final SwaggerTemplate swaggerTemplate;
 
-    private final ObjectMapper mapper;
-
-    private Proto2SwaggerJson(String discoveryRoot, String generatePath,
-                              final File protocDependenciesPath, String apiVersion) {
+    private Proto2SwaggerJson(String discoveryRoot,
+                              String generatePath,
+                              final File protocDependenciesPath,
+                              String swaggerVersion,
+                              String apiVersion) {
 
         this.discoveryRoot = discoveryRoot;
         this.generatePath = generatePath;
         this.commandProtoc =
                 CommandProtoc.configProtoPath(discoveryRoot, protocDependenciesPath);
-        this.mapper = new ObjectMapper();
-        this.mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        this.swaggerVersion = swaggerVersion;
         this.apiVersion = apiVersion;
+
+        if (this.swaggerVersion.startsWith("3")) {
+            swaggerTemplate = new Swagger3Template();
+        } else {
+            swaggerTemplate = new Swagger2Template();
+        }
     }
 
-    public static Proto2SwaggerJson forConfig(String discoveryRoot, String generatePath,
-                                              final File protocDependenciesPath, String apiVersion) {
-        return new Proto2SwaggerJson(discoveryRoot, generatePath, protocDependenciesPath, apiVersion);
+    public static Proto2SwaggerJson forConfig(String discoveryRoot,
+                                              String generatePath,
+                                              final File protocDependenciesPath,
+                                              String swaggerVersion,
+                                              String apiVersion) {
+        return new Proto2SwaggerJson(discoveryRoot,
+                generatePath, protocDependenciesPath, swaggerVersion, apiVersion);
     }
 
     public void generateFile(String protoPath) {
@@ -67,10 +81,8 @@ public class Proto2SwaggerJson {
                 continue;
             }
 
-            SwaggerObject swaggerObject = swaggerTemplate.applyTemplate(fdp, apiVersion);
-
             try {
-                String json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(swaggerObject);
+                String json = swaggerTemplate.applyTemplate(fdp, apiVersion);
                 File apiFile = new File(generatePath + File.separatorChar + fdp.getName() + ".json");
                 if (apiFile.exists()) {
                     apiFile.delete();

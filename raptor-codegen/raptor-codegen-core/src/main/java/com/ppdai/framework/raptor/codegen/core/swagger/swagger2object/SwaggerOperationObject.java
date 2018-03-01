@@ -1,4 +1,4 @@
-package com.ppdai.framework.raptor.codegen.core.swagger.swaggerobject;
+package com.ppdai.framework.raptor.codegen.core.swagger.swagger2object;
 
 import java.util.List;
 import java.util.Map;

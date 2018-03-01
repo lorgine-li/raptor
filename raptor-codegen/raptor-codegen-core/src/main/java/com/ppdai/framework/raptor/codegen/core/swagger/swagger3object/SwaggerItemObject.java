@@ -1,4 +1,4 @@
-package com.ppdai.framework.raptor.codegen.core.swagger.swaggerobject;
+package com.ppdai.framework.raptor.codegen.core.swagger.swagger3object;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

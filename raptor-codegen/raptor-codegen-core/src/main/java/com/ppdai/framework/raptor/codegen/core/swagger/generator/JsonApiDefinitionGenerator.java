@@ -24,6 +24,7 @@ public class JsonApiDefinitionGenerator {
     private File protocDependenciesPath;
     private String extension;
     private String apiVersion = "version not set";
+    private String swaggerVersion = "2.0";
 
     private List<File> allProtoFile = Lists.newArrayList();
 
@@ -43,6 +44,10 @@ public class JsonApiDefinitionGenerator {
         if (configuration.getApiVersion() != null) {
             this.apiVersion = configuration.getApiVersion();
         }
+
+        if (configuration.getSwaggerVersion() != null) {
+            this.swaggerVersion = configuration.getSwaggerVersion();
+        }
     }
 
     public void generate() throws Exception {
@@ -54,6 +59,7 @@ public class JsonApiDefinitionGenerator {
             Proto2SwaggerJson proto2Swagger = Proto2SwaggerJson.forConfig(inputDirectory.getAbsolutePath(),
                     outputDirectory.getAbsolutePath(),
                     protocDependenciesPath,
+                    swaggerVersion,
                     apiVersion);
 
             for (File file : allProtoFile) {

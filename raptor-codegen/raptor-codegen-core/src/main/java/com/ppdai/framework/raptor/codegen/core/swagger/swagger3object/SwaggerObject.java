@@ -1,50 +1,50 @@
-package com.ppdai.framework.raptor.codegen.core.swagger.swaggerobject;
+package com.ppdai.framework.raptor.codegen.core.swagger.swagger3object;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
  * Created by zhangyicong on 18-2-27.
- * http://swagger.io/specification/#swaggerObject
+ * https://swagger.io/specification/#openapi-object-17
  */
 public class SwaggerObject {
-    private String swagger;
+    private String openapi;
     private SwaggerInfoObject info;
-    private String baseBath;
-    private List<String> schemes;
+    private List<SwaggerServerObject> servers;
     @JsonIgnore
     private List<String> consumes;
     @JsonIgnore
     private List<String> produces;
     private Map<String, SwaggerPathItemObject> paths;
-    private Map<String, SwaggerSchemaObject> definitions;
+    private SwaggerComponentsObject components;
     private SwaggerExternalDocumentationObject externalDocs;
 
-    public SwaggerObject(String swagger,
-                         List<String> schemes,
+    public SwaggerObject(String openapi,
                          List<String> consumes,
                          List<String> produces,
-                         Map<String, SwaggerPathItemObject> paths,
-                         Map<String, SwaggerSchemaObject> definitions,
                          SwaggerInfoObject info) {
 
-        this.swagger = swagger;
-        this.schemes = schemes;
+        this.openapi = openapi;
         this.consumes = consumes;
         this.produces = produces;
-        this.paths = paths;
-        this.definitions = definitions;
+        this.paths = new LinkedHashMap<>();
+
+        SwaggerComponentsObject swaggerComponentsObject = new SwaggerComponentsObject();
+        swaggerComponentsObject.setSchemas(new LinkedHashMap<>());
+
+        this.components = swaggerComponentsObject;
         this.info = info;
     }
 
-    public String getSwagger() {
-        return swagger;
+    public String getOpenapi() {
+        return openapi;
     }
 
-    public void setSwagger(String swagger) {
-        this.swagger = swagger;
+    public void setOpenapi(String openapi) {
+        this.openapi = openapi;
     }
 
     public SwaggerInfoObject getInfo() {
@@ -55,20 +55,12 @@ public class SwaggerObject {
         this.info = info;
     }
 
-    public String getBaseBath() {
-        return baseBath;
+    public List<SwaggerServerObject> getServers() {
+        return servers;
     }
 
-    public void setBaseBath(String baseBath) {
-        this.baseBath = baseBath;
-    }
-
-    public List<String> getSchemes() {
-        return schemes;
-    }
-
-    public void setSchemes(List<String> schemes) {
-        this.schemes = schemes;
+    public void setServers(List<SwaggerServerObject> servers) {
+        this.servers = servers;
     }
 
     public List<String> getConsumes() {
@@ -95,12 +87,12 @@ public class SwaggerObject {
         this.paths = paths;
     }
 
-    public Map<String, SwaggerSchemaObject> getDefinitions() {
-        return definitions;
+    public SwaggerComponentsObject getComponents() {
+        return components;
     }
 
-    public void setDefinitions(Map<String, SwaggerSchemaObject> definitions) {
-        this.definitions = definitions;
+    public void setComponents(SwaggerComponentsObject components) {
+        this.components = components;
     }
 
     public SwaggerExternalDocumentationObject getExternalDocs() {

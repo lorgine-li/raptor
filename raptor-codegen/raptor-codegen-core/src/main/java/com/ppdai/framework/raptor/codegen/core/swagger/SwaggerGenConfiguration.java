@@ -7,6 +7,7 @@ import java.io.File;
  */
 public class SwaggerGenConfiguration {
 
+    private String swaggerVersion;
     private String protocVersion;
     private File[] inputDirectories;
     private File[] includeDirectories;
@@ -15,6 +16,14 @@ public class SwaggerGenConfiguration {
     private File protocDependenciesPath;
     private File outputDirectory;
     private String apiVersion;
+
+    public String getSwaggerVersion() {
+        return swaggerVersion;
+    }
+
+    public void setSwaggerVersion(String swaggerVersion) {
+        this.swaggerVersion = swaggerVersion;
+    }
 
     public String getProtocVersion() {
         return protocVersion;

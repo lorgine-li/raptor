@@ -22,6 +22,9 @@ public class Proto2Swagger extends AbstractMojo {
 
     private static final String DEFAULT_INPUT_DIR = "/src/main/proto/".replace('/', File.separatorChar);
 
+    @Parameter(property = "swaggerVersion", defaultValue = "2.0")
+    private String swaggerVersion;
+
     @Parameter(property = "protocVersion")
     private String protocVersion;
 
@@ -140,6 +143,10 @@ public class Proto2Swagger extends AbstractMojo {
 
         if (project != null)
             configuration.setApiVersion(project.getVersion());
+
+        if (swaggerVersion != null) {
+            configuration.setSwaggerVersion(swaggerVersion);
+        }
 
         return configuration;
     }

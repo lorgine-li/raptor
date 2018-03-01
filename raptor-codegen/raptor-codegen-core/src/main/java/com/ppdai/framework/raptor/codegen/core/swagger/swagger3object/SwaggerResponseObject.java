@@ -1,4 +1,6 @@
-package com.ppdai.framework.raptor.codegen.core.swagger.swaggerobject;
+package com.ppdai.framework.raptor.codegen.core.swagger.swagger3object;
+
+import java.util.Map;
 
 /**
  * Created by zhangyicong on 18-2-27.
@@ -6,7 +8,7 @@ package com.ppdai.framework.raptor.codegen.core.swagger.swaggerobject;
  */
 public class SwaggerResponseObject {
     private String description;
-    private SwaggerSchemaObject schema;
+    private Map<String, SwaggerMediaTypeObject> content;
 
     public String getDescription() {
         return description;
@@ -16,11 +18,11 @@ public class SwaggerResponseObject {
         this.description = description;
     }
 
-    public SwaggerSchemaObject getSchema() {
-        return schema;
+    public Map<String, SwaggerMediaTypeObject> getContent() {
+        return content;
     }
 
-    public void setSchema(SwaggerSchemaObject schema) {
-        this.schema = schema;
+    public void setContent(Map<String, SwaggerMediaTypeObject> content) {
+        this.content = content;
     }
 }

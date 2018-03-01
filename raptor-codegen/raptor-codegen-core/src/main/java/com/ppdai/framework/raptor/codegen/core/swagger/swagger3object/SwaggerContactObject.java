@@ -1,11 +1,13 @@
-package com.ppdai.framework.raptor.codegen.core.swagger.swaggerobject;
+package com.ppdai.framework.raptor.codegen.core.swagger.swagger3object;
 
 /**
  * Created by zhangyicong on 18-2-27.
+ * http://swagger.io/specification/#contactObject
  */
-public class SwaggerLicenseObject {
+public class SwaggerContactObject {
     private String name;
     private String url;
+    private String email;
 
     public String getName() {
         return name;
@@ -21,5 +23,13 @@ public class SwaggerLicenseObject {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }
