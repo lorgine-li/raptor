@@ -1,4 +1,4 @@
-package com.ppdai.framework.raptor.codegen.core.message2pojos;
+package com.ppdai.framework.raptor.codegen.core.service2interface;
 
 import com.ppdai.framework.raptor.codegen.core.CodegenConfiguration;
 import org.apache.commons.io.FileUtils;
@@ -10,7 +10,7 @@ import org.junit.Test;
 
 import java.io.File;
 
-public class PojosGeneratorTest {
+public class InterfaceGeneratorTest {
 
     private static final String DEST_PATH = "./target/generated-sources/";
     private static final String SRC_PATH = "./src/test/resources/";
@@ -38,6 +38,7 @@ public class PojosGeneratorTest {
         basicConfig.setType("java");
         basicConfig.setProject(mavenProject);
         basicConfig.setExtension(".proto");
+        basicConfig.setProtocDependenciesPath(new File(""));
     }
 
     private void cleanDestFile() throws Exception {
@@ -46,13 +47,13 @@ public class PojosGeneratorTest {
     }
 
     @Test
-    public void testGeneratePojos() throws Exception {
-        PojosGenerator pojosGenerator = new PojosGenerator();
-        pojosGenerator.codegenConfigure(basicConfig);
-        pojosGenerator.generate();
+    public void testGenerateInterface() throws Exception {
+        InterfaceGenerator interfaceGenerator = new InterfaceGenerator();
+        interfaceGenerator.codegenConfigure(basicConfig);
+        interfaceGenerator.generate();
 
-        File simplePojo = new File(DEST_PATH + "com/ppdai/framework/raptor/codegen/proto/Helloworld.java");
+        File simplePojo = new File(DEST_PATH + "com/ppdai/framework/raptor/codegen/proto/Simple.java");
         Assert.assertTrue(simplePojo.exists());
-    }
 
+    }
 }
