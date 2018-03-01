@@ -1,9 +1,11 @@
 package com.ppdai.framework.raptor.refer.proxy;
 
+import com.ppdai.framework.raptor.common.ParamNameConstants;
 import com.ppdai.framework.raptor.exception.RaptorServiceException;
 import com.ppdai.framework.raptor.rpc.DefaultRequest;
 import com.ppdai.framework.raptor.rpc.Request;
 import com.ppdai.framework.raptor.rpc.RpcContext;
+import com.ppdai.framework.raptor.util.NetUtils;
 import com.ppdai.framework.raptor.util.RaptorFrameworkUtil;
 import com.ppdai.framework.raptor.util.RequestIdGenerator;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +28,7 @@ public abstract class AbstractInvocationHandler implements InvocationHandler {
             return this.invokeLocal(method, args);
         }
 
+        //TODO 将这块代码提取出来，写到builder中
         DefaultRequest request = new DefaultRequest();
         request.setRequestId(RequestIdGenerator.getRequestId());
         request.setInterfaceName(this.interfaceClass.getName());
@@ -38,6 +41,7 @@ public abstract class AbstractInvocationHandler implements InvocationHandler {
             throw new RaptorServiceException("Method arguments has more then one.");
         }
         request.setReturnType(method.getReturnType().getName());
+        request.setAttachment(ParamNameConstants.CLIENT_HOST, NetUtils.getLocalIp());
 
         RpcContext rpcContext = RpcContext.getContext();
         rpcContext.setRequest(request);

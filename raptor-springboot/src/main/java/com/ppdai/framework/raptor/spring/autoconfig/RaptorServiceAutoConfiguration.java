@@ -3,6 +3,7 @@ package com.ppdai.framework.raptor.spring.autoconfig;
 import com.ppdai.framework.raptor.common.RaptorConstants;
 import com.ppdai.framework.raptor.filter.provider.ProviderAccessLogFilter;
 import com.ppdai.framework.raptor.filter.provider.ProviderFilter;
+import com.ppdai.framework.raptor.filter.provider.ProviderMetricsFilter;
 import com.ppdai.framework.raptor.rpc.URL;
 import com.ppdai.framework.raptor.service.ProviderBuilder;
 import com.ppdai.framework.raptor.service.ServletEndpoint;
@@ -66,12 +67,19 @@ public class RaptorServiceAutoConfiguration {
 
     @Bean
     public ProviderBuilder createProviderBuilder(ObjectProvider<List<ProviderFilter>> providerFilters) {
-        return ProviderBuilder.newBuilder().addFilters(providerFilters.getIfAvailable());
+        List<ProviderFilter> providerFilterList = providerFilters.getIfAvailable();
+        return ProviderBuilder.newBuilder().addFilters(providerFilterList);
     }
 
     @Bean
     @ConditionalOnProperty(name = "raptor.provider.filter.accessLog", havingValue = "true", matchIfMissing = true)
-    public ProviderAccessLogFilter createAccessLogFilter() {
+    public ProviderAccessLogFilter createProviderAccessLogFilter() {
         return new ProviderAccessLogFilter();
+    }
+
+    @Bean
+    @ConditionalOnProperty(name = "raptor.provider.filter.metrics", havingValue = "true", matchIfMissing = true)
+    public ProviderMetricsFilter createProviderMetricFilter() {
+        return new ProviderMetricsFilter();
     }
 }

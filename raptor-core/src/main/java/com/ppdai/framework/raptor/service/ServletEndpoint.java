@@ -1,5 +1,6 @@
 package com.ppdai.framework.raptor.service;
 
+import com.ppdai.framework.raptor.common.ParamNameConstants;
 import com.ppdai.framework.raptor.common.RaptorConstants;
 import com.ppdai.framework.raptor.common.URLParamType;
 import com.ppdai.framework.raptor.exception.RaptorFrameworkException;
@@ -163,29 +164,31 @@ public class ServletEndpoint extends HttpServlet implements Endpoint {
     }
 
     //TODO 将序列化逻辑放到provider中
-    protected void transportResponse(Request request, Response response, HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
+    protected void transportResponse(Request request, Response response, HttpServletRequest httpRequest, HttpServletResponse httpResponse) throws IOException {
         httpResponse.setStatus(RaptorConstants.HTTP_OK);
+        Serialization serialization = this.getSerialization(httpRequest);
+        byte[] data = serialization.serialize(response.getValue());
         try (OutputStream out = httpResponse.getOutputStream()) {
-            Serialization serialization = this.getSerialization(httpRequest);
-            byte[] data = serialization.serialize(response.getValue());
             out.write(data);
             out.flush();
         } catch (IOException e) {
-            log.error("write response error.request: {}", request, e);
+            log.error("write response error. request: {}", request, e);
+            throw e;
         }
     }
 
-    protected void transportException(Exception e, Request request, HttpServletResponse httpServletResponse) {
+    protected void transportException(Exception exception, Request request, HttpServletResponse httpServletResponse) throws IOException {
         httpServletResponse.setStatus(RaptorConstants.HTTP_EXPECTATION_FAILED);
-        httpServletResponse.setHeader(URLParamType.exceptionClassHeader.getName(), e.getClass().getName());
+        httpServletResponse.setHeader(URLParamType.exceptionClassHeader.getName(), exception.getClass().getName());
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        exception.printStackTrace(new PrintStream(baos));
+        byte[] data = baos.toByteArray();
         try (OutputStream out = httpServletResponse.getOutputStream()) {
-            e.printStackTrace(new PrintStream(baos));
-            byte[] data = baos.toByteArray();
             out.write(data);
             out.flush();
-        } catch (Exception e1) {
-            log.error("write response error.request: {}", request, e);
+        } catch (IOException e) {
+            log.error("write response error. request: {}", request, e);
+            throw e;
         }
     }
 

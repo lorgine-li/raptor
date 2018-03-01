@@ -37,10 +37,6 @@ public abstract class AbstractAccessLogFilter extends AbstractFilter {
         append(builder, getAppId());
         //requestId
         append(builder, request.getRequestId());
-        //request payload size
-        append(builder, getRequestPayloadSize(request));
-        //response payload size
-        append(builder, getResponsePayloadSize(response));
         //status code
         append(builder, getStatusCode(response));
         //requestTime

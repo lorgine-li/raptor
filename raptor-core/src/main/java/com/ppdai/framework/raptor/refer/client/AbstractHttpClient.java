@@ -1,5 +1,6 @@
 package com.ppdai.framework.raptor.refer.client;
 
+import com.ppdai.framework.raptor.common.ParamNameConstants;
 import com.ppdai.framework.raptor.common.RaptorConstants;
 import com.ppdai.framework.raptor.common.RaptorMessageConstant;
 import com.ppdai.framework.raptor.common.URLParamType;
@@ -157,20 +158,17 @@ public abstract class AbstractHttpClient implements Client {
 
     protected String getSerializationType(Request request, URL serviceUrl) {
         String key = URLParamType.serialization.getName();
+        // serializationType获取顺序 request.getAttachments > RpcContext > serviceUrl > URLParamType.serialization
         String serializationType = request.getAttachments().get(key);
-        serializationType = StringUtils.isNotBlank(serializationType) ? serializationType : RpcContext.getContext().getRpcAttachment(key);
-        serializationType = StringUtils.isNotBlank(serializationType) ? serializationType : serviceUrl.getParameter(key);
-        serializationType = StringUtils.isNotBlank(serializationType) ? serializationType : URLParamType.serialization.getValue();
+        serializationType = StringUtils.isBlank(serializationType) ? RpcContext.getContext().getRpcAttachment(key) : serializationType;
+        serializationType = StringUtils.isBlank(serializationType) ? serviceUrl.getParameter(key) : serializationType;
+        serializationType = StringUtils.isBlank(serializationType) ? URLParamType.serialization.getValue() : serializationType;
         return serializationType;
     }
 
     protected byte[] buildContent(Request request, URL serviceUrl) {
-        try {
-            Serialization serialization = this.buildSerialization(request);
-            return serialization.serialize(request.getArgument());
-        } catch (IOException e) {
-            throw new RaptorServiceException("Can not serialize request Argument: " + request.getArgument(), e);
-        }
+        Serialization serialization = this.buildSerialization(request);
+        return serialization.serialize(request.getArgument());
     }
 
     protected Serialization buildSerialization(Request request) {

@@ -1,5 +1,8 @@
 package com.ppdai.framework.raptor.spring.integration;
 
+import com.codahale.metrics.ConsoleReporter;
+import com.codahale.metrics.MetricRegistry;
+import com.ppdai.framework.raptor.metric.MetricContext;
 import com.ppdai.framework.raptor.proto.Helloworld;
 import com.ppdai.framework.raptor.proto.Simple;
 import com.ppdai.framework.raptor.spring.annotation.RaptorClient;
@@ -28,5 +31,9 @@ public class IntegrationTest {
         Helloworld.HelloReply reply = simple1.sayHello(helloRequest);
         System.out.println(reply);
         Assert.assertTrue(StringUtils.startsWith(reply.getMessage(), "Hello ppdai"));
+
+        MetricRegistry metricRegistry = MetricContext.getMetricRegistry();
+        ConsoleReporter consoleReporter = ConsoleReporter.forRegistry(metricRegistry).build();
+        consoleReporter.report();
     }
 }

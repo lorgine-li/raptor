@@ -5,7 +5,6 @@ import com.ppdai.framework.raptor.proto.Simple;
 import com.ppdai.framework.raptor.proto.SimpleImpl;
 import com.ppdai.framework.raptor.refer.ReferProxyBuilder;
 import com.ppdai.framework.raptor.rpc.URL;
-import com.ppdai.framework.raptor.service.JettyServletEndpoint;
 import com.ppdai.framework.raptor.service.Provider;
 import com.ppdai.framework.raptor.service.ProviderBuilder;
 import lombok.extern.slf4j.Slf4j;
@@ -17,31 +16,10 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
 @Slf4j
-public class RpcIntegrationTest {
-
-    private JettyServletEndpoint servletEndpoint;
-
-    @Before
-    public void setUp() throws Exception {
-        // 生成servlet
-        URL baseUrl = URL.builder()
-                .port(8080)
-                .path("/raptor")
-                .build();
-        servletEndpoint = new JettyServletEndpoint(baseUrl);
-        servletEndpoint.start();
-    }
-
-    @After
-    public void tearDown() throws Exception {
-        servletEndpoint.stop();
-    }
+public class RpcIntegrationTest extends RpcTestBase {
 
     @Test
     public void testServer() throws Exception {
@@ -57,7 +35,7 @@ public class RpcIntegrationTest {
         //启动服务端
         testServer();
 
-        // 访求测试
+        // 请求测试
         CloseableHttpClient httpclient = HttpClients.createDefault();
         HttpPost post = new HttpPost("http://localhost:8080/raptor/com.ppdai.framework.raptor.proto.Simple/sayHello");
         String req = "{\"name\":\"ppdai\"}";
@@ -79,13 +57,7 @@ public class RpcIntegrationTest {
         Simple proxy = ReferProxyBuilder.newBuilder().build(Simple.class, URL.valueOf(url));
 
         Helloworld.HelloRequest helloRequest = Helloworld.HelloRequest.newBuilder().setName("ppdai").build();
-        try {
-            Helloworld.HelloReply helloReply = proxy.sayHello(helloRequest);
-            System.out.println(helloReply);
-        } catch (Exception e) {
-            e.printStackTrace();
-            Assert.fail();
-        }
-
+        Helloworld.HelloReply helloReply = proxy.sayHello(helloRequest);
+        System.out.println(helloReply);
     }
 }

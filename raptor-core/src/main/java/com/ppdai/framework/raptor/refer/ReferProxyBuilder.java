@@ -28,7 +28,7 @@ public class ReferProxyBuilder {
         }
         Refer<T> refer = new DefaultRefer<>(interfaceClass, client, url);
 
-        if (CollectionUtils.isEmpty(filterList)) {
+        if (!CollectionUtils.isEmpty(filterList)) {
             ReferFilterDecorator decorator = new ReferFilterDecorator(filterList);
             refer = decorator.decorate(refer);
         }

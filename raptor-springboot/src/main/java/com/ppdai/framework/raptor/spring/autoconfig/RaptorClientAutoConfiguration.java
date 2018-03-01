@@ -1,6 +1,8 @@
 package com.ppdai.framework.raptor.spring.autoconfig;
 
+import com.ppdai.framework.raptor.filter.refer.ReferAccessLogFilter;
 import com.ppdai.framework.raptor.filter.refer.ReferFilter;
+import com.ppdai.framework.raptor.filter.refer.ReferMetricsFilter;
 import com.ppdai.framework.raptor.refer.ReferProxyBuilder;
 import com.ppdai.framework.raptor.refer.client.ApacheHttpClient;
 import com.ppdai.framework.raptor.refer.client.Client;
@@ -52,7 +54,8 @@ public class RaptorClientAutoConfiguration implements EnvironmentAware {
 
     @Bean
     public ReferProxyBuilder createReferProxyBuilder(Client client, ObjectProvider<List<ReferFilter>> referFilters) {
-        return ReferProxyBuilder.newBuilder().addFilters(referFilters.getIfAvailable()).client(client);
+        List<ReferFilter> referFilterList = referFilters.getIfAvailable();
+        return ReferProxyBuilder.newBuilder().addFilters(referFilterList).client(client);
     }
 
     @Bean
@@ -63,5 +66,17 @@ public class RaptorClientAutoConfiguration implements EnvironmentAware {
     @Override
     public void setEnvironment(Environment environment) {
         this.environment = environment;
+    }
+
+    @Bean
+    @ConditionalOnProperty(name = "raptor.refer.filter.accessLog", havingValue = "true", matchIfMissing = true)
+    public ReferAccessLogFilter createReferAccessLogFilter() {
+        return new ReferAccessLogFilter();
+    }
+
+    @Bean
+    @ConditionalOnProperty(name = "raptor.refer.filter.metrics", havingValue = "true", matchIfMissing = true)
+    public ReferMetricsFilter createReferMetricFilter() {
+        return new ReferMetricsFilter();
     }
 }

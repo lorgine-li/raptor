@@ -1,9 +1,7 @@
 package com.ppdai.framework.raptor.filter;
 
 import com.ppdai.framework.raptor.filter.provider.ProviderAccessLogFilter;
-import com.ppdai.framework.raptor.rpc.Request;
-import com.ppdai.framework.raptor.rpc.Response;
-import com.ppdai.framework.raptor.rpc.URL;
+import com.ppdai.framework.raptor.rpc.*;
 import com.ppdai.framework.raptor.service.Provider;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -26,16 +24,19 @@ public class ProviderAccessLogFilterTest {
 
     @Test
     public void testFilter() {
-        Logger logger = mock(Logger.class);
-        ProviderAccessLogFilter filter = new ProviderAccessLogFilter();
-        filter.setLogger(logger);
 
-        Request request = mock(Request.class);
-        Response response = mock(Response.class);
+        //TODO 构造真实的request、response
+        Request request = new DefaultRequest();
+        Response response = new DefaultResponse();
 
         Provider provider = mock(Provider.class);
         when(provider.getServiceUrl()).thenReturn(URL.valueOf("http://localhost:8080/raptor/com.ppdai.test.Simple"));
         when(provider.call(request)).thenReturn(response);
+
+        Logger logger = mock(Logger.class);
+
+        ProviderAccessLogFilter filter = new ProviderAccessLogFilter();
+        filter.setLogger(logger);
 
         filter.filter(provider, request);
 

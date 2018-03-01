@@ -1,11 +1,13 @@
 package com.ppdai.framework.raptor.service;
 
+import com.ppdai.framework.raptor.common.ParamNameConstants;
 import com.ppdai.framework.raptor.common.RaptorMessageConstant;
 import com.ppdai.framework.raptor.exception.RaptorBizException;
 import com.ppdai.framework.raptor.exception.RaptorServiceException;
 import com.ppdai.framework.raptor.rpc.DefaultResponse;
 import com.ppdai.framework.raptor.rpc.Request;
 import com.ppdai.framework.raptor.rpc.Response;
+import com.ppdai.framework.raptor.util.NetUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Method;
@@ -20,6 +22,7 @@ public class DefaultProvider<T> extends AbstractProvider<T> {
     @Override
     protected Response invoke(Request request) {
         DefaultResponse response = new DefaultResponse();
+        response.setAttachment(ParamNameConstants.SERVER_HOST, NetUtils.getLocalIp());
         Method method = lookupMethod(request.getMethodName(), null);
         if (method == null) {
             RaptorServiceException exception =

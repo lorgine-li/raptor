@@ -21,8 +21,6 @@ public abstract class AbstractMetricFilter extends AbstractFilter {
     public static final String concurrenceHistogramName = RaptorInfo.getInstance().getMetricPrefix() + ".concurrenceHistogram";
     public static final String timeName = RaptorInfo.getInstance().getMetricPrefix() + ".time";
     public static final String countName = RaptorInfo.getInstance().getMetricPrefix() + ".count";
-    public static final String requestPayloadName = RaptorInfo.getInstance().getMetricPrefix() + ".payload.request";
-    public static final String responsePayloadName = RaptorInfo.getInstance().getMetricPrefix() + ".payload.response";
 
     protected MetricRegistry metricRegistry = MetricContext.getMetricRegistry();
 
@@ -45,7 +43,6 @@ public abstract class AbstractMetricFilter extends AbstractFilter {
             concurrenceHistogram.update(concurrenceCounter.getCount());
             time(serviceUrl, request, response, requestTime);
             count(serviceUrl, request, response);
-            payload(serviceUrl, request, response);
         }
     }
 
@@ -75,22 +72,6 @@ public abstract class AbstractMetricFilter extends AbstractFilter {
         TagName tagName = tagAll(countName, serviceUrl, request, response);
         Counter counter = metricRegistry.counter(tagName.toString());
         counter.inc();
-    }
-
-    protected void payload(URL serviceUrl, Request request, Response response) {
-        Long requestPayload = getRequestPayloadSize(request);
-        if (requestPayload != null) {
-            TagName tagName = tagAll(requestPayloadName, serviceUrl, request, response);
-            Histogram requestPayloadHistogram = metricRegistry.histogram(tagName.toString());
-            requestPayloadHistogram.update(requestPayload);
-        }
-
-        Long responsePayload = getResponsePayloadSize(response);
-        if (responsePayload != null) {
-            TagName tagName = tagAll(responsePayloadName, serviceUrl, request, response);
-            Histogram responsePayloadHistogram = metricRegistry.histogram(tagName.toString());
-            responsePayloadHistogram.update(responsePayload);
-        }
     }
 
     protected TagName tagAll(String name, URL serviceUrl, Request request, Response response) {
