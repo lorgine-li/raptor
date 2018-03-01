@@ -12,9 +12,9 @@
     <artifactId>raptor-codegen</artifactId>
     <packaging>pom</packaging>
     <modules>
-        <module>raptor-codegen-cli</module>
         <module>raptor-codegen-core</module>
         <module>raptor-codegen-maven</module>
+        <module>raptor-codegen-cli</module>
     </modules>
 
 
