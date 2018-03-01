@@ -1,5 +1,6 @@
 package com.ppdai.framework.raptor.spring.server;
 
+import com.ppdai.framework.raptor.spring.TestApplication;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.entity.EntityBuilder;
@@ -19,7 +20,7 @@ import org.springframework.test.context.junit4.SpringRunner;
  * 测试只接入服务端
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = ServerApplication.class, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@SpringBootTest(classes = TestApplication.class, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class ServerTest {
 
     @Test
