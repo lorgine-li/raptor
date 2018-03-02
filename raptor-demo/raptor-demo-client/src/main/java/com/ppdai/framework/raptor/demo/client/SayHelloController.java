@@ -26,7 +26,6 @@ public class SayHelloController {
                 .addSnippets("snippets1")
                 .addCats(Helloworld.Cat.newBuilder().setColor("black").build())
                 .setResult(Helloworld.HelloRequest.Result.newBuilder().setCorpus(Helloworld.HelloRequest.Result.Corpus.IMAGES).build())
-                .setTbytes(ByteString.copyFromUtf8("张轶丛"))
                 .setTDouble(1.01)
                 .setTFloat(1.02f)
                 .setTfixed32(23)
