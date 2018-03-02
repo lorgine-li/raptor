@@ -8,6 +8,7 @@ import com.google.protobuf.DescriptorProtos;
 public class FieldType {
     private String name;
     private String typeName;
+    private String message;
     private DescriptorProtos.FieldDescriptorProto.Label label;
     private DescriptorProtos.FieldDescriptorProto.Type type;
 
@@ -25,6 +26,14 @@ public class FieldType {
 
     public void setTypeName(String typeName) {
         this.typeName = typeName;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     public DescriptorProtos.FieldDescriptorProto.Label getLabel() {

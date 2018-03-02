@@ -4,6 +4,7 @@ package com.ppdai.framework.raptor.proto;
 
 import "common/Result.proto";
 import "google/protobuf/timestamp.proto";
+import "google/protobuf/struct.proto";
 
 service Simple {
     rpc sayHello (HelloRequest) returns (HelloReply) {
@@ -53,6 +54,9 @@ message HelloRequest {
     bytes tbytes = 18;
     bool tbool = 19;
     google.protobuf.Timestamp time = 20;
+    google.protobuf.Struct struct = 21;
+    google.protobuf.Value value = 22;
+    google.protobuf.ListValue listValue = 23;
 }
 
 message HelloReply {

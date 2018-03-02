@@ -37,6 +37,10 @@ public class SimpleImpl implements Simple {
                 + "sfixed64: " + request.getTsfixed64() + ", "
                 + "unit32: " + request.getTunit32() + ", "
                 + "unit64: " + request.getTunit64() + ", "
+                + "Timestamp: " + request.getTime()
+                + "Struct: " + request.getStruct()
+                + "Value: " + request.getValue()
+                + "ListValue: " + request.getListValue()
                 + ". " + RandomUtils.nextInt();
 
         LOGGER.info("request: {}", hello);

@@ -21,13 +21,7 @@ public class DefaultSwaggerGen {
     public void generate() throws Exception {
         logger.info(">>>>>>>>>>>>>>>  DefaultSwaggerGen Starts to work.");
 
-        try {
-
-            new JsonApiDefinitionGenerator(configuration)
-                    .generate();
-
-        } catch (Exception e) {
-            logger.error("Error happens for DefaultSwaggerGen", e);
-        }
+        new JsonApiDefinitionGenerator(configuration)
+                .generate();
     }
 }

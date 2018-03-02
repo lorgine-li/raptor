@@ -7,6 +7,17 @@ public class TypeFormat {
     private String type;
     private String format;
     private String ref;
+    private Object additionalProperties;
+
+    public TypeFormat() {
+
+    }
+    public TypeFormat(String type, String format, String ref, Object additionalProperties) {
+        this.type = type;
+        this.format = format;
+        this.ref = ref;
+        this.additionalProperties = additionalProperties;
+    }
 
     public String getType() {
         return type;
@@ -30,5 +41,13 @@ public class TypeFormat {
 
     public void setRef(String ref) {
         this.ref = ref;
+    }
+
+    public Object getAdditionalProperties() {
+        return additionalProperties;
+    }
+
+    public void setAdditionalProperties(Object additionalProperties) {
+        this.additionalProperties = additionalProperties;
     }
 }

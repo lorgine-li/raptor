@@ -1,6 +1,6 @@
 package com.ppdai.framework.raptor.demo.client;
 
-import com.google.protobuf.ByteString;
+import com.google.protobuf.*;
 import com.ppdai.framework.raptor.proto.Helloworld;
 import com.ppdai.framework.raptor.proto.Simple;
 import com.ppdai.framework.raptor.spring.annotation.RaptorClient;
@@ -37,6 +37,10 @@ public class SayHelloController {
                 .setTunit32(123)
                 .setTunit64(323213232133223l)
                 .setTbool(true)
+                .setTime(Timestamp.newBuilder().setSeconds(1519972928).setNanos(444000000).build())
+                .setStruct(Struct.newBuilder().putFields("key1", Value.newBuilder().setBoolValue(true).build()).build())
+                .setValue(Value.newBuilder().setNumberValue(3.1415926).build())
+                .setListValue(ListValue.newBuilder().addValues(Value.newBuilder().setNumberValue(3.1415926).build()).build())
                 .build();
 
         Helloworld.HelloReply helloReply = simple.sayHello(helloRequest);

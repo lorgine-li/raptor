@@ -3,6 +3,7 @@ package com.ppdai.framework.raptor.codegen.core.swagger.tool;
 import com.google.protobuf.DescriptorProtos;
 import com.ppdai.framework.raptor.codegen.core.swagger.container.EnumContainer;
 import com.ppdai.framework.raptor.codegen.core.swagger.container.MessageContainer;
+import com.ppdai.framework.raptor.codegen.core.swagger.container.MetaContainer;
 import com.ppdai.framework.raptor.codegen.core.swagger.container.ServiceContainer;
 
 import java.util.HashMap;
@@ -14,19 +15,18 @@ import java.util.Map;
  */
 public class ContainerUtil {
 
-    private static Map<String, EnumContainer> enumContainerMap = new HashMap<>();
-    private static Map<String, MessageContainer> messageContainerMap = new HashMap<>();
-
     /**
      * 提取enum类型
      * @param fdp
      * @return
      */
-    public static EnumContainer getEnumContainer(DescriptorProtos.FileDescriptorProto fdp) {
-        EnumContainer enumContainer = enumContainerMap.get(fdp.getPackage());
+    public static EnumContainer getEnums(DescriptorProtos.FileDescriptorProto fdp,
+                                         MetaContainer metaContainer) {
+
+        EnumContainer enumContainer = metaContainer.getEnumContainerMap().get(fdp.getPackage());
         if (enumContainer == null) {
             enumContainer = new EnumContainer(fdp.getPackage());
-            enumContainerMap.put(fdp.getPackage(), enumContainer);
+            metaContainer.getEnumContainerMap().put(fdp.getPackage(), enumContainer);
         }
 
         for (DescriptorProtos.EnumDescriptorProto edp : fdp.getEnumTypeList()) {
@@ -64,11 +64,13 @@ public class ContainerUtil {
      * @param fdp
      * @return
      */
-    public static MessageContainer getMessageContainer(DescriptorProtos.FileDescriptorProto fdp) {
-        MessageContainer messageContainer = messageContainerMap.get(fdp.getPackage());
+    public static MessageContainer getMessages(DescriptorProtos.FileDescriptorProto fdp,
+                                               MetaContainer metaContainer) {
+
+        MessageContainer messageContainer = metaContainer.getMessageContainerMap().get(fdp.getPackage());
         if (messageContainer == null) {
             messageContainer = new MessageContainer(fdp.getPackage());
-            messageContainerMap.put(fdp.getPackage(), messageContainer);
+            metaContainer.getMessageContainerMap().put(fdp.getPackage(), messageContainer);
         }
 
         addMessageProto(messageContainer, null, fdp.getMessageTypeList());

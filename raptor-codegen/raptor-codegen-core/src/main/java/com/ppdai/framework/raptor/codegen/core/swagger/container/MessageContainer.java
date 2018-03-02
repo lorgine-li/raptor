@@ -36,6 +36,7 @@ public class MessageContainer {
             fieldType.setLabel(ffdp.getLabel());
             fieldType.setTypeName(ffdp.getTypeName().replaceAll("^\\.", "")
                     .replace(packageName + ".", ""));
+            fieldType.setMessage(messageType.getFQPN());
             fieldTypeMap.put(fieldType.getName(), fieldType);
         }
 

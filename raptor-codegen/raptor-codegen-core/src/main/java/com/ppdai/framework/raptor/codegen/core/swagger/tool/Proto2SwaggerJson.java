@@ -1,17 +1,16 @@
 package com.ppdai.framework.raptor.codegen.core.swagger.tool;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.protobuf.DescriptorProtos;
+import com.ppdai.framework.raptor.codegen.core.swagger.container.MetaContainer;
 import com.ppdai.framework.raptor.codegen.core.swagger.template.Swagger2Template;
 import com.ppdai.framework.raptor.codegen.core.swagger.template.Swagger3Template;
-import com.ppdai.framework.raptor.codegen.core.swagger.swagger3object.SwaggerObject;
 import com.ppdai.framework.raptor.codegen.core.swagger.template.SwaggerTemplate;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.IOException;
 
 /**
  * Created by zhangyicong on 18-2-27.
@@ -61,7 +60,7 @@ public class Proto2SwaggerJson {
                 generatePath, protocDependenciesPath, swaggerVersion, apiVersion);
     }
 
-    public void generateFile(String protoPath) {
+    public void generateFile(String protoPath) throws IOException {
         logger.info("    Processing : " + protoPath);
 
         if (!new File(protoPath).exists()) {
@@ -71,18 +70,20 @@ public class Proto2SwaggerJson {
 
         DescriptorProtos.FileDescriptorSet fileDescriptorSet = commandProtoc.invoke(protoPath);
 
+        MetaContainer metaContainer = new MetaContainer();
+
         for (DescriptorProtos.FileDescriptorProto fdp : fileDescriptorSet.getFileList()) {
             //No service has been defined.
             if (fdp.getServiceCount() == 0) {
                 logger.info(fdp.getName() + " seems to has no Service defined.");
                 // 解析enum和message到container
-                ContainerUtil.getEnumContainer(fdp);
-                ContainerUtil.getMessageContainer(fdp);
+                ContainerUtil.getEnums(fdp, metaContainer);
+                ContainerUtil.getMessages(fdp, metaContainer);
                 continue;
             }
 
             try {
-                String json = swaggerTemplate.applyTemplate(fdp, apiVersion);
+                String json = swaggerTemplate.applyTemplate(fdp, metaContainer, apiVersion);
                 File apiFile = new File(generatePath + File.separatorChar + fdp.getName() + ".json");
                 if (apiFile.exists()) {
                     apiFile.delete();
@@ -92,7 +93,7 @@ public class Proto2SwaggerJson {
                 //logger.info("Swagger API: {}", mapper.writeValueAsString(swaggerObject));
                 logger.info("Generate Swagger API file: {}", apiFile);
             } catch (Exception e) {
-                e.printStackTrace();
+                throw e;
             }
         }
     }
