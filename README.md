@@ -18,6 +18,7 @@ raptor是一套高性能、易于使用的分布式远程服务调用(RPC)框架
 
 
 ## 简单调用示例
+
 1. 编写protobuf接口调用的契约IDL，命名为helloworld.proto
 
     ```proto
@@ -116,39 +117,12 @@ raptor是一套高性能、易于使用的分布式远程服务调用(RPC)框架
         System.out.println(helloReply);
     }
     ```
+    
 ## spring boot 集成示例
-1. 编写protobuf接口调用的契约IDL，命名为helloworld.proto
 
-    ```proto
-    syntax = "proto3";
-    
-    package com.ppdai.framework.raptor.proto;
-    service Simple {
-        rpc sayHello (HelloRequest) returns (HelloReply) {
-        }
-    }
-    
-    message HelloRequest {
-        string name = 1;
-    }
-    
-    message HelloReply {
-        string message = 1;
-    }
-    
-    ```
+1. 参考简单调用示例完成proto文件生成和maven插件生成
 
-2. 通过raptor-codegen-cli生成maven工程
-
-    在上一步编写的helloworld.proto文件目录下，执行命令：
-    ```cmd
-    java -jar raptor-codegen-cli-VERSION.jar -i ./ -o ./
-    ```
-    执行成功后，会在当前目录下生成一个名为demo-project的maven工程，并将当前目录下所有的proto文件copy到maven工程的src/main/proto。
-    
-    可以根据需要修改demo-project pom中的的相关配置。
-
-3. 增加maven依赖
+2. 增加maven依赖
 
     分别在服务端和客户端的spring boot maven工程中添加依赖
     ```xml
@@ -167,7 +141,7 @@ raptor是一套高性能、易于使用的分布式远程服务调用(RPC)框架
 
     ```
 
-4. 服务端实现
+3. 服务端实现
 
     新建java类SimpleImpl实现api中的接口Simple，并使用注解@RaptorService注册spring bean和发布raptor服务
     
@@ -184,14 +158,15 @@ raptor是一套高性能、易于使用的分布式远程服务调用(RPC)框架
     }
     ```
     
-5. 修改服务端spring boot配置
+4. 修改服务端spring boot配置
 
     修改配置文件application.properties，设置启动端口
+    
     ```properties
     server.port=8080
     ```
     
-6. 客户端实现
+5. 客户端实现
 
     在spring bean中使用@RaptorClient注解接口的Field，自动注入代理
     
@@ -215,17 +190,17 @@ raptor是一套高性能、易于使用的分布式远程服务调用(RPC)框架
     ```
     客户端构造proto的Message对象，通过接口代理直接调用远程服务
 
-7. 修改客户端端spring boot配置
+6. 修改客户端端spring boot配置
 
     修改application.properties文件，修改启动端口，增加Simple接口的url地址配置
+ 
     ```properties
     server.port=8081
-    
     raptor.url.com.ppdai.framework.raptor.proto.Simple=http://localhost:8080
     ```
     raptor.url.xxx.yyy 为接口xxx.yyy的url地址
     
-8. 测试验证
+7. 测试验证
 
     启动服务端客户端spring boot应用，输入地址测试
 
