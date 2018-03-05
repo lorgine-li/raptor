@@ -31,6 +31,8 @@ public class Proto2SwaggerJson {
 
     private final SwaggerTemplate swaggerTemplate;
 
+    private final MetaContainer metaContainer = new MetaContainer();
+
     private Proto2SwaggerJson(String discoveryRoot,
                               String generatePath,
                               final File protocDependenciesPath,
@@ -70,9 +72,8 @@ public class Proto2SwaggerJson {
 
         DescriptorProtos.FileDescriptorSet fileDescriptorSet = commandProtoc.invoke(protoPath);
 
-        MetaContainer metaContainer = new MetaContainer();
-
         for (DescriptorProtos.FileDescriptorProto fdp : fileDescriptorSet.getFileList()) {
+
             //No service has been defined.
             if (fdp.getServiceCount() == 0) {
                 logger.info(fdp.getName() + " seems to has no Service defined.");

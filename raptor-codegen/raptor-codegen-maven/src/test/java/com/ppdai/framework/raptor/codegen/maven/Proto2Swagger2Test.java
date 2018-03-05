@@ -1,5 +1,6 @@
 package com.ppdai.framework.raptor.codegen.maven;
 
+import junitx.framework.FileAssert;
 import org.apache.maven.plugin.testing.AbstractMojoTestCase;
 import org.junit.Test;
 
@@ -29,5 +30,21 @@ public class Proto2Swagger2Test extends AbstractMojoTestCase {
         setVariableValueToObject(mojo, "extension", ".proto");
         setVariableValueToObject(mojo, "protocDependenciesPath", new File( getBasedir(), "target/protoc-dependencies" ));
         mojo.execute();
+
+        File hellowordSwaggerGen = new File(getBasedir(), "target/generated-sources/helloworld.proto.json");
+        assertTrue(hellowordSwaggerGen.exists());
+
+        File simpleSwaggerGen = new File(getBasedir(), "target/generated-sources/simple.proto.json");
+        assertTrue(simpleSwaggerGen.exists());
+
+        File hellowordSwaggerCorrect = new File(getBasedir(), "src/test/resources/helloworld.proto.json");
+        assertTrue(hellowordSwaggerCorrect.exists());
+
+        FileAssert.assertEquals(hellowordSwaggerCorrect, hellowordSwaggerGen);
+
+        File simpleSwaggerCorrect = new File(getBasedir(), "src/test/resources/simple.proto.json");
+        assertTrue(simpleSwaggerCorrect.exists());
+
+        FileAssert.assertEquals(simpleSwaggerCorrect, simpleSwaggerGen);
     }
 }

@@ -26,7 +26,7 @@ public class SimpleImpl implements Simple {
                 + "cats: " + request.getCats(0) + ", "
                 + "result: " + request.getResult() + ", "
                 + "bool: " + request.getTbool() + ", "
-                //+ "bytes: " + request.getTbytes().toStringUtf8() + ", "
+                + "bytes: " + request.getTbytes().toStringUtf8() + ", "
                 + "double: " + request.getTDouble() + ", "
                 + "fixed32: " + request.getTfixed32() + ", "
                 + "fixed64: " + request.getTfixed64() + ", "
@@ -41,6 +41,7 @@ public class SimpleImpl implements Simple {
                 + "Struct: " + request.getStruct()
                 + "Value: " + request.getValue()
                 + "ListValue: " + request.getListValue()
+                + "Duration: " + request.getDuration()
                 + ". " + RandomUtils.nextInt();
 
         LOGGER.info("request: {}", hello);

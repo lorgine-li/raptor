@@ -1,0 +1,213 @@
+{
+  "swagger" : "2.0",
+  "info" : {
+    "title" : "helloworld.proto",
+    "version" : "version not set"
+  },
+  "schemes" : [ "http" ],
+  "paths" : {
+    "/raptor/com.ppdai.framework.raptor.proto.Simple/sayHello" : {
+      "post" : {
+        "summary" : "",
+        "description" : "",
+        "operationId" : "sayHello",
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/HelloReply"
+            }
+          }
+        },
+        "parameters" : [ {
+          "name" : "body",
+          "description" : "",
+          "in" : "body",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/HelloRequest"
+          }
+        } ],
+        "deprecated" : false
+      }
+    }
+  },
+  "definitions" : {
+    "HelloRequest" : {
+      "type" : "object",
+      "properties" : {
+        "name" : {
+          "type" : "string",
+          "format" : ""
+        },
+        "corpus" : {
+          "$ref" : "#/definitions/HelloRequest.Corpus"
+        },
+        "snippets" : {
+          "type" : "array",
+          "items" : {
+            "type" : "string",
+            "format" : ""
+          }
+        },
+        "cats" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Cat"
+          }
+        },
+        "result" : {
+          "$ref" : "#/definitions/HelloRequest.Result"
+        },
+        "tDouble" : {
+          "type" : "number",
+          "format" : "double"
+        },
+        "tFloat" : {
+          "type" : "number",
+          "format" : "float"
+        },
+        "tint32" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "tint64" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "tunit32" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "tunit64" : {
+          "type" : "string",
+          "format" : "uint64"
+        },
+        "tsint32" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "tsint64" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "tfixed32" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "tfixed64" : {
+          "type" : "string",
+          "format" : "uint64"
+        },
+        "tsfixed32" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "tsfixed64" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "tbytes" : {
+          "type" : "string",
+          "format" : "byte"
+        },
+        "tbool" : {
+          "type" : "boolean",
+          "format" : "boolean"
+        },
+        "time" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "struct" : {
+          "type" : "object",
+          "additionalProperties" : true
+        },
+        "value" : {
+          "type" : "object",
+          "additionalProperties" : true
+        },
+        "listValue" : {
+          "type" : "array",
+          "items" : {
+            "type" : "object",
+            "additionalProperties" : true
+          }
+        },
+        "duration" : {
+          "type" : "string",
+          "format" : ""
+        }
+      }
+    },
+    "HelloReply" : {
+      "type" : "object",
+      "properties" : {
+        "message" : {
+          "type" : "string",
+          "format" : ""
+        },
+        "corpus" : {
+          "$ref" : "#/definitions/HelloRequest.Corpus"
+        },
+        "results" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Result"
+          }
+        }
+      }
+    },
+    "Result" : {
+      "type" : "object",
+      "properties" : {
+        "url" : {
+          "type" : "string",
+          "format" : ""
+        },
+        "title" : {
+          "type" : "string",
+          "format" : ""
+        },
+        "snippets" : {
+          "type" : "array",
+          "items" : {
+            "type" : "string",
+            "format" : ""
+          }
+        }
+      }
+    },
+    "HelloRequest.Result" : {
+      "type" : "object",
+      "properties" : {
+        "url" : {
+          "type" : "string",
+          "format" : ""
+        },
+        "corpus" : {
+          "$ref" : "#/definitions/HelloRequest.Result.Corpus"
+        }
+      }
+    },
+    "Cat" : {
+      "type" : "object",
+      "properties" : {
+        "color" : {
+          "type" : "string",
+          "format" : ""
+        }
+      }
+    },
+    "HelloRequest.Corpus" : {
+      "type" : "string",
+      "enum" : [ "UNIVERSAL", "WEB", "IMAGES", "LOCAL", "NEWS", "PRODUCTS", "VIDEO" ]
+    },
+    "HelloRequest.Result.Corpus" : {
+      "type" : "string",
+      "enum" : [ "UNIVERSAL", "WEB", "IMAGES", "LOCAL", "NEWS", "PRODUCTS", "VIDEO" ]
+    }
+  }
+}

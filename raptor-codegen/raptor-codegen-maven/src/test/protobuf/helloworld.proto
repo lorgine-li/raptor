@@ -5,6 +5,7 @@ package com.ppdai.framework.raptor.proto;
 import "common/Result.proto";
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/struct.proto";
+import "google/protobuf/duration.proto";
 
 service Simple {
     rpc sayHello (HelloRequest) returns (HelloReply) {
@@ -12,6 +13,7 @@ service Simple {
 }
 
 message HelloRequest {
+    // hello name
     string name = 1;
     enum Corpus {
         UNIVERSAL = 0;
@@ -57,6 +59,7 @@ message HelloRequest {
     google.protobuf.Struct struct = 21;
     google.protobuf.Value value = 22;
     google.protobuf.ListValue listValue = 23;
+    google.protobuf.Duration duration = 24;
 }
 
 message HelloReply {

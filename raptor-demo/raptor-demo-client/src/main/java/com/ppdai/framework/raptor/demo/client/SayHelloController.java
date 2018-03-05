@@ -26,6 +26,7 @@ public class SayHelloController {
                 .addSnippets("snippets1")
                 .addCats(Helloworld.Cat.newBuilder().setColor("black").build())
                 .setResult(Helloworld.HelloRequest.Result.newBuilder().setCorpus(Helloworld.HelloRequest.Result.Corpus.IMAGES).build())
+                .setTbytes(ByteString.copyFromUtf8("张轶丛"))
                 .setTDouble(1.01)
                 .setTFloat(1.02f)
                 .setTfixed32(23)
@@ -41,6 +42,7 @@ public class SayHelloController {
                 .setStruct(Struct.newBuilder().putFields("key1", Value.newBuilder().setBoolValue(true).build()).build())
                 .setValue(Value.newBuilder().setNumberValue(3.1415926).build())
                 .setListValue(ListValue.newBuilder().addValues(Value.newBuilder().setNumberValue(3.1415926).build()).build())
+                .setDuration(Duration.newBuilder().setSeconds(1).setNanos(340012).build())
                 .build();
 
         Helloworld.HelloReply helloReply = simple.sayHello(helloRequest);

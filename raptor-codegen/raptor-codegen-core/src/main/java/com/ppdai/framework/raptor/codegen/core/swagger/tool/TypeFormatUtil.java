@@ -27,6 +27,7 @@ public class TypeFormatUtil {
         wktSchemas.put("google.protobuf.Struct", new TypeFormat("object", null, null, true));
         wktSchemas.put("google.protobuf.Value", new TypeFormat("object", null, null, true));
         wktSchemas.put("google.protobuf.ListValue", new TypeFormat("object", null, null, true));
+        wktSchemas.put("google.protobuf.Duration", new TypeFormat("string", "", null, null));
     }
 
     private static Map<String, Object> formatType(FieldType fieldType, String typeDefPrefix) {
