@@ -22,7 +22,7 @@ public class DefaultProvider<T> extends AbstractProvider<T> {
     @Override
     protected Response invoke(Request request) {
         DefaultResponse response = new DefaultResponse();
-        response.setAttachment(ParamNameConstants.SERVER_HOST, NetUtils.getLocalIp());
+        response.setAttachment(ParamNameConstants.HOST_SERVER, NetUtils.getLocalIp());
         Method method = lookupMethod(request.getMethodName(), null);
         if (method == null) {
             RaptorServiceException exception =

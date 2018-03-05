@@ -13,7 +13,6 @@ import java.util.Map;
 public class DefaultResponse implements Response, Serializable {
     private static final long serialVersionUID = 4281186647291615871L;
 
-    //TODO 修改异常code
     private int code = -1;
     private Object value;
     private Exception exception;

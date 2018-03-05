@@ -25,8 +25,6 @@ import org.springframework.test.context.junit4.SpringRunner;
         properties = {"raptor.url.com.ppdai.framework.raptor.proto.Simple=http://localhost:8080"})
 public class IntegrationTest {
 
-    @Autowired
-    private ConfigurableApplicationContext context;
     @RaptorClient
     private Simple simple1;
 

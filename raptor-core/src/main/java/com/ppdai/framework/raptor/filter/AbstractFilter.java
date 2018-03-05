@@ -7,18 +7,18 @@ import com.ppdai.framework.raptor.rpc.Response;
 import com.ppdai.framework.raptor.rpc.URL;
 import lombok.extern.slf4j.Slf4j;
 
-import static com.ppdai.framework.raptor.common.ParamNameConstants.CLIENT_HOST;
-import static com.ppdai.framework.raptor.common.ParamNameConstants.SERVER_HOST;
+import static com.ppdai.framework.raptor.common.ParamNameConstants.HOST_CLIENT;
+import static com.ppdai.framework.raptor.common.ParamNameConstants.HOST_SERVER;
 
 @Slf4j
 public class AbstractFilter {
 
     protected String getClientHost(Request request) {
-        return request.getAttachments().get(CLIENT_HOST);
+        return request.getAttachments().get(HOST_CLIENT);
     }
 
     protected String getServerHost(Response response) {
-        return response.getAttachments().get(SERVER_HOST);
+        return response.getAttachments().get(HOST_SERVER);
     }
 
     protected String getInterfaceVersion(URL serviceUrl) {

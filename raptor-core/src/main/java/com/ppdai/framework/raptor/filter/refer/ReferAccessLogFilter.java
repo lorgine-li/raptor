@@ -38,6 +38,6 @@ public class ReferAccessLogFilter extends AbstractAccessLogFilter implements Ref
 
     @Override
     protected String getNodeType() {
-        return RaptorConstants.NODE_TYPE_SERVICE;
+        return RaptorConstants.NODE_TYPE_REFER;
     }
 }

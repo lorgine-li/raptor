@@ -1,6 +1,5 @@
 package com.ppdai.framework.raptor.service;
 
-import com.ppdai.framework.raptor.common.ParamNameConstants;
 import com.ppdai.framework.raptor.common.RaptorConstants;
 import com.ppdai.framework.raptor.common.URLParamType;
 import com.ppdai.framework.raptor.exception.RaptorFrameworkException;
@@ -102,7 +101,7 @@ public class ServletEndpoint extends HttpServlet implements Endpoint {
 
     protected Request convert(HttpServletRequest httpRequest) {
         DefaultRequest request = new DefaultRequest();
-        request.setRequestId(URLParamType.requestId.name());
+        request.setRequestId(getRequestId(httpRequest));
         request.setInterfaceName(getInterfaceName(httpRequest));
         request.setMethodName(getMethodName(httpRequest));
         request.setAttachments(getAttachments(httpRequest));
@@ -113,6 +112,10 @@ public class ServletEndpoint extends HttpServlet implements Endpoint {
             request.setArgument(getRequestArgument(httpRequest, request, provider));
         }
         return request;
+    }
+
+    protected String getRequestId(HttpServletRequest httpRequest) {
+        return httpRequest.getHeader(URLParamType.requestId.name());
     }
 
     protected String getInterfaceName(HttpServletRequest httpRequest) {
@@ -163,8 +166,8 @@ public class ServletEndpoint extends HttpServlet implements Endpoint {
         return getProviderKey(request.getInterfaceName());
     }
 
-    //TODO 将序列化逻辑放到provider中
     protected void transportResponse(Request request, Response response, HttpServletRequest httpRequest, HttpServletResponse httpResponse) throws IOException {
+        setHttpResponseHeader(response, httpResponse);
         httpResponse.setStatus(RaptorConstants.HTTP_OK);
         Serialization serialization = this.getSerialization(httpRequest);
         byte[] data = serialization.serialize(response.getValue());
@@ -189,6 +192,13 @@ public class ServletEndpoint extends HttpServlet implements Endpoint {
         } catch (IOException e) {
             log.error("write response error. request: {}", request, e);
             throw e;
+        }
+    }
+
+    protected void setHttpResponseHeader(Response response, HttpServletResponse httpResponse) {
+        Map<String, String> attachments = response.getAttachments();
+        for (Map.Entry<String, String> entry : attachments.entrySet()) {
+            httpResponse.setHeader(entry.getKey(), entry.getValue());
         }
     }
 

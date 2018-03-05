@@ -28,7 +28,6 @@ public abstract class AbstractInvocationHandler implements InvocationHandler {
             return this.invokeLocal(method, args);
         }
 
-        //TODO 将这块代码提取出来，写到builder中
         DefaultRequest request = new DefaultRequest();
         request.setRequestId(RequestIdGenerator.getRequestId());
         request.setInterfaceName(this.interfaceClass.getName());
@@ -41,7 +40,7 @@ public abstract class AbstractInvocationHandler implements InvocationHandler {
             throw new RaptorServiceException("Method arguments has more then one.");
         }
         request.setReturnType(method.getReturnType().getName());
-        request.setAttachment(ParamNameConstants.CLIENT_HOST, NetUtils.getLocalIp());
+        request.setAttachment(ParamNameConstants.HOST_CLIENT, NetUtils.getLocalIp());
 
         RpcContext rpcContext = RpcContext.getContext();
         rpcContext.setRequest(request);

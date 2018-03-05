@@ -10,6 +10,7 @@ import com.ppdai.framework.raptor.serialize.ProtobufSerializationFactory;
 import com.ppdai.framework.raptor.serialize.Serialization;
 import com.ppdai.framework.raptor.serialize.SerializationFactory;
 import com.ppdai.framework.raptor.util.ExceptionUtil;
+import com.ppdai.framework.raptor.util.NetUtils;
 import com.ppdai.framework.raptor.util.ReflectUtil;
 import lombok.Getter;
 import lombok.Setter;
@@ -23,13 +24,17 @@ import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
 import org.apache.http.client.entity.EntityBuilder;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.message.BasicHeader;
 
 import java.io.Closeable;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 @Setter
 @Getter
@@ -53,15 +58,12 @@ public abstract class AbstractHttpClient implements Client {
         try {
             httpPost = buildHttpPost(request, serviceUrl);
 
-            for (Header header : buildHeaders(request, serviceUrl)) {
-                httpPost.addHeader(new BasicHeader(header.getName(), header.getValue()));
-            }
+            buildHeaders(request, serviceUrl, httpPost);
 
             httpResponse = doSendRequest(httpPost, serviceUrl);
 
             //设置响应头
-            List<Header> headers = Arrays.asList(httpResponse.getAllHeaders());
-            setResponseHeaders(response, headers);
+            setResponseHeaders(response, httpResponse);
 
             //设置status
             StatusLine statusLine = httpResponse.getStatusLine();
@@ -142,18 +144,16 @@ public abstract class AbstractHttpClient implements Client {
 
     }
 
-    protected List<Header> buildHeaders(Request request, URL serviceUrl) {
-        List<Header> headers = new ArrayList<>();
+    protected void buildHeaders(Request request, URL serviceUrl, HttpRequestBase httpRequest) {
         Map<String, String> attachments = request.getAttachments();
         for (String key : attachments.keySet()) {
             Header header = new BasicHeader(key, attachments.get(key));
-            headers.add(header);
+            httpRequest.addHeader(header);
         }
         String requestId = String.valueOf(request.getRequestId());
-        headers.add(new BasicHeader(URLParamType.serialization.getName(), getSerializationType(request, serviceUrl)));
-        headers.add(new BasicHeader(URLParamType.requestId.name(), requestId));
-        headers.add(new BasicHeader("connection", "Keep-Alive"));
-        return headers;
+        httpRequest.addHeader(new BasicHeader(URLParamType.serialization.getName(), getSerializationType(request, serviceUrl)));
+        httpRequest.addHeader(new BasicHeader(URLParamType.requestId.name(), requestId));
+        httpRequest.addHeader(new BasicHeader("connection", "Keep-Alive"));
     }
 
     protected String getSerializationType(Request request, URL serviceUrl) {
@@ -243,8 +243,9 @@ public abstract class AbstractHttpClient implements Client {
         response.setAttachment(URLParamType.httpReasonPhrase.name(), statusLine.getReasonPhrase());
     }
 
-    protected void setResponseHeaders(Response response, List<Header> headerEntries) {
-        for (Header header : headerEntries) {
+    protected void setResponseHeaders(Response response, HttpResponse httpResponse) {
+        List<Header> headers = Arrays.asList(httpResponse.getAllHeaders());
+        for (Header header : headers) {
             response.setAttachment(header.getName(), header.getValue());
         }
     }

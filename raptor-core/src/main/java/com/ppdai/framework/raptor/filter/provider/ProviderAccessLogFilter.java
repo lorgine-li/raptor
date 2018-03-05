@@ -1,7 +1,9 @@
 package com.ppdai.framework.raptor.filter.provider;
 
 import com.ppdai.framework.raptor.common.RaptorConstants;
+import com.ppdai.framework.raptor.common.RaptorMessageConstant;
 import com.ppdai.framework.raptor.common.URLParamType;
+import com.ppdai.framework.raptor.exception.RaptorBizException;
 import com.ppdai.framework.raptor.filter.AbstractAccessLogFilter;
 import com.ppdai.framework.raptor.rpc.Request;
 import com.ppdai.framework.raptor.rpc.Response;
@@ -39,5 +41,19 @@ public class ProviderAccessLogFilter extends AbstractAccessLogFilter implements 
     @Override
     protected String getNodeType() {
         return RaptorConstants.NODE_TYPE_SERVICE;
+    }
+
+    //TODO 此处逻辑放到provider中
+    @Override
+    protected String getStatusCode(Response response) {
+        Exception e = response.getException();
+        if (e != null) {
+            if (e instanceof RaptorBizException) {
+                return String.valueOf(RaptorMessageConstant.BIZ_DEFAULT_ERROR_CODE);
+            } else {
+                return String.valueOf(RaptorMessageConstant.SERVICE_DEFAULT_ERROR_CODE);
+            }
+        }
+        return String.valueOf(RaptorMessageConstant.SUCCESS);
     }
 }
