@@ -1,22 +1,21 @@
 package com.ppdai.framework.raptor.codegen.core.swagger.tool;
 
-import com.google.protobuf.DescriptorProtos;
-import com.ppdai.framework.raptor.codegen.core.swagger.container.EnumContainer;
-import com.ppdai.framework.raptor.codegen.core.swagger.container.MessageContainer;
-import com.ppdai.framework.raptor.codegen.core.swagger.container.MetaContainer;
-import com.ppdai.framework.raptor.codegen.core.swagger.container.ServiceContainer;
+     import com.google.protobuf.DescriptorProtos;
+     import com.ppdai.framework.raptor.codegen.core.swagger.container.EnumContainer;
+     import com.ppdai.framework.raptor.codegen.core.swagger.container.MessageContainer;
+     import com.ppdai.framework.raptor.codegen.core.swagger.container.MetaContainer;
+     import com.ppdai.framework.raptor.codegen.core.swagger.container.ServiceContainer;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+     import java.util.List;
 
-/**
- * Created by zhangyicong on 18-2-28.
- */
-public class ContainerUtil {
+     /**
+     * Created by zhangyicong on 18-2-28.
+     */
+    public class ContainerUtil {
 
-    /**
-     * 提取enum类型
+        /**
+         * 提取enum类型
+         *
      * @param fdp
      * @return
      */
@@ -40,13 +39,14 @@ public class ContainerUtil {
 
     /**
      * 递归提取enum
+     *
      * @param enumContainer
      * @param parent
      * @param dpList
      */
     private static void addEnumProto(EnumContainer enumContainer,
-                              String parent,
-                              List<DescriptorProtos.DescriptorProto> dpList) {
+                                     String parent,
+                                     List<DescriptorProtos.DescriptorProto> dpList) {
 
         for (DescriptorProtos.DescriptorProto dp : dpList) {
             String newParent = (parent != null ? parent + "." : "") + dp.getName();
@@ -61,6 +61,7 @@ public class ContainerUtil {
 
     /**
      * 提取message类型
+     *
      * @param fdp
      * @return
      */
@@ -80,13 +81,14 @@ public class ContainerUtil {
 
     /**
      * 递归提取message
+     *
      * @param messageContainer
      * @param parent
      * @param dpList
      */
-    private static void addMessageProto(MessageContainer messageContainer ,
-                                 String parent,
-                                 List<DescriptorProtos.DescriptorProto> dpList) {
+    private static void addMessageProto(MessageContainer messageContainer,
+                                        String parent,
+                                        List<DescriptorProtos.DescriptorProto> dpList) {
 
         for (DescriptorProtos.DescriptorProto dp : dpList) {
             messageContainer.addMessageProto(parent, dp);
@@ -97,6 +99,7 @@ public class ContainerUtil {
 
     /**
      * 提取service类型
+     *
      * @param fdp
      * @return
      */

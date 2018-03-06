@@ -12,6 +12,7 @@ import com.ppdai.framework.raptor.codegen.core.swagger.swagger2object.*;
 import com.ppdai.framework.raptor.codegen.core.swagger.tool.ContainerUtil;
 import com.ppdai.framework.raptor.codegen.core.swagger.tool.TypeFormatUtil;
 import com.ppdai.framework.raptor.codegen.core.swagger.type.*;
+import com.ppdai.framework.raptor.codegen.core.utils.CommonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,12 +34,16 @@ public class Swagger2Template implements SwaggerTemplate {
 
     /**
      * 生成swagger service定义
+     *
      * @param swaggerObject
      * @param serviceContainer
      */
-    private void renderServices(SwaggerObject swaggerObject,
-                                ServiceContainer serviceContainer,
-                                MessageContainer messageContainer) {
+    private Set<MessageType> renderServices(SwaggerObject swaggerObject,
+                                            ServiceContainer serviceContainer,
+                                            MetaContainer metaContainer,
+                                            String basePackage) {
+
+        Set<MessageType> depnedMessage = new HashSet<>();
 
         for (ServiceType serviceType : serviceContainer.getServiceTypeList()) {
             for (MethodType methodType : serviceType.getMethodTypeList()) {
@@ -69,8 +74,10 @@ public class Swagger2Template implements SwaggerTemplate {
 
                 // set schema
                 SwaggerSchemaObject swaggerSchemaObject = new SwaggerSchemaObject();
+                MessageType inputMessage = metaContainer.findMessageTypeByFQPN(methodType.getInputType(), basePackage);
+                depnedMessage.add(inputMessage);
                 swaggerSchemaObject.setRef("#/definitions/" +
-                        messageContainer.findMessageTypeByFQPN(methodType.getInputType()).getName());
+                        getRefName(inputMessage, basePackage));
                 swaggerParameterObject.setSchema(swaggerSchemaObject);
 
                 // set responses
@@ -80,8 +87,10 @@ public class Swagger2Template implements SwaggerTemplate {
                 // set responses schema
                 SwaggerSchemaObject reponseSchema = new SwaggerSchemaObject();
                 swaggerResponseObject.setSchema(reponseSchema);
+                MessageType outputMessage = metaContainer.findMessageTypeByFQPN(methodType.getOutputType(), basePackage);
+                depnedMessage.add(outputMessage);
                 reponseSchema.setRef("#/definitions/" +
-                        messageContainer.findMessageTypeByFQPN(methodType.getOutputType()).getName());
+                        getRefName(outputMessage, basePackage));
 
                 responses.put("200", swaggerResponseObject);
                 swaggerOperationObject.setResponses(responses);
@@ -89,6 +98,16 @@ public class Swagger2Template implements SwaggerTemplate {
                 swaggerObject.getPaths().put("/raptor/" + serviceType.getFQPN() + "/" + methodType.getName(),
                         swaggerPathItemObject);
             }
+        }
+        return depnedMessage;
+    }
+
+    private String getRefName(MessageType inputMessage, String basePackage) {
+        String packageName = CommonUtils.getPackageNameFromFQPN(inputMessage.getFQPN());
+        if (basePackage.equals(packageName)) {
+            return inputMessage.getName();
+        } else {
+            return inputMessage.getFQPN();
         }
     }
 
@@ -100,9 +119,9 @@ public class Swagger2Template implements SwaggerTemplate {
         swaggerSchemaObject.setSwaggerEnum(new ArrayList<>(enumType.getValues()));
     }
 
-    private void addType2Definitions(SwaggerObject swaggerObject, MessageType messageType) {
+    private void addType2Definitions(SwaggerObject swaggerObject, MessageType messageType, String basePackage) {
         SwaggerSchemaObject swaggerSchemaObject = new SwaggerSchemaObject();
-        swaggerObject.getDefinitions().put(messageType.getName(), swaggerSchemaObject);
+        swaggerObject.getDefinitions().put(getRefName(messageType, basePackage), swaggerSchemaObject);
 
         swaggerSchemaObject.setType("object");
 
@@ -117,15 +136,19 @@ public class Swagger2Template implements SwaggerTemplate {
 
     /**
      * 生成swagger type定义
+     *
      * @param swaggerObject
-     * @param messageContainer
+     * @param messageTypeSet
      * @param enumContainer
      */
     private void renderDefinitions(SwaggerObject swaggerObject,
-                                   MessageContainer messageContainer,
-                                   EnumContainer enumContainer) {
-        for (MessageType messageType : messageContainer.getMessageTypeList()) {
-            addType2Definitions(swaggerObject, messageType);
+                                   Set<MessageType> messageTypeSet,
+                                   EnumContainer enumContainer,
+                                   String basePackage) {
+        // TODO: 2018/3/6 需要过滤,吧不需要的 definition 去掉
+        // TODO: 2018/3/6 验证不同包之间的应用是否会出问题
+        for (MessageType messageType : messageTypeSet) {
+            addType2Definitions(swaggerObject, messageType,basePackage);
         }
 
         for (EnumType enumType : enumContainer.getEnumTypeList()) {
@@ -135,6 +158,7 @@ public class Swagger2Template implements SwaggerTemplate {
 
     /**
      * proto转swagger
+     *
      * @param fdp
      * @param apiVersion
      * @return
@@ -157,10 +181,11 @@ public class Swagger2Template implements SwaggerTemplate {
                 new LinkedHashMap<>(),
                 new SwaggerInfoObject(fdp.getName(), apiVersion));
 
+        String basePackage = fdp.getPackage();
         // render path
-        renderServices(swaggerObject, serviceContainer, messageContainer);
+        Set<MessageType> messageTypes = renderServices(swaggerObject, serviceContainer, metaContainer, basePackage);
         // render type and enum
-        renderDefinitions(swaggerObject, messageContainer, enumContainer);
+        renderDefinitions(swaggerObject, messageTypes, enumContainer,basePackage);
 
         return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(swaggerObject);
     }

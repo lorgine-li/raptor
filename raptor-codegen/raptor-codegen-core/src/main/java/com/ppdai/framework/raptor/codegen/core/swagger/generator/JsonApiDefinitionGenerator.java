@@ -8,7 +8,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -62,7 +64,9 @@ public class JsonApiDefinitionGenerator {
                     swaggerVersion,
                     apiVersion);
 
-            for (File file : allProtoFile) {
+            List<File> sortedFile = allProtoFile.stream().sorted(Comparator.reverseOrder()).collect(Collectors.toList());
+
+            for (File file : sortedFile) {
                 if (file.exists()) {
                     String protoFilePath = file.getPath();
                     proto2Swagger.generateFile(protoFilePath);

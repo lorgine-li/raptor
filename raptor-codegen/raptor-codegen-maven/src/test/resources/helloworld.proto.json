@@ -6,7 +6,7 @@
   },
   "schemes" : [ "http" ],
   "paths" : {
-    "/raptor/com.ppdai.framework.raptor.proto.Simple/sayHello" : {
+    "/raptor/com.ppdai.framework.raptor.proto.Hello/sayHello" : {
       "post" : {
         "summary" : "",
         "description" : "",
@@ -35,6 +35,24 @@
     }
   },
   "definitions" : {
+    "SimpleRequest" : {
+      "type" : "object",
+      "properties" : {
+        "name" : {
+          "type" : "string",
+          "format" : ""
+        }
+      }
+    },
+    "SimpleReply" : {
+      "type" : "object",
+      "properties" : {
+        "message" : {
+          "type" : "string",
+          "format" : ""
+        }
+      }
+    },
     "HelloRequest" : {
       "type" : "object",
       "properties" : {
@@ -142,6 +160,18 @@
         }
       }
     },
+    "HelloRequest.Result" : {
+      "type" : "object",
+      "properties" : {
+        "url" : {
+          "type" : "string",
+          "format" : ""
+        },
+        "corpus" : {
+          "$ref" : "#/definitions/HelloRequest.Result.Corpus"
+        }
+      }
+    },
     "HelloReply" : {
       "type" : "object",
       "properties" : {
@@ -157,38 +187,6 @@
           "items" : {
             "$ref" : "#/definitions/Result"
           }
-        }
-      }
-    },
-    "Result" : {
-      "type" : "object",
-      "properties" : {
-        "url" : {
-          "type" : "string",
-          "format" : ""
-        },
-        "title" : {
-          "type" : "string",
-          "format" : ""
-        },
-        "snippets" : {
-          "type" : "array",
-          "items" : {
-            "type" : "string",
-            "format" : ""
-          }
-        }
-      }
-    },
-    "HelloRequest.Result" : {
-      "type" : "object",
-      "properties" : {
-        "url" : {
-          "type" : "string",
-          "format" : ""
-        },
-        "corpus" : {
-          "$ref" : "#/definitions/HelloRequest.Result.Corpus"
         }
       }
     },

@@ -1,17 +1,17 @@
 syntax = "proto3";
 
-package com.ppdai.framework.raptor.proto;
+package com.ppdai.framework.raptor.proto.test;
 
 service Simple {
-    rpc sayHello (HelloRequest) returns (HelloReply) {
+    rpc sayHello (SimpleRequest) returns (SimpleReply) {
     }
 }
 
-message HelloRequest {
+message SimpleRequest {
     // hello name
     string name = 1;
 }
 
-message HelloReply {
+message SimpleReply {
     string message = 1;
 }

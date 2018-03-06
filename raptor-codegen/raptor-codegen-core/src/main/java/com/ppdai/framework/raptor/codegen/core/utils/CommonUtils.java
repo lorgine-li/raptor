@@ -6,7 +6,9 @@ import java.util.Map;
 
 public final class CommonUtils {
 
-    private CommonUtils(){
+    public static String getPackageNameFromFQPN(String FQPN){
+        int lastDotIndex = FQPN.lastIndexOf('.');
+        return StringUtils.substring(FQPN, 0, lastDotIndex);
 
     }
 

@@ -1,13 +1,13 @@
 syntax = "proto3";
 
-package com.ppdai.framework.raptor.proto;
+package com.ppdai.framework.raptor.proto.test;
 
 import "common/Result.proto";
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/struct.proto";
 import "google/protobuf/duration.proto";
 
-service Simple {
+service Hello {
     rpc sayHello (HelloRequest) returns (HelloReply) {
     }
 }

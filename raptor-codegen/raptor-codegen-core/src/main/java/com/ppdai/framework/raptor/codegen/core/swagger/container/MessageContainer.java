@@ -24,6 +24,7 @@ public class MessageContainer {
     public void addMessageProto(String parent, DescriptorProtos.DescriptorProto descriptorProto) {
         MessageType messageType = new MessageType();
         messageType.setName((parent != null ? parent + "." : "") + descriptorProto.getName());
+        // TODO: 2018/3/6 packageName 为空的话会多一个点
         messageType.setFQPN(packageName + "." + messageType.getName());
 
         Map<String, FieldType> fieldTypeMap = new LinkedHashMap<>();
