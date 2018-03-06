@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package com.ppdai.framework.raptor.proto;
+
+service Simple {
+    rpc sayHello (HelloRequest) returns (HelloReply) {
+    }
+}
+
+message HelloRequest {
+    // hello name
+    string name = 1;
+}
+
+message HelloReply {
+    string message = 1;
+}

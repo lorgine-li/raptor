@@ -13,6 +13,7 @@ service Simple {
 }
 
 message HelloRequest {
+    // hello name
     string name = 1;
     enum Corpus {
         UNIVERSAL = 0;
