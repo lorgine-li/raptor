@@ -6,7 +6,7 @@
   },
   "schemes" : [ "http" ],
   "paths" : {
-    "/raptor/com.ppdai.framework.raptor.proto.Hello/sayHello" : {
+    "/raptor/com.ppdai.framework.raptor.proto.test.Hello/sayHello" : {
       "post" : {
         "summary" : "",
         "description" : "",
@@ -35,24 +35,6 @@
     }
   },
   "definitions" : {
-    "SimpleRequest" : {
-      "type" : "object",
-      "properties" : {
-        "name" : {
-          "type" : "string",
-          "format" : ""
-        }
-      }
-    },
-    "SimpleReply" : {
-      "type" : "object",
-      "properties" : {
-        "message" : {
-          "type" : "string",
-          "format" : ""
-        }
-      }
-    },
     "HelloRequest" : {
       "type" : "object",
       "properties" : {
@@ -160,18 +142,6 @@
         }
       }
     },
-    "HelloRequest.Result" : {
-      "type" : "object",
-      "properties" : {
-        "url" : {
-          "type" : "string",
-          "format" : ""
-        },
-        "corpus" : {
-          "$ref" : "#/definitions/HelloRequest.Result.Corpus"
-        }
-      }
-    },
     "HelloReply" : {
       "type" : "object",
       "properties" : {
@@ -185,17 +155,8 @@
         "results" : {
           "type" : "array",
           "items" : {
-            "$ref" : "#/definitions/Result"
+            "$ref" : "#/definitions/com.ppdai.framework.raptor.proto.Result"
           }
-        }
-      }
-    },
-    "Cat" : {
-      "type" : "object",
-      "properties" : {
-        "color" : {
-          "type" : "string",
-          "format" : ""
         }
       }
     },

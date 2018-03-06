@@ -38,12 +38,12 @@ public class Swagger2Template implements SwaggerTemplate {
      * @param swaggerObject
      * @param serviceContainer
      */
-    private Set<MessageType> renderServices(SwaggerObject swaggerObject,
+    private List<MessageType> renderServices(SwaggerObject swaggerObject,
                                             ServiceContainer serviceContainer,
                                             MetaContainer metaContainer,
                                             String basePackage) {
 
-        Set<MessageType> depnedMessage = new HashSet<>();
+        List<MessageType> dependMessage = new ArrayList<>();
 
         for (ServiceType serviceType : serviceContainer.getServiceTypeList()) {
             for (MethodType methodType : serviceType.getMethodTypeList()) {
@@ -75,7 +75,7 @@ public class Swagger2Template implements SwaggerTemplate {
                 // set schema
                 SwaggerSchemaObject swaggerSchemaObject = new SwaggerSchemaObject();
                 MessageType inputMessage = metaContainer.findMessageTypeByFQPN(methodType.getInputType(), basePackage);
-                depnedMessage.add(inputMessage);
+                dependMessage.add(inputMessage);
                 swaggerSchemaObject.setRef("#/definitions/" +
                         getRefName(inputMessage, basePackage));
                 swaggerParameterObject.setSchema(swaggerSchemaObject);
@@ -88,7 +88,7 @@ public class Swagger2Template implements SwaggerTemplate {
                 SwaggerSchemaObject reponseSchema = new SwaggerSchemaObject();
                 swaggerResponseObject.setSchema(reponseSchema);
                 MessageType outputMessage = metaContainer.findMessageTypeByFQPN(methodType.getOutputType(), basePackage);
-                depnedMessage.add(outputMessage);
+                dependMessage.add(outputMessage);
                 reponseSchema.setRef("#/definitions/" +
                         getRefName(outputMessage, basePackage));
 
@@ -99,7 +99,7 @@ public class Swagger2Template implements SwaggerTemplate {
                         swaggerPathItemObject);
             }
         }
-        return depnedMessage;
+        return dependMessage;
     }
 
     private String getRefName(MessageType inputMessage, String basePackage) {
@@ -138,16 +138,16 @@ public class Swagger2Template implements SwaggerTemplate {
      * 生成swagger type定义
      *
      * @param swaggerObject
-     * @param messageTypeSet
+     * @param messageTypes
      * @param enumContainer
      */
     private void renderDefinitions(SwaggerObject swaggerObject,
-                                   Set<MessageType> messageTypeSet,
+                                   List<MessageType> messageTypes,
                                    EnumContainer enumContainer,
                                    String basePackage) {
         // TODO: 2018/3/6 需要过滤,吧不需要的 definition 去掉
         // TODO: 2018/3/6 验证不同包之间的应用是否会出问题
-        for (MessageType messageType : messageTypeSet) {
+        for (MessageType messageType : messageTypes) {
             addType2Definitions(swaggerObject, messageType,basePackage);
         }
 
@@ -183,7 +183,7 @@ public class Swagger2Template implements SwaggerTemplate {
 
         String basePackage = fdp.getPackage();
         // render path
-        Set<MessageType> messageTypes = renderServices(swaggerObject, serviceContainer, metaContainer, basePackage);
+        List<MessageType> messageTypes = renderServices(swaggerObject, serviceContainer, metaContainer, basePackage);
         // render type and enum
         renderDefinitions(swaggerObject, messageTypes, enumContainer,basePackage);
 

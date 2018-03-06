@@ -1,23 +1,23 @@
 {
   "swagger" : "2.0",
   "info" : {
-    "title" : "simple.proto",
+    "title" : "Import.proto",
     "version" : "version not set"
   },
   "schemes" : [ "http" ],
   "paths" : {
-    "/raptor/com.ppdai.framework.raptor.proto.test.Simple/sayHello" : {
+    "/raptor/com.ppdai.framework.raptor.proto.test.import1.ImportService/import" : {
       "post" : {
         "summary" : "",
         "description" : "",
-        "operationId" : "sayHello",
+        "operationId" : "import",
         "consumes" : [ "application/json" ],
         "produces" : [ "application/json" ],
         "responses" : {
           "200" : {
             "description" : "successful operation",
             "schema" : {
-              "$ref" : "#/definitions/SimpleReply"
+              "$ref" : "#/definitions/com.ppdai.framework.raptor.proto.test.import2.Imported"
             }
           }
         },
@@ -27,7 +27,7 @@
           "in" : "body",
           "required" : true,
           "schema" : {
-            "$ref" : "#/definitions/SimpleRequest"
+            "$ref" : "#/definitions/Import"
           }
         } ],
         "deprecated" : false
@@ -35,21 +35,31 @@
     }
   },
   "definitions" : {
-    "SimpleRequest" : {
+    "Import" : {
       "type" : "object",
       "properties" : {
-        "name" : {
-          "type" : "string",
-          "format" : ""
+        "request" : {
+          "$ref" : "#/definitions/com.ppdai.framework.raptor.proto.test.import2.Imported"
         }
       }
     },
-    "SimpleReply" : {
+    "com.ppdai.framework.raptor.proto.test.import2.Imported" : {
       "type" : "object",
       "properties" : {
-        "message" : {
+        "query" : {
           "type" : "string",
           "format" : ""
+        },
+        "page_number" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "result_per_page" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "imported" : {
+          "$ref" : "#/definitions/Imported2"
         }
       }
     }
