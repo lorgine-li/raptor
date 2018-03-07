@@ -13,6 +13,7 @@ import com.ppdai.framework.raptor.codegen.core.swagger.tool.ContainerUtil;
 import com.ppdai.framework.raptor.codegen.core.swagger.tool.TypeFormatUtil;
 import com.ppdai.framework.raptor.codegen.core.swagger.type.*;
 import com.ppdai.framework.raptor.codegen.core.utils.CommonUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,12 +39,12 @@ public class Swagger2Template implements SwaggerTemplate {
      * @param swaggerObject
      * @param serviceContainer
      */
-    private List<MessageType> renderServices(SwaggerObject swaggerObject,
+    private Set<MessageType> renderServices(SwaggerObject swaggerObject,
                                             ServiceContainer serviceContainer,
                                             MetaContainer metaContainer,
                                             String basePackage) {
 
-        List<MessageType> dependMessage = new ArrayList<>();
+        Set<MessageType> dependMessage = new LinkedHashSet<>();
 
         for (ServiceType serviceType : serviceContainer.getServiceTypeList()) {
             for (MethodType methodType : serviceType.getMethodTypeList()) {
@@ -129,7 +130,8 @@ public class Swagger2Template implements SwaggerTemplate {
         swaggerSchemaObject.setProperties(properties);
 
         for (FieldType fieldType : messageType.getFieldTypeList()) {
-            Map<String, Object> typeSchema = TypeFormatUtil.formatTypeSwagger2(fieldType);
+            // TODO: 2018/3/7 处理 import 中嵌套的包名问题
+            Map<String, Object> typeSchema = TypeFormatUtil.formatTypeSwagger2(fieldType, basePackage);
             properties.put(fieldType.getName(), typeSchema);
         }
     }
@@ -142,15 +144,14 @@ public class Swagger2Template implements SwaggerTemplate {
      * @param enumContainer
      */
     private void renderDefinitions(SwaggerObject swaggerObject,
-                                   List<MessageType> messageTypes,
+                                   Set<MessageType> messageTypes,
                                    EnumContainer enumContainer,
                                    String basePackage) {
-        // TODO: 2018/3/6 需要过滤,吧不需要的 definition 去掉
-        // TODO: 2018/3/6 验证不同包之间的应用是否会出问题
+        // TODO: 2018/3/7 处理import 中的嵌套的问题
         for (MessageType messageType : messageTypes) {
-            addType2Definitions(swaggerObject, messageType,basePackage);
+            addType2Definitions(swaggerObject, messageType, basePackage);
         }
-
+        // TODO: 2018/3/7 验证不同 package 之间的 import 应用是否会有问题
         for (EnumType enumType : enumContainer.getEnumTypeList()) {
             addEnum2Definitions(swaggerObject, enumType);
         }
@@ -183,10 +184,28 @@ public class Swagger2Template implements SwaggerTemplate {
 
         String basePackage = fdp.getPackage();
         // render path
-        List<MessageType> messageTypes = renderServices(swaggerObject, serviceContainer, metaContainer, basePackage);
+        Set<MessageType> messageTypes = renderServices(swaggerObject, serviceContainer, metaContainer, basePackage);
         // render type and enum
-        renderDefinitions(swaggerObject, messageTypes, enumContainer,basePackage);
+        HashSet<MessageType> relationMessageTypes = collectNestType(metaContainer, messageTypes, basePackage);
+        renderDefinitions(swaggerObject, relationMessageTypes, enumContainer, basePackage);
 
         return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(swaggerObject);
+    }
+
+    private HashSet<MessageType> collectNestType(MetaContainer metaContainer, Set<MessageType> messageTypes, String basePackage) {
+        List<MessageType> messageTypeList = new ArrayList<>(messageTypes);
+        ListIterator<MessageType> listIterator = messageTypeList.listIterator();
+        while (listIterator.hasNext()) {
+            MessageType next = listIterator.next();
+            for (FieldType fieldType : next.getFieldTypeList()) {
+                if (StringUtils.isNotBlank(fieldType.getTypeName()) && !CommonUtils.isProtoBufType(fieldType.getTypeName())) {
+                    MessageType nestedMessageType = metaContainer.findMessageTypeByFQPN(fieldType.getFQPN(), basePackage);
+                    if (!messageTypeList.contains(nestedMessageType) && Objects.nonNull(nestedMessageType)) {
+                        listIterator.add(nestedMessageType);
+                    }
+                }
+            }
+        }
+        return new HashSet<MessageType>(messageTypeList);
     }
 }

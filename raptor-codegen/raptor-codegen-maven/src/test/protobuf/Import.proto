@@ -12,5 +12,6 @@ service ImportService {
 
 message Import {
   com.ppdai.framework.raptor.proto.test.import2.Imported request = 1;
+  com.ppdai.framework.raptor.proto.test.import2.EnumNotAllowingAlias enum = 2;
 }
 

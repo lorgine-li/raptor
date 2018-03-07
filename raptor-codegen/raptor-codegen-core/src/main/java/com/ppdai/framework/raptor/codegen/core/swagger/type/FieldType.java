@@ -9,8 +9,17 @@ public class FieldType {
     private String name;
     private String typeName;
     private String message;
+    private String FQPN;
     private DescriptorProtos.FieldDescriptorProto.Label label;
     private DescriptorProtos.FieldDescriptorProto.Type type;
+
+    public String getFQPN() {
+        return FQPN;
+    }
+
+    public void setFQPN(String FQPN) {
+        this.FQPN = FQPN;
+    }
 
     public String getName() {
         return name;

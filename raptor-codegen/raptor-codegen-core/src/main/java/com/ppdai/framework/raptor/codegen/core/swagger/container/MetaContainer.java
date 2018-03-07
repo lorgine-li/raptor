@@ -34,6 +34,10 @@ public class MetaContainer {
     private MessageType findMessageTypeByFQPN(String FQPN) {
         String packageName = CommonUtils.getPackageNameFromFQPN(FQPN);
         MessageContainer messageContainer = messageContainerMap.get(packageName);
-        return messageContainer.findMessageTypeByFQPN(FQPN);
+        // TODO: 2018/3/7 common/Result.proto 没有导入到 MessageContainer 中
+        return Optional.ofNullable(messageContainer)
+                .map(container -> container.findMessageTypeByFQPN(FQPN) )
+                .orElse(null);
+
     }
 }

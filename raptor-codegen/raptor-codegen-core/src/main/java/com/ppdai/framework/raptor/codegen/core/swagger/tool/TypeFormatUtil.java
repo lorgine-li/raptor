@@ -2,6 +2,7 @@ package com.ppdai.framework.raptor.codegen.core.swagger.tool;
 
 import com.ppdai.framework.raptor.codegen.core.swagger.exception.SwaggerGenException;
 import com.ppdai.framework.raptor.codegen.core.swagger.type.FieldType;
+import com.ppdai.framework.raptor.codegen.core.utils.CommonUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,7 +31,7 @@ public class TypeFormatUtil {
         wktSchemas.put("google.protobuf.Duration", new TypeFormat("string", "", null, null));
     }
 
-    private static Map<String, Object> formatType(FieldType fieldType, String typeDefPrefix) {
+    private static Map<String, Object> formatType(FieldType fieldType, String typeDefPrefix, String basePackage) {
         Map<String, Object> typeSchema = new HashMap<>(2);
 
         TypeFormat typeFormat = wktSchemas.get(fieldType.getTypeName());
@@ -81,7 +82,11 @@ public class TypeFormatUtil {
                 case TYPE_ENUM:
                 case TYPE_MESSAGE:
                 case TYPE_GROUP:
-                    typeFormat.setRef("#/" + typeDefPrefix + "/" + fieldType.getTypeName());
+                    if(CommonUtils.getPackageNameFromFQPN(fieldType.getFQPN()).equals(basePackage)){
+                        typeFormat.setRef("#/" + typeDefPrefix + "/" + fieldType.getTypeName());
+                    }else{
+                        typeFormat.setRef("#/" + typeDefPrefix + "/" + fieldType.getFQPN());
+                    }
                     break;
             }
         }
@@ -115,11 +120,12 @@ public class TypeFormatUtil {
         return typeSchema;
     }
 
-    public static Map<String, Object> formatTypeSwagger2(FieldType fieldType) {
-        return formatType(fieldType, "definitions");
+    public static Map<String, Object> formatTypeSwagger2(FieldType fieldType,String basePackage) {
+        return formatType(fieldType, "definitions",basePackage);
     }
 
     public static Map<String, Object> formatTypeSwagger3(FieldType fieldType) {
-        return formatType(fieldType, "components/schemas");
+        // TODO: 2018/3/7 处理 swagger3 不通包引用问题
+        return formatType(fieldType, "components/schemas","");
     }
 }

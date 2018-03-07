@@ -4,7 +4,7 @@ package com.ppdai.framework.raptor.proto.test.import2;
 
 
 service ImportedService {
-    rpc importedMethod (Imported) returns (Imported) {
+    rpc importedMethod (Imported) returns (Imported2) {
     }
 }
 
@@ -13,6 +13,7 @@ message Imported {
   int32 page_number = 2;
   int32 result_per_page = 3;
   Imported2 imported = 4;
+  EnumNotAllowingAlias enum = 5;
 }
 
 message Imported2 {
@@ -21,3 +22,8 @@ message Imported2 {
   int32 result_per_page = 3;
 }
 
+
+enum EnumNotAllowingAlias {
+    UNKNOWN = 0;
+    STARTED = 1;
+}
