@@ -66,6 +66,17 @@ public class JsonApiDefinitionGenerator {
 
             List<File> sortedFile = allProtoFile.stream().sorted(Comparator.reverseOrder()).collect(Collectors.toList());
 
+            //收集所有proto文件的信息
+            for (File file : sortedFile) {
+                if (file.exists()) {
+                    String protoFilePath = file.getPath();
+                    proto2Swagger.scanFile(protoFilePath);
+                } else {
+                    LOGGER.warn(file.getName() + " does not exist.");
+                }
+            }
+
+            //生成 proto 文件对应的 swagger json 文件
             for (File file : sortedFile) {
                 if (file.exists()) {
                     String protoFilePath = file.getPath();

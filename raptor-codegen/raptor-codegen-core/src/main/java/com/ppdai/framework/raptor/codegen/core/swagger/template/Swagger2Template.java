@@ -173,10 +173,6 @@ public class Swagger2Template implements SwaggerTemplate {
     public String applyTemplate(DescriptorProtos.FileDescriptorProto fdp,
                                 MetaContainer metaContainer,
                                 String apiVersion) throws JsonProcessingException {
-        // 从pb中提取enum
-        EnumContainer enumContainer = ContainerUtil.getEnums(fdp, metaContainer);
-        // 从pb中提取message
-        MessageContainer messageContainer = ContainerUtil.getMessages(fdp, metaContainer);
         // 从pb中提取service
         ServiceContainer serviceContainer = ContainerUtil.getServiceContainer(fdp);
 

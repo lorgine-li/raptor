@@ -66,36 +66,47 @@ public class Proto2SwaggerJson {
         logger.info("    Processing : " + protoPath);
 
         if (!new File(protoPath).exists()) {
-            logger.warn("protoPath:" + protoPath + " not exist, it may be in the third party jars, so it can't be generate.java");
+            logger.warn("protoPath:" + protoPath + " not exist, it may be in the third party jars.");
             return;
         }
 
         DescriptorProtos.FileDescriptorSet fileDescriptorSet = commandProtoc.invoke(protoPath);
 
         for (DescriptorProtos.FileDescriptorProto fdp : fileDescriptorSet.getFileList()) {
-
             //No service has been defined.
-            if (fdp.getServiceCount() == 0) {
-                logger.info(fdp.getName() + " seems to has no Service defined.");
-                // 解析enum和message到container
-                ContainerUtil.getEnums(fdp, metaContainer);
-                ContainerUtil.getMessages(fdp, metaContainer);
-                continue;
-            }
+            if (fdp.getServiceCount() != 0) {
+                try {
+                    String json = swaggerTemplate.applyTemplate(fdp, metaContainer, apiVersion);
+                    File apiFile = new File(generatePath + File.separatorChar + fdp.getName() + ".json");
+                    if (apiFile.exists()) {
+                        apiFile.delete();
+                    }
+                    FileUtils.writeStringToFile(apiFile, json);
 
-            try {
-                String json = swaggerTemplate.applyTemplate(fdp, metaContainer, apiVersion);
-                File apiFile = new File(generatePath + File.separatorChar + fdp.getName() + ".json");
-                if (apiFile.exists()) {
-                    apiFile.delete();
+                    //logger.info("Swagger API: {}", mapper.writeValueAsString(swaggerObject));
+                    logger.info("Generate Swagger API file: {}", apiFile);
+                } catch (Exception e) {
+                    throw e;
                 }
-                FileUtils.writeStringToFile(apiFile, json);
-
-                //logger.info("Swagger API: {}", mapper.writeValueAsString(swaggerObject));
-                logger.info("Generate Swagger API file: {}", apiFile);
-            } catch (Exception e) {
-                throw e;
             }
         }
+    }
+
+    public void scanFile(String protoPath) {
+        logger.info("    Scan File : " + protoPath);
+
+        if (!new File(protoPath).exists()) {
+            logger.warn("protoPath:" + protoPath + " not exist, it may be in the third party jars.");
+            return;
+        }
+
+        DescriptorProtos.FileDescriptorSet fileDescriptorSet = commandProtoc.invoke(protoPath);
+
+        for (DescriptorProtos.FileDescriptorProto fdp : fileDescriptorSet.getFileList()) {
+            ContainerUtil.getEnums(fdp, metaContainer);
+            ContainerUtil.getMessages(fdp, metaContainer);
+        }
+
+
     }
 }

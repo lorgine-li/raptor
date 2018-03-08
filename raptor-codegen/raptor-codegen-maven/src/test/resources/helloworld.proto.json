@@ -44,20 +44,22 @@
         }
       }
     },
-    "HelloReply" : {
+    "com.ppdai.framework.raptor.proto.Result" : {
       "type" : "object",
       "properties" : {
-        "message" : {
+        "url" : {
           "type" : "string",
           "format" : ""
         },
-        "corpus" : {
-          "$ref" : "#/definitions/HelloRequest.Corpus"
+        "title" : {
+          "type" : "string",
+          "format" : ""
         },
-        "results" : {
+        "snippets" : {
           "type" : "array",
           "items" : {
-            "$ref" : "#/definitions/com.ppdai.framework.raptor.proto.Result"
+            "type" : "string",
+            "format" : ""
           }
         }
       }
@@ -178,6 +180,24 @@
         "duration" : {
           "type" : "string",
           "format" : ""
+        }
+      }
+    },
+    "HelloReply" : {
+      "type" : "object",
+      "properties" : {
+        "message" : {
+          "type" : "string",
+          "format" : ""
+        },
+        "corpus" : {
+          "$ref" : "#/definitions/HelloRequest.Corpus"
+        },
+        "results" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/com.ppdai.framework.raptor.proto.Result"
+          }
         }
       }
     },

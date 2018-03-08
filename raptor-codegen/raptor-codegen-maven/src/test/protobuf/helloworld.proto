@@ -65,7 +65,7 @@ message HelloRequest {
 message HelloReply {
     string message = 1;
     HelloRequest.Corpus corpus = 2;
-    repeated Result results = 3;
+    repeated com.ppdai.framework.raptor.proto.Result results = 3;
 }
 
 message Cat {
