@@ -29,10 +29,14 @@
                 <groupId>com.ppdai.framework</groupId>
                 <artifactId>raptor-codegen-maven</artifactId>
                 <version>${project.version}</version>
+                <configuration>
+                    <includeStdTypes>true</includeStdTypes>
+                </configuration>
                 <executions>
                     <execution>
                         <goals>
                             <goal>proto2java</goal>
+                            <goal>proto2swagger</goal>
                         </goals>
                     </execution>
                 </executions>

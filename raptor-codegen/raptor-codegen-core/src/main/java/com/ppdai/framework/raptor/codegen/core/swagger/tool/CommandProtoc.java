@@ -1,4 +1,4 @@
-package com.ppdai.framework.raptor.codegen.core.service2interface;
+package com.ppdai.framework.raptor.codegen.core.swagger.tool;
 
 
 import com.google.common.collect.ImmutableList;
@@ -38,6 +38,7 @@ public class CommandProtoc {
                     .add("--include_std_types")
                     .add("-I" + discoveryRoot)
                     .add("-I" + new File(protoPath).getParentFile().getAbsolutePath())
+                    .add("--include_source_info")
                     .add("--descriptor_set_out=" + descriptorPath.toAbsolutePath().toString());
 
             if (protocDependenciesPath.exists()) { //todo

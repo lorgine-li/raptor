@@ -1,0 +1,83 @@
+{
+  "swagger" : "2.0",
+  "info" : {
+    "title" : "Imported.proto",
+    "version" : "version not set"
+  },
+  "schemes" : [ "http" ],
+  "paths" : {
+    "/raptor/com.ppdai.framework.raptor.proto.test.import2.ImportedService/importedMethod" : {
+      "post" : {
+        "summary" : "",
+        "description" : "",
+        "operationId" : "importedMethod",
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/Imported2"
+            }
+          }
+        },
+        "parameters" : [ {
+          "name" : "body",
+          "description" : "",
+          "in" : "body",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/Imported"
+          }
+        } ],
+        "deprecated" : false
+      }
+    }
+  },
+  "definitions" : {
+    "Imported2" : {
+      "type" : "object",
+      "properties" : {
+        "query" : {
+          "type" : "string",
+          "format" : ""
+        },
+        "page_number" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "result_per_page" : {
+          "type" : "integer",
+          "format" : "int32"
+        }
+      }
+    },
+    "Imported" : {
+      "type" : "object",
+      "properties" : {
+        "query" : {
+          "type" : "string",
+          "format" : ""
+        },
+        "page_number" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "result_per_page" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "imported" : {
+          "$ref" : "#/definitions/Imported2"
+        },
+        "enum" : {
+          "$ref" : "#/definitions/EnumNotAllowingAlias"
+        }
+      }
+    },
+    "EnumNotAllowingAlias" : {
+      "type" : "string",
+      "enum" : [ "UNKNOWN", "STARTED" ]
+    }
+  }
+}

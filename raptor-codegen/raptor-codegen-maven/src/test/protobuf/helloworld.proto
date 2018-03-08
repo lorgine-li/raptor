@@ -1,18 +1,19 @@
 syntax = "proto3";
 
-package com.ppdai.framework.raptor.proto;
+package com.ppdai.framework.raptor.proto.test;
 
 import "common/Result.proto";
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/struct.proto";
 import "google/protobuf/duration.proto";
 
-service Simple {
+service Hello {
     rpc sayHello (HelloRequest) returns (HelloReply) {
     }
 }
 
 message HelloRequest {
+    // hello name
     string name = 1;
     enum Corpus {
         UNIVERSAL = 0;
@@ -64,7 +65,7 @@ message HelloRequest {
 message HelloReply {
     string message = 1;
     HelloRequest.Corpus corpus = 2;
-    repeated Result results = 3;
+    repeated com.ppdai.framework.raptor.proto.Result results = 3;
 }
 
 message Cat {
