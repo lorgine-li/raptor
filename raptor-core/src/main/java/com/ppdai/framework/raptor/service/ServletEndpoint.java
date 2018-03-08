@@ -5,11 +5,10 @@ import com.ppdai.framework.raptor.common.URLParamType;
 import com.ppdai.framework.raptor.exception.RaptorFrameworkException;
 import com.ppdai.framework.raptor.exception.RaptorServiceException;
 import com.ppdai.framework.raptor.rpc.*;
-import com.ppdai.framework.raptor.serialize.ProtobufSerializationFactory;
+import com.ppdai.framework.raptor.serialize.ProtobufJsonSerialization;
 import com.ppdai.framework.raptor.serialize.Serialization;
-import com.ppdai.framework.raptor.serialize.SerializationFactory;
+import com.ppdai.framework.raptor.serialize.SerializationProviders;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -33,8 +32,6 @@ public class ServletEndpoint extends HttpServlet implements Endpoint {
 
     @Getter
     protected Map<String, Provider<?>> providers = new ConcurrentHashMap<>();
-    @Setter
-    protected SerializationFactory serializationFactory;
     @Getter
     protected URL baseUrl;
 
@@ -49,8 +46,6 @@ public class ServletEndpoint extends HttpServlet implements Endpoint {
         } catch (Exception e) {
             throw new RaptorFrameworkException("ServletEndpoint init error.", e);
         }
-        if (this.serializationFactory == null)
-            this.serializationFactory = new ProtobufSerializationFactory();
     }
 
     @Override
@@ -159,7 +154,15 @@ public class ServletEndpoint extends HttpServlet implements Endpoint {
     }
 
     protected Serialization getSerialization(HttpServletRequest httpRequest) {
-        return this.serializationFactory.newInstance(httpRequest.getHeader(URLParamType.serialization.getName()));
+        String serializationName = httpRequest.getHeader(URLParamType.serialization.getName());
+        if (StringUtils.isNotBlank(serializationName)) {
+            return SerializationProviders.getInstance().getSerialization(serializationName);
+        }
+        if (StringUtils.contains(httpRequest.getContentType(), "json")) {
+            return SerializationProviders.getInstance().getSerialization(ProtobufJsonSerialization.name);
+        } else {
+            return SerializationProviders.getInstance().getDefault();
+        }
     }
 
     protected String getProviderKey(Request request) {

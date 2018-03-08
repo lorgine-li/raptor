@@ -6,6 +6,7 @@ import com.ppdai.framework.raptor.refer.client.Client;
 import com.ppdai.framework.raptor.refer.proxy.JdkProxyFactory;
 import com.ppdai.framework.raptor.refer.proxy.ReferInvocationHandler;
 import com.ppdai.framework.raptor.rpc.URL;
+import com.ppdai.framework.raptor.serialize.Serialization;
 import org.apache.commons.collections4.CollectionUtils;
 
 import java.util.ArrayList;
@@ -18,6 +19,8 @@ public class ReferProxyBuilder {
 
     private List<ReferFilter> filterList;
 
+    private Serialization serialization;
+
     private ReferProxyBuilder() {
         this.filterList = new ArrayList<>();
     }
@@ -25,6 +28,9 @@ public class ReferProxyBuilder {
     public <T> T build(Class<T> interfaceClass, URL url) {
         if (this.client == null) {
             this.client = createDefaultClient();
+        }
+        if (this.serialization != null) {
+            this.client.setSerialization(this.serialization);
         }
         Refer<T> refer = new DefaultRefer<>(interfaceClass, client, url);
 
@@ -66,4 +72,8 @@ public class ReferProxyBuilder {
         return this;
     }
 
+    public ReferProxyBuilder serialization(Serialization serialization) {
+        this.serialization = serialization;
+        return this;
+    }
 }

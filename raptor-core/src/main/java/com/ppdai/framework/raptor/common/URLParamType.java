@@ -2,11 +2,12 @@ package com.ppdai.framework.raptor.common;
 
 
 import com.ppdai.framework.raptor.exception.RaptorServiceException;
+import com.ppdai.framework.raptor.serialize.ProtobufBinSerialization;
 
 public enum URLParamType {
 
     version("version", "1.0"),
-    serialization("Content-Type", "application/protobuf"),
+    serialization("x-serialization", ProtobufBinSerialization.name),
     httpVersion("statusLine.protocolVersion", "1.1"),
     httpStatusCode("statusLine.code", 0),
     httpReasonPhrase("statusLine.reasonPhrase", ""),

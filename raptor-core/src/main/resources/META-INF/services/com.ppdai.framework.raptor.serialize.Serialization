@@ -1,0 +1,2 @@
+com.ppdai.framework.raptor.serialize.ProtobufBinSerialization
+com.ppdai.framework.raptor.serialize.ProtobufJsonSerialization

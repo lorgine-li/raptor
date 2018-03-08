@@ -5,6 +5,8 @@ import com.ppdai.framework.raptor.util.ProtoBuffUtils;
 
 public class ProtobufBinSerialization extends ProtobufSerialization {
 
+    public static final String name = "protobuf-bin";
+
     @Override
     public byte[] serializeMessage(Message message) {
         return message.toByteArray();
@@ -15,4 +17,8 @@ public class ProtobufBinSerialization extends ProtobufSerialization {
         return ProtoBuffUtils.byteArrayToProtobuf(bytes, clazz);
     }
 
+    @Override
+    public String getName() {
+        return name;
+    }
 }

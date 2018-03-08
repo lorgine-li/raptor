@@ -4,16 +4,17 @@ import com.ppdai.framework.raptor.common.RaptorConstants;
 import com.ppdai.framework.raptor.common.RaptorMessageConstant;
 import com.ppdai.framework.raptor.common.URLParamType;
 import com.ppdai.framework.raptor.exception.*;
-import com.ppdai.framework.raptor.rpc.*;
-import com.ppdai.framework.raptor.serialize.ProtobufSerializationFactory;
+import com.ppdai.framework.raptor.rpc.DefaultResponse;
+import com.ppdai.framework.raptor.rpc.Request;
+import com.ppdai.framework.raptor.rpc.Response;
+import com.ppdai.framework.raptor.rpc.URL;
 import com.ppdai.framework.raptor.serialize.Serialization;
-import com.ppdai.framework.raptor.serialize.SerializationFactory;
+import com.ppdai.framework.raptor.serialize.SerializationProviders;
 import com.ppdai.framework.raptor.util.ExceptionUtil;
 import com.ppdai.framework.raptor.util.ReflectUtil;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.Header;
@@ -23,6 +24,7 @@ import org.apache.http.StatusLine;
 import org.apache.http.client.entity.EntityBuilder;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.entity.ContentType;
 import org.apache.http.message.BasicHeader;
 
 import java.io.Closeable;
@@ -39,12 +41,12 @@ import java.util.Objects;
 @Slf4j
 public abstract class AbstractHttpClient implements Client {
 
-    private SerializationFactory serializationFactory;
+    private Serialization serialization;
 
     @Override
     public void init() {
-        if (this.serializationFactory == null) {
-            this.serializationFactory = new ProtobufSerializationFactory();
+        if (this.serialization == null) {
+            this.serialization = SerializationProviders.getInstance().getDefault();
         }
     }
 
@@ -102,7 +104,7 @@ public abstract class AbstractHttpClient implements Client {
         if (Objects.isNull(request.getArgument())) {
             entity = EntityBuilder.create().build();
         } else {
-            byte[] data = this.buildContent(request, serviceUrl);
+            byte[] data = this.buildContent(request);
             entity = EntityBuilder.create().setBinary(data).build();
         }
         post.setEntity(entity);
@@ -149,30 +151,18 @@ public abstract class AbstractHttpClient implements Client {
             httpRequest.addHeader(header);
         }
         String requestId = String.valueOf(request.getRequestId());
-        httpRequest.addHeader(new BasicHeader(URLParamType.serialization.getName(), getSerializationType(request, serviceUrl)));
         httpRequest.addHeader(new BasicHeader(URLParamType.requestId.name(), requestId));
         httpRequest.addHeader(new BasicHeader("connection", "Keep-Alive"));
+
+        String serializationType = this.serialization.getName();
+        httpRequest.addHeader(new BasicHeader(URLParamType.serialization.getName(), serializationType));
+        if (StringUtils.contains(serializationType, "json")) {
+            httpRequest.addHeader("Content-Type", ContentType.APPLICATION_JSON.getMimeType());
+        }
     }
 
-    protected String getSerializationType(Request request, URL serviceUrl) {
-        String key = URLParamType.serialization.getName();
-        // serializationType获取顺序 request.getAttachments > RpcContext > serviceUrl > URLParamType.serialization
-        String serializationType = request.getAttachments().get(key);
-        serializationType = StringUtils.isBlank(serializationType) ? RpcContext.getContext().getRpcAttachment(key) : serializationType;
-        serializationType = StringUtils.isBlank(serializationType) ? serviceUrl.getParameter(key) : serializationType;
-        serializationType = StringUtils.isBlank(serializationType) ? URLParamType.serialization.getValue() : serializationType;
-        return serializationType;
-    }
-
-    protected byte[] buildContent(Request request, URL serviceUrl) {
-        Serialization serialization = this.buildSerialization(request);
-        return serialization.serialize(request.getArgument());
-    }
-
-    protected Serialization buildSerialization(Request request) {
-        String serializationParam = MapUtils.getString(request.getAttachments(),
-                URLParamType.serialization.getName(), URLParamType.serialization.getValue());
-        return this.getSerializationFactory().newInstance(serializationParam);
+    protected byte[] buildContent(Request request) {
+        return this.serialization.serialize(request.getArgument());
     }
 
     protected void setResponseValue(Request request, DefaultResponse response, int statusCode, byte[] content) {
@@ -211,8 +201,7 @@ public abstract class AbstractHttpClient implements Client {
         String returnType = request.getReturnType();
         try {
             Class<?> returnClass = ReflectUtil.forName(returnType);
-            Serialization serialization = this.buildSerialization(request);
-            return serialization.deserialize(content, returnClass);
+            return this.serialization.deserialize(content, returnClass);
         } catch (Exception e) {
             throw new RaptorServiceException("Deserialize response content error, requestId=" + request.getRequestId(), e);
         }

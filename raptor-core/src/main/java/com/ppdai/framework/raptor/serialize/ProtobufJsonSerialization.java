@@ -1,12 +1,14 @@
 package com.ppdai.framework.raptor.serialize;
 
 import com.google.protobuf.Message;
-import com.ppdai.framework.raptor.util.ProtoBuffUtils;
 import com.ppdai.framework.raptor.common.RaptorConstants;
+import com.ppdai.framework.raptor.util.ProtoBuffUtils;
 
 import java.io.UnsupportedEncodingException;
 
 public class ProtobufJsonSerialization extends ProtobufSerialization {
+
+    public static final String name = "protobuf-json";
 
     @Override
     public byte[] serializeMessage(Message message) {
@@ -25,5 +27,10 @@ public class ProtobufJsonSerialization extends ProtobufSerialization {
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException("Unsupported Encoding " + RaptorConstants.DEFAULT_CHARACTER, e);
         }
+    }
+
+    @Override
+    public String getName() {
+        return name;
     }
 }

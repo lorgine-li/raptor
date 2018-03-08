@@ -34,7 +34,7 @@
 
         <dependency>
             <groupId>com.ppdai.framework</groupId>
-            <artifactId>raptor-demo-api</artifactId>
+            <artifactId>raptor-benchmark-api</artifactId>
             <version>${project.version}</version>
         </dependency>
 
