@@ -1,21 +1,21 @@
 package com.ppdai.framework.raptor.codegen.core.swagger.tool;
 
-     import com.google.protobuf.DescriptorProtos;
-     import com.ppdai.framework.raptor.codegen.core.swagger.container.EnumContainer;
-     import com.ppdai.framework.raptor.codegen.core.swagger.container.MessageContainer;
-     import com.ppdai.framework.raptor.codegen.core.swagger.container.MetaContainer;
-     import com.ppdai.framework.raptor.codegen.core.swagger.container.ServiceContainer;
+import com.google.protobuf.DescriptorProtos;
+import com.ppdai.framework.raptor.codegen.core.swagger.container.EnumContainer;
+import com.ppdai.framework.raptor.codegen.core.swagger.container.MessageContainer;
+import com.ppdai.framework.raptor.codegen.core.swagger.container.MetaContainer;
+import com.ppdai.framework.raptor.codegen.core.swagger.container.ServiceContainer;
 
-     import java.util.List;
+import java.util.List;
 
-     /**
-     * Created by zhangyicong on 18-2-28.
-     */
-    public class ContainerUtil {
+/**
+ * Created by zhangyicong on 18-2-28.
+ */
+public class ContainerUtil {
 
-        /**
-         * 提取enum类型
-         *
+    /**
+     * 提取enum类型
+     *
      * @param fdp
      * @return
      */

@@ -125,7 +125,7 @@ public class TypeFormatUtil {
     }
 
     public static Map<String, Object> formatTypeSwagger3(FieldType fieldType) {
-        // TODO: 2018/3/7 处理 swagger3 不通包引用问题
+        // TODO: 2018/3/7 处理 swagger3 不同包引用问题
         return formatType(fieldType, "components/schemas","");
     }
 }

@@ -39,4 +39,8 @@ public class EnumContainer {
     public Collection<EnumType> getEnumTypeList() {
         return enumTypeMap.values();
     }
+
+    public EnumType findEnumTypeByFQPN(String FQPN) {
+        return enumTypeMap.get(FQPN);
+    }
 }

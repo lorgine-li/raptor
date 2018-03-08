@@ -35,6 +35,45 @@
     }
   },
   "definitions" : {
+    "Cat" : {
+      "type" : "object",
+      "properties" : {
+        "color" : {
+          "type" : "string",
+          "format" : ""
+        }
+      }
+    },
+    "HelloReply" : {
+      "type" : "object",
+      "properties" : {
+        "message" : {
+          "type" : "string",
+          "format" : ""
+        },
+        "corpus" : {
+          "$ref" : "#/definitions/HelloRequest.Corpus"
+        },
+        "results" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/com.ppdai.framework.raptor.proto.Result"
+          }
+        }
+      }
+    },
+    "HelloRequest.Result" : {
+      "type" : "object",
+      "properties" : {
+        "url" : {
+          "type" : "string",
+          "format" : ""
+        },
+        "corpus" : {
+          "$ref" : "#/definitions/HelloRequest.Result.Corpus"
+        }
+      }
+    },
     "HelloRequest" : {
       "type" : "object",
       "properties" : {
@@ -142,29 +181,7 @@
         }
       }
     },
-    "HelloReply" : {
-      "type" : "object",
-      "properties" : {
-        "message" : {
-          "type" : "string",
-          "format" : ""
-        },
-        "corpus" : {
-          "$ref" : "#/definitions/HelloRequest.Corpus"
-        },
-        "results" : {
-          "type" : "array",
-          "items" : {
-            "$ref" : "#/definitions/com.ppdai.framework.raptor.proto.Result"
-          }
-        }
-      }
-    },
     "HelloRequest.Corpus" : {
-      "type" : "string",
-      "enum" : [ "UNIVERSAL", "WEB", "IMAGES", "LOCAL", "NEWS", "PRODUCTS", "VIDEO" ]
-    },
-    "HelloRequest.Result.Corpus" : {
       "type" : "string",
       "enum" : [ "UNIVERSAL", "WEB", "IMAGES", "LOCAL", "NEWS", "PRODUCTS", "VIDEO" ]
     }

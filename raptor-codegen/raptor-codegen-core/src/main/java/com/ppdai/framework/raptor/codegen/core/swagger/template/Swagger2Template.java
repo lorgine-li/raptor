@@ -103,6 +103,15 @@ public class Swagger2Template implements SwaggerTemplate {
         return dependMessage;
     }
 
+    private String getRefName(EnumType inputEnum, String basePackage) {
+        String packageName = CommonUtils.getPackageNameFromFQPN(inputEnum.getFQPN());
+        if (basePackage.equals(packageName)) {
+            return inputEnum.getName();
+        } else {
+            return inputEnum.getFQPN();
+        }
+    }
+
     private String getRefName(MessageType inputMessage, String basePackage) {
         String packageName = CommonUtils.getPackageNameFromFQPN(inputMessage.getFQPN());
         if (basePackage.equals(packageName)) {
@@ -112,9 +121,9 @@ public class Swagger2Template implements SwaggerTemplate {
         }
     }
 
-    private void addEnum2Definitions(SwaggerObject swaggerObject, EnumType enumType) {
+    private void addEnum2Definitions(SwaggerObject swaggerObject, EnumType enumType,String basePackage) {
         SwaggerSchemaObject swaggerSchemaObject = new SwaggerSchemaObject();
-        swaggerObject.getDefinitions().put(enumType.getName(), swaggerSchemaObject);
+        swaggerObject.getDefinitions().put(getRefName(enumType, basePackage), swaggerSchemaObject);
 
         swaggerSchemaObject.setType("string");
         swaggerSchemaObject.setSwaggerEnum(new ArrayList<>(enumType.getValues()));
@@ -130,7 +139,6 @@ public class Swagger2Template implements SwaggerTemplate {
         swaggerSchemaObject.setProperties(properties);
 
         for (FieldType fieldType : messageType.getFieldTypeList()) {
-            // TODO: 2018/3/7 处理 import 中嵌套的包名问题
             Map<String, Object> typeSchema = TypeFormatUtil.formatTypeSwagger2(fieldType, basePackage);
             properties.put(fieldType.getName(), typeSchema);
         }
@@ -141,19 +149,17 @@ public class Swagger2Template implements SwaggerTemplate {
      *
      * @param swaggerObject
      * @param messageTypes
-     * @param enumContainer
+     * @param enumTypes
      */
     private void renderDefinitions(SwaggerObject swaggerObject,
                                    Set<MessageType> messageTypes,
-                                   EnumContainer enumContainer,
+                                   Set<EnumType> enumTypes,
                                    String basePackage) {
-        // TODO: 2018/3/7 处理import 中的嵌套的问题
         for (MessageType messageType : messageTypes) {
             addType2Definitions(swaggerObject, messageType, basePackage);
         }
-        // TODO: 2018/3/7 验证不同 package 之间的 import 应用是否会有问题
-        for (EnumType enumType : enumContainer.getEnumTypeList()) {
-            addEnum2Definitions(swaggerObject, enumType);
+        for (EnumType enumType : enumTypes) {
+            addEnum2Definitions(swaggerObject, enumType,basePackage);
         }
     }
 
@@ -186,13 +192,17 @@ public class Swagger2Template implements SwaggerTemplate {
         // render path
         Set<MessageType> messageTypes = renderServices(swaggerObject, serviceContainer, metaContainer, basePackage);
         // render type and enum
-        HashSet<MessageType> relationMessageTypes = collectNestType(metaContainer, messageTypes, basePackage);
-        renderDefinitions(swaggerObject, relationMessageTypes, enumContainer, basePackage);
+        HashSet<EnumType> nestedEnumTypes = new HashSet<>();
+        HashSet<MessageType> nestedMessageTypes = new HashSet<>();
+
+        collectNestType(metaContainer, messageTypes,nestedEnumTypes,nestedMessageTypes, basePackage);
+
+        renderDefinitions(swaggerObject, nestedMessageTypes, nestedEnumTypes, basePackage);
 
         return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(swaggerObject);
     }
 
-    private HashSet<MessageType> collectNestType(MetaContainer metaContainer, Set<MessageType> messageTypes, String basePackage) {
+    private void collectNestType(MetaContainer metaContainer, Set<MessageType> messageTypes,Set<EnumType> nestEnumTypes,Set<MessageType> nestedMessageTypes, String basePackage) {
         List<MessageType> messageTypeList = new ArrayList<>(messageTypes);
         ListIterator<MessageType> listIterator = messageTypeList.listIterator();
         while (listIterator.hasNext()) {
@@ -203,9 +213,14 @@ public class Swagger2Template implements SwaggerTemplate {
                     if (!messageTypeList.contains(nestedMessageType) && Objects.nonNull(nestedMessageType)) {
                         listIterator.add(nestedMessageType);
                     }
+
+                    EnumType nestEnumType = metaContainer.findEnumTypeByFQPN(fieldType.getFQPN(), basePackage);
+                    if (!messageTypeList.contains(nestedMessageType) && Objects.nonNull(nestEnumType)) {
+                        nestEnumTypes.add(nestEnumType);
+                    }
                 }
             }
         }
-        return new HashSet<MessageType>(messageTypeList);
+        nestedMessageTypes.addAll(messageTypeList);
     }
 }

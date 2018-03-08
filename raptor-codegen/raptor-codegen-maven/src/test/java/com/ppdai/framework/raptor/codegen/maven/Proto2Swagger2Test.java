@@ -61,21 +61,21 @@ public class Proto2Swagger2Test extends AbstractMojoTestCase {
         setVariableValueToObject(mojo, "protocDependenciesPath", new File( getBasedir(), "target/protoc-dependencies" ));
         mojo.execute();
 
-        File hellowordSwaggerGen = new File(getBasedir(), "target/generated-sources/Import.proto.json");
-        assertTrue(hellowordSwaggerGen.exists());
+        File importSwaggerGen = new File(getBasedir(), "target/generated-sources/Import.proto.json");
+        assertTrue(importSwaggerGen.exists());
 
-        File simpleSwaggerGen = new File(getBasedir(), "target/generated-sources/Imported.proto.json");
-        assertTrue(simpleSwaggerGen.exists());
+        File importedSwaggerGen = new File(getBasedir(), "target/generated-sources/Imported.proto.json");
+        assertTrue(importedSwaggerGen.exists());
 
-        File hellowordSwaggerCorrect = new File(getBasedir(), "src/test/resources/Import.proto.json");
-        assertTrue(hellowordSwaggerCorrect.exists());
+        File importSwaggerCorrect = new File(getBasedir(), "src/test/resources/Import.proto.json");
+        assertTrue(importSwaggerCorrect.exists());
 
-        FileAssert.assertEquals(hellowordSwaggerCorrect, hellowordSwaggerGen);
+        FileAssert.assertEquals(importSwaggerCorrect, importSwaggerGen);
 
-        File simpleSwaggerCorrect = new File(getBasedir(), "src/test/resources/Imported.proto.json");
-        assertTrue(simpleSwaggerCorrect.exists());
+        File importedSwaggerCorrect = new File(getBasedir(), "src/test/resources/Imported.proto.json");
+        assertTrue(importedSwaggerCorrect.exists());
 
-        FileAssert.assertEquals(simpleSwaggerCorrect, simpleSwaggerGen);
+        FileAssert.assertEquals(importedSwaggerCorrect, importedSwaggerGen);
 
 
 

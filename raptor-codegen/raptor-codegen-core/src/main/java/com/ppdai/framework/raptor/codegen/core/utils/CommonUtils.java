@@ -9,7 +9,6 @@ public final class CommonUtils {
 
     public static String getPackageNameFromFQPN(String FQPN){
         // TODO: 2018/3/7 检查没有 package 的情况
-        // TODO: 2018/3/7
         int lastDotIndex = FQPN.lastIndexOf('.');
         String result =  StringUtils.substring(FQPN, 0, lastDotIndex);
         lastDotIndex = result.lastIndexOf('.');

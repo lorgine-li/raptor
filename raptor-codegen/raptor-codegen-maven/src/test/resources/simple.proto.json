@@ -35,19 +35,19 @@
     }
   },
   "definitions" : {
-    "SimpleRequest" : {
+    "SimpleReply" : {
       "type" : "object",
       "properties" : {
-        "name" : {
+        "message" : {
           "type" : "string",
           "format" : ""
         }
       }
     },
-    "SimpleReply" : {
+    "SimpleRequest" : {
       "type" : "object",
       "properties" : {
-        "message" : {
+        "name" : {
           "type" : "string",
           "format" : ""
         }
