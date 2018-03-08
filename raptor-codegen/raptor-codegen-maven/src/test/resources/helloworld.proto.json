@@ -35,15 +35,6 @@
     }
   },
   "definitions" : {
-    "Cat" : {
-      "type" : "object",
-      "properties" : {
-        "color" : {
-          "type" : "string",
-          "format" : ""
-        }
-      }
-    },
     "com.ppdai.framework.raptor.proto.Result" : {
       "type" : "object",
       "properties" : {
@@ -61,18 +52,6 @@
             "type" : "string",
             "format" : ""
           }
-        }
-      }
-    },
-    "HelloRequest.Result" : {
-      "type" : "object",
-      "properties" : {
-        "url" : {
-          "type" : "string",
-          "format" : ""
-        },
-        "corpus" : {
-          "$ref" : "#/definitions/HelloRequest.Result.Corpus"
         }
       }
     },
@@ -183,6 +162,27 @@
         }
       }
     },
+    "Cat" : {
+      "type" : "object",
+      "properties" : {
+        "color" : {
+          "type" : "string",
+          "format" : ""
+        }
+      }
+    },
+    "HelloRequest.Result" : {
+      "type" : "object",
+      "properties" : {
+        "url" : {
+          "type" : "string",
+          "format" : ""
+        },
+        "corpus" : {
+          "$ref" : "#/definitions/HelloRequest.Result.Corpus"
+        }
+      }
+    },
     "HelloReply" : {
       "type" : "object",
       "properties" : {
@@ -200,6 +200,10 @@
           }
         }
       }
+    },
+    "HelloRequest.Result.Corpus" : {
+      "type" : "string",
+      "enum" : [ "UNIVERSAL", "WEB", "IMAGES", "LOCAL", "NEWS", "PRODUCTS", "VIDEO" ]
     },
     "HelloRequest.Corpus" : {
       "type" : "string",

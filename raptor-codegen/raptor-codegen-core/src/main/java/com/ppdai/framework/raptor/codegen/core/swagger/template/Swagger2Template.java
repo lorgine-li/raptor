@@ -201,8 +201,8 @@ public class Swagger2Template implements SwaggerTemplate {
     private void collectNestType(MetaContainer metaContainer, Set<MessageType> messageTypes,Set<EnumType> nestEnumTypes,Set<MessageType> nestedMessageTypes, String basePackage) {
         List<MessageType> messageTypeList = new ArrayList<>(messageTypes);
         ListIterator<MessageType> listIterator = messageTypeList.listIterator();
-        while (listIterator.hasNext()) {
-            MessageType next = listIterator.next();
+        for(int i = 0;i<messageTypeList.size();i++){
+            MessageType next = messageTypeList.get(i);
             for (FieldType fieldType : next.getFieldTypeList()) {
                 if (StringUtils.isNotBlank(fieldType.getTypeName()) && !CommonUtils.isProtoBufType(fieldType.getTypeName())) {
                     MessageType nestedMessageType = metaContainer.findMessageTypeByFQPN(fieldType.getFQPN(), basePackage);

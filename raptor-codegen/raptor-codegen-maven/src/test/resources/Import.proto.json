@@ -35,29 +35,6 @@
     }
   },
   "definitions" : {
-    "com.ppdai.framework.raptor.proto.test.import2.Imported" : {
-      "type" : "object",
-      "properties" : {
-        "query" : {
-          "type" : "string",
-          "format" : ""
-        },
-        "page_number" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "result_per_page" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "imported" : {
-          "$ref" : "#/definitions/com.ppdai.framework.raptor.proto.test.import2.Imported2"
-        },
-        "enum" : {
-          "$ref" : "#/definitions/com.ppdai.framework.raptor.proto.test.import2.EnumNotAllowingAlias"
-        }
-      }
-    },
     "com.ppdai.framework.raptor.proto.test.import2.Imported2" : {
       "type" : "object",
       "properties" : {
@@ -80,6 +57,29 @@
       "properties" : {
         "request" : {
           "$ref" : "#/definitions/com.ppdai.framework.raptor.proto.test.import2.Imported"
+        },
+        "enum" : {
+          "$ref" : "#/definitions/com.ppdai.framework.raptor.proto.test.import2.EnumNotAllowingAlias"
+        }
+      }
+    },
+    "com.ppdai.framework.raptor.proto.test.import2.Imported" : {
+      "type" : "object",
+      "properties" : {
+        "query" : {
+          "type" : "string",
+          "format" : ""
+        },
+        "page_number" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "result_per_page" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "imported" : {
+          "$ref" : "#/definitions/com.ppdai.framework.raptor.proto.test.import2.Imported2"
         },
         "enum" : {
           "$ref" : "#/definitions/com.ppdai.framework.raptor.proto.test.import2.EnumNotAllowingAlias"

@@ -35,6 +35,23 @@
     }
   },
   "definitions" : {
+    "Imported2" : {
+      "type" : "object",
+      "properties" : {
+        "query" : {
+          "type" : "string",
+          "format" : ""
+        },
+        "page_number" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "result_per_page" : {
+          "type" : "integer",
+          "format" : "int32"
+        }
+      }
+    },
     "Imported" : {
       "type" : "object",
       "properties" : {
@@ -55,23 +72,6 @@
         },
         "enum" : {
           "$ref" : "#/definitions/EnumNotAllowingAlias"
-        }
-      }
-    },
-    "Imported2" : {
-      "type" : "object",
-      "properties" : {
-        "query" : {
-          "type" : "string",
-          "format" : ""
-        },
-        "page_number" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "result_per_page" : {
-          "type" : "integer",
-          "format" : "int32"
         }
       }
     },
