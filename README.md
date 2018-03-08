@@ -52,7 +52,7 @@ raptor是一套高性能、易于使用的分布式远程服务调用(RPC)框架
     
 3. 增加maven依赖
 
-    分别在服务端和客户端的spring boot maven工程中添加依赖
+    分别在服务端和客户端的maven工程中添加依赖
     ```xml
        <!--上一步生成的maven工程依赖-->
         <dependency>

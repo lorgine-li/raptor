@@ -1,6 +1,5 @@
 package com.ppdai.framework.raptor.refer.client;
 
-import com.ppdai.framework.raptor.common.ParamNameConstants;
 import com.ppdai.framework.raptor.common.RaptorConstants;
 import com.ppdai.framework.raptor.common.RaptorMessageConstant;
 import com.ppdai.framework.raptor.common.URLParamType;
@@ -10,7 +9,6 @@ import com.ppdai.framework.raptor.serialize.ProtobufSerializationFactory;
 import com.ppdai.framework.raptor.serialize.Serialization;
 import com.ppdai.framework.raptor.serialize.SerializationFactory;
 import com.ppdai.framework.raptor.util.ExceptionUtil;
-import com.ppdai.framework.raptor.util.NetUtils;
 import com.ppdai.framework.raptor.util.ReflectUtil;
 import lombok.Getter;
 import lombok.Setter;
