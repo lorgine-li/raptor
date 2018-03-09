@@ -3,7 +3,6 @@ package com.ppdai.framework.raptor.codegen.core.swagger.container;
 import com.ppdai.framework.raptor.codegen.core.swagger.type.EnumType;
 import com.ppdai.framework.raptor.codegen.core.swagger.type.MessageType;
 import com.ppdai.framework.raptor.codegen.core.utils.CommonUtils;
-import com.sun.istack.internal.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -42,16 +41,15 @@ public class MetaContainer {
         String packageName = CommonUtils.getPackageNameFromFQPN(FQPN);
         EnumContainer messageContainer = enumContainerMap.get(packageName);
         return Optional.ofNullable(messageContainer)
-                .map(container -> container.findEnumTypeByFQPN(FQPN) )
+                .map(container -> container.findEnumTypeByFQPN(FQPN))
                 .orElse(null);
     }
 
     private MessageType findMessageTypeByFQPN(String FQPN) {
         String packageName = CommonUtils.getPackageNameFromFQPN(FQPN);
         MessageContainer messageContainer = messageContainerMap.get(packageName);
-        // TODO: 2018/3/7 common/Result.proto 没有导入到 MessageContainer 中
         return Optional.ofNullable(messageContainer)
-                .map(container -> container.findMessageTypeByFQPN(FQPN) )
+                .map(container -> container.findMessageTypeByFQPN(FQPN))
                 .orElse(null);
 
     }

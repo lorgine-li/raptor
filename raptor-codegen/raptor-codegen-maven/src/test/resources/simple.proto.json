@@ -8,7 +8,7 @@
   "paths" : {
     "/raptor/com.ppdai.framework.raptor.proto.test.Simple/sayHello" : {
       "post" : {
-        "summary" : "",
+        "summary" : "Commnet above antoher\n",
         "description" : "",
         "operationId" : "sayHello",
         "consumes" : [ "application/json" ],
@@ -35,19 +35,19 @@
     }
   },
   "definitions" : {
-    "SimpleReply" : {
+    "SimpleRequest" : {
       "type" : "object",
       "properties" : {
-        "message" : {
+        "name" : {
           "type" : "string",
           "format" : ""
         }
       }
     },
-    "SimpleRequest" : {
+    "SimpleReply" : {
       "type" : "object",
       "properties" : {
-        "name" : {
+        "message" : {
           "type" : "string",
           "format" : ""
         }

@@ -73,7 +73,6 @@ public class Proto2SwaggerJson {
         DescriptorProtos.FileDescriptorSet fileDescriptorSet = commandProtoc.invoke(protoPath);
 
         for (DescriptorProtos.FileDescriptorProto fdp : fileDescriptorSet.getFileList()) {
-            //No service has been defined.
             if (fdp.getServiceCount() != 0) {
                 try {
                     String json = swaggerTemplate.applyTemplate(fdp, metaContainer, apiVersion);
