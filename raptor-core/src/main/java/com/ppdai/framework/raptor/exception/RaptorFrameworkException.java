@@ -4,36 +4,19 @@ import com.ppdai.framework.raptor.common.RaptorMessageConstant;
 
 public class RaptorFrameworkException extends RaptorAbstractException {
 
-    public RaptorFrameworkException() {
-        super(RaptorMessageConstant.FRAMEWORK_DEFAULT_ERROR);
-    }
-
-    public RaptorFrameworkException(RaptorMessage raptorMessage) {
-        super(raptorMessage);
-    }
-
     public RaptorFrameworkException(String message) {
-        super(message, RaptorMessageConstant.FRAMEWORK_DEFAULT_ERROR);
-    }
-
-    public RaptorFrameworkException(String message, RaptorMessage raptorMessage) {
-        super(message, raptorMessage);
+        super(new ErrorMessage(RaptorMessageConstant.FRAMEWORK_DEFAULT_ERROR_CODE, message), null);
     }
 
     public RaptorFrameworkException(String message, Throwable cause) {
-        super(message, cause, RaptorMessageConstant.FRAMEWORK_DEFAULT_ERROR);
+        super(new ErrorMessage(RaptorMessageConstant.FRAMEWORK_DEFAULT_ERROR_CODE, message), cause);
     }
 
-    public RaptorFrameworkException(String message, Throwable cause, RaptorMessage raptorMessage) {
-        super(message, cause, raptorMessage);
+    public RaptorFrameworkException(int code, String message, Throwable cause) {
+        super(new ErrorMessage(code, message), cause);
     }
 
-    public RaptorFrameworkException(Throwable cause) {
-        super(cause, RaptorMessageConstant.FRAMEWORK_DEFAULT_ERROR);
+    public RaptorFrameworkException(ErrorMessage errorMessage, Throwable cause) {
+        super(errorMessage, cause);
     }
-
-    public RaptorFrameworkException(Throwable cause, RaptorMessage raptorMessage) {
-        super(cause, raptorMessage);
-    }
-
 }

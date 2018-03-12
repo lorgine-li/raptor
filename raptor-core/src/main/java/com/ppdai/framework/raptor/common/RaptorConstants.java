@@ -19,7 +19,6 @@ public class RaptorConstants {
     public static final String REGISTRY_PROTOCOL_LOCAL = "local";
     public static final int DEFAULT_INT_VALUE = 0;
     public static final String DEFAULT_CHARACTER = "utf-8";
-    public static final int HTTP_EXPECTATION_FAILED = 419;
     public static final int HTTP_OK = 200;
     public static final int DEFAULT_PORT = 8080;
 

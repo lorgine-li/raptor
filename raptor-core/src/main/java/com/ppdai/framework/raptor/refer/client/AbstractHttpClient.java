@@ -10,7 +10,6 @@ import com.ppdai.framework.raptor.rpc.Response;
 import com.ppdai.framework.raptor.rpc.URL;
 import com.ppdai.framework.raptor.serialize.Serialization;
 import com.ppdai.framework.raptor.serialize.SerializationProviders;
-import com.ppdai.framework.raptor.util.ExceptionUtil;
 import com.ppdai.framework.raptor.util.ReflectUtil;
 import lombok.Getter;
 import lombok.Setter;
@@ -167,33 +166,27 @@ public abstract class AbstractHttpClient implements Client {
 
     protected void setResponseValue(Request request, DefaultResponse response, int statusCode, byte[] content) {
         //  根据http状态码做不同的处理
-        if (statusCode >= 200 && statusCode < 300) {
+        if (statusCode == 200) {
             response.setValue(deserializeResponseValue(request, content));
             response.setCode(RaptorMessageConstant.SUCCESS);
-        } else if (statusCode >= 300 && statusCode < 400) {
-            response.setException(new RaptorServiceException(new RaptorMessage(statusCode,
-                    RaptorMessageConstant.SERVICE_REDIRECT_ERROR_CODE, "Http request redirect error.")));
-            response.setCode(RaptorMessageConstant.SERVICE_REDIRECT_ERROR_CODE);
-        } else if (statusCode == 404) {
-            response.setException(new RaptorServiceException(RaptorMessageConstant.SERVICE_UNFOUND));
-            response.setCode(RaptorMessageConstant.SERVICE_UNFOUND_ERROR_CODE);
-        } else if (statusCode >= 400 && statusCode < 600) {//4xx,5xx处理逻辑是一样的
-            String exceptionClass = response.getAttachments().get(URLParamType.exceptionClassHeader.getName());
-            Exception e = deserializeResponseException(request, exceptionClass, content);
-            int code = RaptorMessageConstant.SERVICE_DEFAULT_ERROR_CODE;
-            if (e == null) {
-                e = new RaptorServiceException(new RaptorMessage(statusCode,
-                        RaptorMessageConstant.SERVICE_UNKNOW_ERROR_CODE, "Unknow error, status code is " + statusCode));
-            } else if (ExceptionUtil.isRaptorException(e)) {
-                code = ((RaptorAbstractException) e).getErrorCode();
-                code = code == 0 ? RaptorMessageConstant.SERVICE_DEFAULT_ERROR_CODE : code;
-            }
-            response.setException(e);
-            response.setCode(code);
+        } else if (statusCode == 419) {
+            //raptor异常
+            ErrorProto.ErrorMessage errorProto = deserializeErrorMessage(request, content);
+            ErrorMessage errorMessage = ErrorMessage.fromErrorProto(errorProto);
+            response.setException(getExceptionByErrorMessage(errorMessage));
+            response.setCode(errorMessage.getCode());
         } else {
-            response.setException(new RaptorServiceException(new RaptorMessage(statusCode,
-                    RaptorMessageConstant.SERVICE_UNKNOW_ERROR_CODE, "Unknow error.")));
-            response.setCode(RaptorMessageConstant.SERVICE_UNKNOW_ERROR_CODE);
+            RaptorServiceException e = new RaptorServiceException(new String(content, StandardCharsets.UTF_8));
+            response.setException(e);
+            response.setCode(e.getErrorCode());
+        }
+    }
+
+    protected ErrorProto.ErrorMessage deserializeErrorMessage(Request request, byte[] content) {
+        try {
+            return this.serialization.deserialize(content, ErrorProto.ErrorMessage.class);
+        } catch (Exception e) {
+            throw new RaptorServiceException("Deserialize response ErrorMessage error, requestId=" + request.getRequestId(), e);
         }
     }
 
@@ -207,21 +200,20 @@ public abstract class AbstractHttpClient implements Client {
         }
     }
 
+    protected Exception getExceptionByErrorMessage(ErrorMessage errorMessage) {
+        if (errorMessage == null) {
+            return new RaptorServiceException("Unknow exception, errorMessage is null");
+        }
+        int code = errorMessage.getCode();
+        if (code >= 10000 && code < 20000) {
+            return new RaptorServiceException(errorMessage, null);
+        } else if (code >= 20000 && code < 30000) {
+            return new RaptorFrameworkException(errorMessage, null);
+        } else if (code >= 30000) {
+            return new RaptorBizException(errorMessage, null);
+        }
 
-    protected Exception deserializeResponseException(Request request, String exceptionClass, byte[] content) {
-        String errorMessage = new String(content, StandardCharsets.UTF_8);
-        if (StringUtils.isBlank(exceptionClass)) {
-            return new RaptorServiceException(errorMessage);
-        }
-        if (StringUtils.equals(exceptionClass, RaptorBizException.class.getName())) {
-            return new RaptorBizException(errorMessage);
-        } else if (StringUtils.equals(exceptionClass, RaptorServiceException.class.getName())) {
-            return new RaptorServiceException(errorMessage);
-        } else if (StringUtils.equals(exceptionClass, RaptorFrameworkException.class.getName())) {
-            return new RaptorFrameworkException(errorMessage);
-        } else {
-            return new RaptorServiceException(exceptionClass + ": " + errorMessage);
-        }
+        return new RaptorServiceException(errorMessage, null);
     }
 
     protected void setStatus(Response response, StatusLine statusLine) {

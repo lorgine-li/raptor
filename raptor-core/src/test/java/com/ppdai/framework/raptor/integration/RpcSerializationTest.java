@@ -8,17 +8,17 @@ import com.ppdai.framework.raptor.rpc.URL;
 import com.ppdai.framework.raptor.serialize.ProtobufJsonSerialization;
 import com.ppdai.framework.raptor.service.Provider;
 import com.ppdai.framework.raptor.service.ProviderBuilder;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class RpcSerializationTest extends RpcTestBase {
 
     @Test
-    public void name() {
+    public void test() {
 
         Simple simple = new SimpleImpl();
         Provider<Simple> provider = ProviderBuilder.newBuilder().build(Simple.class, simple);
         servletEndpoint.export(provider);
-
 
         String url = "http://localhost:8080";
 
@@ -27,5 +27,8 @@ public class RpcSerializationTest extends RpcTestBase {
                 .build(Simple.class, URL.valueOf(url));
         Helloworld.HelloRequest helloRequest = Helloworld.HelloRequest.newBuilder().setName("ppdai").build();
         Helloworld.HelloReply helloReply = proxy.sayHello(helloRequest);
+        Assert.assertNotNull(helloReply);
+
+        Assert.assertTrue(helloReply.getMessage().contains("ppdai"));
     }
 }

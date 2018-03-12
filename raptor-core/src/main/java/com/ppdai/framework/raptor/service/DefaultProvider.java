@@ -26,10 +26,11 @@ public class DefaultProvider<T> extends AbstractProvider<T> {
         Method method = lookupMethod(request.getMethodName(), null);
         if (method == null) {
             RaptorServiceException exception =
-                    new RaptorServiceException("Service method not exist: "
-                            + request.getInterfaceName()
-                            + "#" + request.getMethodName(),
-                            RaptorMessageConstant.SERVICE_UNFOUND);
+                    new RaptorServiceException(RaptorMessageConstant.SERVICE_NOTFOUND_ERROR_CODE,
+                            "Service method not exist: "
+                                    + request.getInterfaceName()
+                                    + "#" + request.getMethodName(),
+                            null);
             response.setException(exception);
             return response;
         }
@@ -39,7 +40,7 @@ public class DefaultProvider<T> extends AbstractProvider<T> {
             response.setValue(value);
         } catch (Exception e) {
             if (e.getCause() != null) {
-                response.setException(new RaptorBizException("provider call process error", e.getCause()));
+                response.setException(new RaptorBizException("provider call process error, message is: " + e.getCause().getMessage(), e.getCause()));
             } else {
                 response.setException(new RaptorBizException("provider call process error", e));
             }

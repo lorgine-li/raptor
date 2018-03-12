@@ -2,6 +2,8 @@ package com.ppdai.framework.raptor.service;
 
 import com.ppdai.framework.raptor.common.RaptorConstants;
 import com.ppdai.framework.raptor.common.URLParamType;
+import com.ppdai.framework.raptor.exception.ErrorMessage;
+import com.ppdai.framework.raptor.exception.HttpErrorConvertor;
 import com.ppdai.framework.raptor.exception.RaptorFrameworkException;
 import com.ppdai.framework.raptor.exception.RaptorServiceException;
 import com.ppdai.framework.raptor.rpc.*;
@@ -17,10 +19,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.PrintStream;
 import java.lang.reflect.Method;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -54,19 +54,19 @@ public class ServletEndpoint extends HttpServlet implements Endpoint {
         Provider<?> provider = this.providers.get(key);
         Request request = convert(httpRequest);
         if (provider == null) {
-            transportException(new RaptorServiceException("Can not find provider by key: " + key), request, httpResponse);
+            transportException(new RaptorServiceException("Can not find provider by key: " + key), request, httpRequest, httpResponse);
             return;
         }
         Response response;
         try {
             response = provider.call(request);
             if (response.getException() != null) {
-                transportException(response.getException(), request, httpResponse);
+                transportException(response.getException(), request, httpRequest, httpResponse);
             } else {
                 transportResponse(request, response, httpRequest, httpResponse);
             }
         } catch (Exception e) {
-            transportException(e, request, httpResponse);
+            transportException(e, request, httpRequest, httpResponse);
             log.error("Request error, requestId={}", request, e);
         }
     }
@@ -177,24 +177,17 @@ public class ServletEndpoint extends HttpServlet implements Endpoint {
         try (OutputStream out = httpResponse.getOutputStream()) {
             out.write(data);
             out.flush();
-        } catch (IOException e) {
-            log.error("write response error. request: {}", request, e);
-            throw e;
         }
     }
 
-    protected void transportException(Exception exception, Request request, HttpServletResponse httpServletResponse) throws IOException {
-        httpServletResponse.setStatus(RaptorConstants.HTTP_EXPECTATION_FAILED);
-        httpServletResponse.setHeader(URLParamType.exceptionClassHeader.getName(), exception.getClass().getName());
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        exception.printStackTrace(new PrintStream(baos));
-        byte[] data = baos.toByteArray();
-        try (OutputStream out = httpServletResponse.getOutputStream()) {
+    protected void transportException(Exception exception, Request request, HttpServletRequest httpRequest, HttpServletResponse httpResponse) throws IOException {
+        httpResponse.setStatus(HttpErrorConvertor.getHttpStatusCode(exception));
+        Serialization serialization = this.getSerialization(httpRequest);
+        ErrorMessage message = HttpErrorConvertor.getErrorMessage(exception);
+        byte[] data = serialization.serialize(message.toErrorProto());
+        try (OutputStream out = httpResponse.getOutputStream()) {
             out.write(data);
             out.flush();
-        } catch (IOException e) {
-            log.error("write response error. request: {}", request, e);
-            throw e;
         }
     }
 

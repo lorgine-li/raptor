@@ -4,36 +4,22 @@ import com.ppdai.framework.raptor.common.RaptorMessageConstant;
 
 public class RaptorServiceException extends RaptorAbstractException {
 
-    public RaptorServiceException() {
-        super(RaptorMessageConstant.SERVICE_DEFAULT_ERROR);
-    }
-
-    public RaptorServiceException(RaptorMessage raptorMessage) {
-        super(raptorMessage);
-    }
 
     public RaptorServiceException(String message) {
-        super(message, RaptorMessageConstant.SERVICE_DEFAULT_ERROR);
-    }
-
-    public RaptorServiceException(String message, RaptorMessage raptorMessage) {
-        super(message, raptorMessage);
+        super(new ErrorMessage(RaptorMessageConstant.SERVICE_DEFAULT_ERROR_CODE, message), null);
     }
 
     public RaptorServiceException(String message, Throwable cause) {
-        super(message, cause, RaptorMessageConstant.SERVICE_DEFAULT_ERROR);
+        super(new ErrorMessage(RaptorMessageConstant.SERVICE_DEFAULT_ERROR_CODE, message), cause);
     }
 
-    public RaptorServiceException(String message, Throwable cause, RaptorMessage raptorMessage) {
-        super(message, cause, raptorMessage);
+    public RaptorServiceException(int code, String message, Throwable cause) {
+        super(new ErrorMessage(code, message), cause);
     }
 
-    public RaptorServiceException(Throwable cause) {
-        super(cause, RaptorMessageConstant.SERVICE_DEFAULT_ERROR);
+    public RaptorServiceException(ErrorMessage errorMessage, Throwable cause) {
+        super(errorMessage, cause);
     }
 
-    public RaptorServiceException(Throwable cause, RaptorMessage raptorMessage) {
-        super(cause, raptorMessage);
-    }
 
 }

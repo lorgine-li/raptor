@@ -4,35 +4,20 @@ import com.ppdai.framework.raptor.common.RaptorMessageConstant;
 
 public class RaptorBizException extends RaptorAbstractException {
 
-    public RaptorBizException() {
-        super(RaptorMessageConstant.BIZ_DEFAULT_EXCEPTION);
-    }
-
-    public RaptorBizException(RaptorMessage raptorMessage) {
-        super(raptorMessage);
-    }
-
     public RaptorBizException(String message) {
-        super(message, RaptorMessageConstant.BIZ_DEFAULT_EXCEPTION);
-    }
-
-    public RaptorBizException(String message, RaptorMessage raptorMessage) {
-        super(message, raptorMessage);
+        super(new ErrorMessage(RaptorMessageConstant.BIZ_DEFAULT_ERROR_CODE, message), null);
     }
 
     public RaptorBizException(String message, Throwable cause) {
-        super(message, cause, RaptorMessageConstant.BIZ_DEFAULT_EXCEPTION);
+        super(new ErrorMessage(RaptorMessageConstant.BIZ_DEFAULT_ERROR_CODE, message), cause);
     }
 
-    public RaptorBizException(String message, Throwable cause, RaptorMessage raptorMessage) {
-        super(message, cause, raptorMessage);
+    public RaptorBizException(int code, String message, Throwable cause) {
+        super(new ErrorMessage(code, message), cause);
     }
 
-    public RaptorBizException(Throwable cause) {
-        super(cause, RaptorMessageConstant.BIZ_DEFAULT_EXCEPTION);
+    public RaptorBizException(ErrorMessage errorMessage, Throwable cause) {
+        super(errorMessage, cause);
     }
 
-    public RaptorBizException(Throwable cause, RaptorMessage raptorMessage) {
-        super(cause, raptorMessage);
-    }
 }
