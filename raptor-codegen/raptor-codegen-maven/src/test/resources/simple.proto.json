@@ -1,10 +1,12 @@
 {
   "swagger" : "2.0",
   "info" : {
-    "title" : "simple.proto",
-    "version" : "version not set"
+    "version" : "version not set",
+    "title" : "simple.proto"
   },
   "schemes" : [ "http" ],
+  "consumes" : [ "application/json" ],
+  "produces" : [ "application/json" ],
   "paths" : {
     "/raptor/com.ppdai.framework.raptor.proto.test.Simple/sayHello" : {
       "post" : {
@@ -13,6 +15,15 @@
         "operationId" : "sayHello",
         "consumes" : [ "application/json" ],
         "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "description" : "",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/SimpleRequest"
+          }
+        } ],
         "responses" : {
           "200" : {
             "description" : "successful operation",
@@ -20,36 +31,22 @@
               "$ref" : "#/definitions/SimpleReply"
             }
           }
-        },
-        "parameters" : [ {
-          "name" : "body",
-          "description" : "",
-          "in" : "body",
-          "required" : true,
-          "schema" : {
-            "$ref" : "#/definitions/SimpleRequest"
-          }
-        } ],
-        "deprecated" : false
+        }
       }
     }
   },
   "definitions" : {
-    "SimpleRequest" : {
-      "type" : "object",
+    "SimpleReply" : {
       "properties" : {
-        "name" : {
-          "type" : "string",
-          "format" : ""
+        "message" : {
+          "type" : "string"
         }
       }
     },
-    "SimpleReply" : {
-      "type" : "object",
+    "SimpleRequest" : {
       "properties" : {
-        "message" : {
-          "type" : "string",
-          "format" : ""
+        "name" : {
+          "type" : "string"
         }
       }
     }

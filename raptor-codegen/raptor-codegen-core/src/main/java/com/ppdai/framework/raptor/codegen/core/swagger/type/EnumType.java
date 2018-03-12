@@ -5,7 +5,7 @@ import java.util.Set;
 /**
  * Created by zhangyicong on 18-2-28.
  */
-public class EnumType {
+public class EnumType implements Comparable<EnumType> {
     private String name;
     private String FQPN;
     private Set<String> values;
@@ -32,5 +32,10 @@ public class EnumType {
 
     public void setValues(Set<String> values) {
         this.values = values;
+    }
+
+    @Override
+    public int compareTo(EnumType enumType) {
+        return FQPN.compareTo(enumType.getFQPN());
     }
 }
