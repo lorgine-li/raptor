@@ -1,11 +1,13 @@
 package com.ppdai.framework.raptor.codegen.core.swagger.tool;
 
 import com.google.protobuf.DescriptorProtos;
+import com.ppdai.framework.raptor.codegen.core.constant.DescriptorProtosTagNumbers;
 import com.ppdai.framework.raptor.codegen.core.swagger.container.EnumContainer;
 import com.ppdai.framework.raptor.codegen.core.swagger.container.MessageContainer;
 import com.ppdai.framework.raptor.codegen.core.swagger.container.MetaContainer;
 import com.ppdai.framework.raptor.codegen.core.swagger.container.ServiceContainer;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -106,8 +108,14 @@ public class ContainerUtil {
     public static ServiceContainer getServiceContainer(DescriptorProtos.FileDescriptorProto fdp) {
         ServiceContainer serviceContainer = new ServiceContainer(fdp.getPackage());
 
+        List<DescriptorProtos.SourceCodeInfo.Location> locationList = fdp.getSourceCodeInfo().getLocationList();
+
+        int serviceIndex = 0;
         for (DescriptorProtos.ServiceDescriptorProto sdp : fdp.getServiceList()) {
-            serviceContainer.addServiceProto(sdp);
+            List<Integer> currentPath
+                    = Arrays.asList(DescriptorProtosTagNumbers.FileDescriptorProto.SERVICE, serviceIndex++);
+
+            serviceContainer.addServiceProto(sdp, locationList, currentPath);
         }
 
         return serviceContainer;

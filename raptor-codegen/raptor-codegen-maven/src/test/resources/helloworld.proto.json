@@ -162,27 +162,6 @@
         }
       }
     },
-    "Cat" : {
-      "type" : "object",
-      "properties" : {
-        "color" : {
-          "type" : "string",
-          "format" : ""
-        }
-      }
-    },
-    "HelloRequest.Result" : {
-      "type" : "object",
-      "properties" : {
-        "url" : {
-          "type" : "string",
-          "format" : ""
-        },
-        "corpus" : {
-          "$ref" : "#/definitions/HelloRequest.Result.Corpus"
-        }
-      }
-    },
     "HelloReply" : {
       "type" : "object",
       "properties" : {
@@ -198,6 +177,27 @@
           "items" : {
             "$ref" : "#/definitions/com.ppdai.framework.raptor.proto.Result"
           }
+        }
+      }
+    },
+    "HelloRequest.Result" : {
+      "type" : "object",
+      "properties" : {
+        "url" : {
+          "type" : "string",
+          "format" : ""
+        },
+        "corpus" : {
+          "$ref" : "#/definitions/HelloRequest.Result.Corpus"
+        }
+      }
+    },
+    "Cat" : {
+      "type" : "object",
+      "properties" : {
+        "color" : {
+          "type" : "string",
+          "format" : ""
         }
       }
     },

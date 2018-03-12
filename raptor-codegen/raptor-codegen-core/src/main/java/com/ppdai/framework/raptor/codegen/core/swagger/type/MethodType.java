@@ -8,6 +8,8 @@ public class MethodType {
     private String FQPN;
     private String inputType;
     private String outputType;
+    private String leadingComments;
+    private String trailingComments;
 
     public String getName() {
         return name;
@@ -39,5 +41,21 @@ public class MethodType {
 
     public void setOutputType(String outputType) {
         this.outputType = outputType;
+    }
+
+    public String getLeadingComments() {
+        return leadingComments;
+    }
+
+    public void setLeadingComments(String leadingComments) {
+        this.leadingComments = leadingComments;
+    }
+
+    public String getTrailingComments() {
+        return trailingComments;
+    }
+
+    public void setTrailingComments(String trailingComments) {
+        this.trailingComments = trailingComments;
     }
 }

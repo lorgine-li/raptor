@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.protobuf.DescriptorProtos;
-import com.ppdai.framework.raptor.codegen.core.swagger.container.EnumContainer;
-import com.ppdai.framework.raptor.codegen.core.swagger.container.MessageContainer;
 import com.ppdai.framework.raptor.codegen.core.swagger.container.MetaContainer;
 import com.ppdai.framework.raptor.codegen.core.swagger.container.ServiceContainer;
 import com.ppdai.framework.raptor.codegen.core.swagger.swagger2object.*;
@@ -53,8 +51,8 @@ public class Swagger2Template implements SwaggerTemplate {
                 // set post operation
                 SwaggerOperationObject swaggerOperationObject = new SwaggerOperationObject();
                 swaggerPathItemObject.setPost(swaggerOperationObject);
+                swaggerOperationObject.setSummary(methodType.getLeadingComments());
                 swaggerOperationObject.setDescription("");// todo
-                swaggerOperationObject.setSummary("");// todo
                 swaggerOperationObject.setOperationId(methodType.getName());
 
                 // set consumes
@@ -121,7 +119,7 @@ public class Swagger2Template implements SwaggerTemplate {
         }
     }
 
-    private void addEnum2Definitions(SwaggerObject swaggerObject, EnumType enumType,String basePackage) {
+    private void addEnum2Definitions(SwaggerObject swaggerObject, EnumType enumType, String basePackage) {
         SwaggerSchemaObject swaggerSchemaObject = new SwaggerSchemaObject();
         swaggerObject.getDefinitions().put(getRefName(enumType, basePackage), swaggerSchemaObject);
 
@@ -159,7 +157,7 @@ public class Swagger2Template implements SwaggerTemplate {
             addType2Definitions(swaggerObject, messageType, basePackage);
         }
         for (EnumType enumType : enumTypes) {
-            addEnum2Definitions(swaggerObject, enumType,basePackage);
+            addEnum2Definitions(swaggerObject, enumType, basePackage);
         }
     }
 
@@ -191,17 +189,17 @@ public class Swagger2Template implements SwaggerTemplate {
         HashSet<EnumType> nestedEnumTypes = new HashSet<>();
         HashSet<MessageType> nestedMessageTypes = new HashSet<>();
 
-        collectNestType(metaContainer, messageTypes,nestedEnumTypes,nestedMessageTypes, basePackage);
+        collectNestType(metaContainer, messageTypes, nestedEnumTypes, nestedMessageTypes, basePackage);
 
         renderDefinitions(swaggerObject, nestedMessageTypes, nestedEnumTypes, basePackage);
 
         return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(swaggerObject);
     }
 
-    private void collectNestType(MetaContainer metaContainer, Set<MessageType> messageTypes,Set<EnumType> nestEnumTypes,Set<MessageType> nestedMessageTypes, String basePackage) {
+    private void collectNestType(MetaContainer metaContainer, Set<MessageType> messageTypes, Set<EnumType> nestEnumTypes, Set<MessageType> nestedMessageTypes, String basePackage) {
         List<MessageType> messageTypeList = new ArrayList<>(messageTypes);
         ListIterator<MessageType> listIterator = messageTypeList.listIterator();
-        for(int i = 0;i<messageTypeList.size();i++){
+        for (int i = 0; i < messageTypeList.size(); i++) {
             MessageType next = messageTypeList.get(i);
             for (FieldType fieldType : next.getFieldTypeList()) {
                 if (StringUtils.isNotBlank(fieldType.getTypeName()) && !CommonUtils.isProtoBufType(fieldType.getTypeName())) {
