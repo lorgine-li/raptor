@@ -6,16 +6,22 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.protobuf.DescriptorProtos;
 import com.ppdai.framework.raptor.codegen.core.swagger.container.MetaContainer;
 import com.ppdai.framework.raptor.codegen.core.swagger.container.ServiceContainer;
-import com.ppdai.framework.raptor.codegen.core.swagger.swagger2object.*;
 import com.ppdai.framework.raptor.codegen.core.swagger.tool.ContainerUtil;
 import com.ppdai.framework.raptor.codegen.core.swagger.tool.TypeFormatUtil;
 import com.ppdai.framework.raptor.codegen.core.swagger.type.*;
 import com.ppdai.framework.raptor.codegen.core.utils.CommonUtils;
+import io.swagger.models.*;
+import io.swagger.models.parameters.BodyParameter;
+import io.swagger.models.parameters.Parameter;
+import io.swagger.models.properties.Property;
+import io.swagger.models.properties.RefProperty;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
+
+import static io.swagger.models.Scheme.HTTP;
 
 /**
  * Created by zhangyicong on 18-2-27.
@@ -34,10 +40,10 @@ public class Swagger2Template implements SwaggerTemplate {
     /**
      * 生成swagger service定义
      *
-     * @param swaggerObject
+     * @param swagger
      * @param serviceContainer
      */
-    private Set<MessageType> renderServices(SwaggerObject swaggerObject,
+    private Set<MessageType> renderServices(Swagger swagger,
                                             ServiceContainer serviceContainer,
                                             MetaContainer metaContainer,
                                             String basePackage) {
@@ -46,56 +52,54 @@ public class Swagger2Template implements SwaggerTemplate {
 
         for (ServiceType serviceType : serviceContainer.getServiceTypeList()) {
             for (MethodType methodType : serviceType.getMethodTypeList()) {
-                SwaggerPathItemObject swaggerPathItemObject = new SwaggerPathItemObject();
-
-                // set post operation
-                SwaggerOperationObject swaggerOperationObject = new SwaggerOperationObject();
-                swaggerPathItemObject.setPost(swaggerOperationObject);
-                swaggerOperationObject.setSummary(methodType.getLeadingComments());
-                swaggerOperationObject.setDescription("");// todo
-                swaggerOperationObject.setOperationId(methodType.getName());
+                Path path = new Path();
+                Operation operation = new Operation();
+                path.setPost(operation);
+                operation.setSummary(methodType.getLeadingComments());
+                operation.setDescription("");// todo
+                operation.setOperationId(methodType.getName());
 
                 // set consumes
-                swaggerOperationObject.setConsumes(swaggerObject.getConsumes());
+                operation.setConsumes(swagger.getConsumes());
                 // set produces
-                swaggerOperationObject.setProduces(swaggerObject.getProduces());
+                operation.setProduces(swagger.getProduces());
+
 
                 // set parameters
-                List<SwaggerParameterObject> parameters = new ArrayList<>();
-                swaggerOperationObject.setParameters(parameters);
-                SwaggerParameterObject swaggerParameterObject = new SwaggerParameterObject();
-                parameters.add(swaggerParameterObject);
-
-                swaggerParameterObject.setDescription("");// todo
-                swaggerParameterObject.setIn("body");
-                swaggerParameterObject.setName("body");
-                swaggerParameterObject.setRequired(true);
+                List<Parameter> parameters = new ArrayList<>();
+                operation.setParameters(parameters);
+                BodyParameter parameter = new BodyParameter();
+                parameters.add(parameter);
+                parameter.setDescription("");// todo
+                parameter.setIn("body");
+                parameter.setName("body");
+                parameter.setRequired(true);
 
                 // set schema
-                SwaggerSchemaObject swaggerSchemaObject = new SwaggerSchemaObject();
+                RefModel schema = new RefModel();
                 MessageType inputMessage = metaContainer.findMessageTypeByFQPN(methodType.getInputType(), basePackage);
                 dependMessage.add(inputMessage);
-                swaggerSchemaObject.setRef("#/definitions/" +
+                schema.set$ref("#/definitions/" +
                         getRefName(inputMessage, basePackage));
-                swaggerParameterObject.setSchema(swaggerSchemaObject);
+                parameter.setSchema(schema);
 
                 // set responses
-                Map<String, SwaggerResponseObject> responses = new LinkedHashMap<>();
-                SwaggerResponseObject swaggerResponseObject = new SwaggerResponseObject();
-                swaggerResponseObject.setDescription("successful operation");
+                Map<String, Response> responses = new LinkedHashMap<>();
+                Response response = new Response();
+                response.setDescription("successful operation");
+
                 // set responses schema
-                SwaggerSchemaObject reponseSchema = new SwaggerSchemaObject();
-                swaggerResponseObject.setSchema(reponseSchema);
+                RefProperty reponseSchema = new RefProperty();
+                response.setSchema(reponseSchema);
                 MessageType outputMessage = metaContainer.findMessageTypeByFQPN(methodType.getOutputType(), basePackage);
                 dependMessage.add(outputMessage);
-                reponseSchema.setRef("#/definitions/" +
+                reponseSchema.set$ref("#/definitions/" +
                         getRefName(outputMessage, basePackage));
 
-                responses.put("200", swaggerResponseObject);
-                swaggerOperationObject.setResponses(responses);
-
-                swaggerObject.getPaths().put("/raptor/" + serviceType.getFQPN() + "/" + methodType.getName(),
-                        swaggerPathItemObject);
+                responses.put("200", response);
+                operation.setResponses(responses);
+                swagger.path("/raptor/" + serviceType.getFQPN() + "/" + methodType.getName(),
+                        path);
             }
         }
         return dependMessage;
@@ -119,45 +123,42 @@ public class Swagger2Template implements SwaggerTemplate {
         }
     }
 
-    private void addEnum2Definitions(SwaggerObject swaggerObject, EnumType enumType, String basePackage) {
-        SwaggerSchemaObject swaggerSchemaObject = new SwaggerSchemaObject();
-        swaggerObject.getDefinitions().put(getRefName(enumType, basePackage), swaggerSchemaObject);
+    private void addEnum2Definitions(Swagger swagger, EnumType enumType, String basePackage) {
+        ModelImpl model = new ModelImpl();
+        swagger.getDefinitions().put(getRefName(enumType, basePackage), model);
 
-        swaggerSchemaObject.setType("string");
-        swaggerSchemaObject.setSwaggerEnum(new ArrayList<>(enumType.getValues()));
+        model.setType("string");
+        model.setEnum(new ArrayList<>(enumType.getValues()));
     }
 
-    private void addType2Definitions(SwaggerObject swaggerObject, MessageType messageType, String basePackage) {
-        SwaggerSchemaObject swaggerSchemaObject = new SwaggerSchemaObject();
-        swaggerObject.getDefinitions().put(getRefName(messageType, basePackage), swaggerSchemaObject);
+    private void addType2Definitions(Swagger swagger, MessageType messageType, String basePackage) {
+        Model model = new ModelImpl();
+        swagger.getDefinitions().put(getRefName(messageType, basePackage), model);
 
-        swaggerSchemaObject.setType("object");
-
-        Map<String, Object> properties = new LinkedHashMap<>();
-        swaggerSchemaObject.setProperties(properties);
-
+        LinkedHashMap<String, Property> properties = new LinkedHashMap<>();
         for (FieldType fieldType : messageType.getFieldTypeList()) {
-            Map<String, Object> typeSchema = TypeFormatUtil.formatTypeSwagger2(fieldType, basePackage);
-            properties.put(fieldType.getName(), typeSchema);
+            Property property = TypeFormatUtil.formatTypeSwagger2(fieldType, basePackage);
+            properties.put(fieldType.getName(), property);
         }
+        model.setProperties(properties);
     }
 
     /**
      * 生成swagger type定义
      *
-     * @param swaggerObject
+     * @param swagger
      * @param messageTypes
      * @param enumTypes
      */
-    private void renderDefinitions(SwaggerObject swaggerObject,
+    private void renderDefinitions(Swagger swagger,
                                    Set<MessageType> messageTypes,
                                    Set<EnumType> enumTypes,
                                    String basePackage) {
         for (MessageType messageType : messageTypes) {
-            addType2Definitions(swaggerObject, messageType, basePackage);
+            addType2Definitions(swagger, messageType, basePackage);
         }
         for (EnumType enumType : enumTypes) {
-            addEnum2Definitions(swaggerObject, enumType, basePackage);
+            addEnum2Definitions(swagger, enumType, basePackage);
         }
     }
 
@@ -174,26 +175,25 @@ public class Swagger2Template implements SwaggerTemplate {
         // 从pb中提取service
         ServiceContainer serviceContainer = ContainerUtil.getServiceContainer(fdp);
 
-        SwaggerObject swaggerObject = new SwaggerObject("2.0",
-                Arrays.asList("http"),
-                Arrays.asList("application/json"),
-                Arrays.asList("application/json"),
-                new LinkedHashMap<>(),
-                new LinkedHashMap<>(),
-                new SwaggerInfoObject(fdp.getName(), apiVersion));
+        Swagger swagger = new Swagger().scheme(HTTP)
+                .consumes(Collections.singletonList("application/json"))
+                .produces(Collections.singletonList("application/json"))
+                .paths(new LinkedHashMap<>())
+                .info(new Info().version(apiVersion).title(fdp.getName()));
+        swagger.setDefinitions(new LinkedHashMap<>());
 
         String basePackage = fdp.getPackage();
         // render path
-        Set<MessageType> messageTypes = renderServices(swaggerObject, serviceContainer, metaContainer, basePackage);
+        Set<MessageType> messageTypes = renderServices(swagger, serviceContainer, metaContainer, basePackage);
         // render type and enum
-        HashSet<EnumType> nestedEnumTypes = new HashSet<>();
-        HashSet<MessageType> nestedMessageTypes = new HashSet<>();
+        TreeSet<EnumType> nestedEnumTypes = new TreeSet<>();
+        TreeSet<MessageType> nestedMessageTypes = new TreeSet<>();
 
         collectNestType(metaContainer, messageTypes, nestedEnumTypes, nestedMessageTypes, basePackage);
 
-        renderDefinitions(swaggerObject, nestedMessageTypes, nestedEnumTypes, basePackage);
+        renderDefinitions(swagger, nestedMessageTypes, nestedEnumTypes, basePackage);
 
-        return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(swaggerObject);
+        return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(swagger);
     }
 
     private void collectNestType(MetaContainer metaContainer, Set<MessageType> messageTypes, Set<EnumType> nestEnumTypes, Set<MessageType> nestedMessageTypes, String basePackage) {

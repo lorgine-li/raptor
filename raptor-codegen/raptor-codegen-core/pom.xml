@@ -21,6 +21,7 @@
         <maven-project.version>2.0.9</maven-project.version>
         <compiler.version>0.8.18</compiler.version>
         <jackson.version>2.7.0</jackson.version>
+        <swagger.version>1.5.9</swagger.version>
     </properties>
 
     <dependencies>
@@ -74,6 +75,11 @@
             <groupId>com.ppdai.framework</groupId>
             <artifactId>raptor-core</artifactId>
             <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.swagger</groupId>
+            <artifactId>swagger-models</artifactId>
+            <version>${swagger.version}</version>
         </dependency>
     </dependencies>
 

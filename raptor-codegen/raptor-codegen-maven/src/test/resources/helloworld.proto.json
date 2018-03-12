@@ -1,10 +1,12 @@
 {
   "swagger" : "2.0",
   "info" : {
-    "title" : "helloworld.proto",
-    "version" : "version not set"
+    "version" : "version not set",
+    "title" : "helloworld.proto"
   },
   "schemes" : [ "http" ],
+  "consumes" : [ "application/json" ],
+  "produces" : [ "application/json" ],
   "paths" : {
     "/raptor/com.ppdai.framework.raptor.proto.test.Hello/sayHello" : {
       "post" : {
@@ -13,6 +15,15 @@
         "operationId" : "sayHello",
         "consumes" : [ "application/json" ],
         "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "description" : "",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/HelloRequest"
+          }
+        } ],
         "responses" : {
           "200" : {
             "description" : "successful operation",
@@ -20,47 +31,54 @@
               "$ref" : "#/definitions/HelloReply"
             }
           }
-        },
-        "parameters" : [ {
-          "name" : "body",
-          "description" : "",
-          "in" : "body",
-          "required" : true,
-          "schema" : {
-            "$ref" : "#/definitions/HelloRequest"
-          }
-        } ],
-        "deprecated" : false
+        }
       }
     }
   },
   "definitions" : {
     "com.ppdai.framework.raptor.proto.Result" : {
-      "type" : "object",
       "properties" : {
         "url" : {
-          "type" : "string",
-          "format" : ""
+          "type" : "string"
         },
         "title" : {
-          "type" : "string",
-          "format" : ""
+          "type" : "string"
         },
         "snippets" : {
           "type" : "array",
           "items" : {
-            "type" : "string",
-            "format" : ""
+            "type" : "string"
+          }
+        }
+      }
+    },
+    "Cat" : {
+      "properties" : {
+        "color" : {
+          "type" : "string"
+        }
+      }
+    },
+    "HelloReply" : {
+      "properties" : {
+        "message" : {
+          "type" : "string"
+        },
+        "corpus" : {
+          "$ref" : "#/definitions/HelloRequest.Corpus"
+        },
+        "results" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/com.ppdai.framework.raptor.proto.Result"
           }
         }
       }
     },
     "HelloRequest" : {
-      "type" : "object",
       "properties" : {
         "name" : {
-          "type" : "string",
-          "format" : ""
+          "type" : "string"
         },
         "corpus" : {
           "$ref" : "#/definitions/HelloRequest.Corpus"
@@ -68,8 +86,7 @@
         "snippets" : {
           "type" : "array",
           "items" : {
-            "type" : "string",
-            "format" : ""
+            "type" : "string"
           }
         },
         "cats" : {
@@ -134,78 +151,44 @@
           "format" : "byte"
         },
         "tbool" : {
-          "type" : "boolean",
-          "format" : "boolean"
+          "type" : "boolean"
         },
         "time" : {
           "type" : "string",
           "format" : "date-time"
         },
         "struct" : {
-          "type" : "object",
-          "additionalProperties" : true
+          "type" : "object"
         },
         "value" : {
-          "type" : "object",
-          "additionalProperties" : true
+          "type" : "object"
         },
         "listValue" : {
           "type" : "array",
           "items" : {
-            "type" : "object",
-            "additionalProperties" : true
+            "type" : "object"
           }
         },
         "duration" : {
-          "type" : "string",
-          "format" : ""
-        }
-      }
-    },
-    "HelloReply" : {
-      "type" : "object",
-      "properties" : {
-        "message" : {
-          "type" : "string",
-          "format" : ""
-        },
-        "corpus" : {
-          "$ref" : "#/definitions/HelloRequest.Corpus"
-        },
-        "results" : {
-          "type" : "array",
-          "items" : {
-            "$ref" : "#/definitions/com.ppdai.framework.raptor.proto.Result"
-          }
+          "type" : "string"
         }
       }
     },
     "HelloRequest.Result" : {
-      "type" : "object",
       "properties" : {
         "url" : {
-          "type" : "string",
-          "format" : ""
+          "type" : "string"
         },
         "corpus" : {
           "$ref" : "#/definitions/HelloRequest.Result.Corpus"
         }
       }
     },
-    "Cat" : {
-      "type" : "object",
-      "properties" : {
-        "color" : {
-          "type" : "string",
-          "format" : ""
-        }
-      }
-    },
-    "HelloRequest.Result.Corpus" : {
+    "HelloRequest.Corpus" : {
       "type" : "string",
       "enum" : [ "UNIVERSAL", "WEB", "IMAGES", "LOCAL", "NEWS", "PRODUCTS", "VIDEO" ]
     },
-    "HelloRequest.Corpus" : {
+    "HelloRequest.Result.Corpus" : {
       "type" : "string",
       "enum" : [ "UNIVERSAL", "WEB", "IMAGES", "LOCAL", "NEWS", "PRODUCTS", "VIDEO" ]
     }

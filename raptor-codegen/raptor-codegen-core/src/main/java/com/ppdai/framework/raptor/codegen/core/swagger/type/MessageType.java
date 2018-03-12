@@ -6,7 +6,7 @@ import java.util.Map;
 /**
  * Created by zhangyicong on 18-2-27.
  */
-public class MessageType {
+public class MessageType implements Comparable<MessageType> {
     private String name;
     private String FQPN;
     private Map<String, FieldType> fields;
@@ -37,5 +37,10 @@ public class MessageType {
 
     public Collection<FieldType> getFieldTypeList() {
         return fields.values();
+    }
+
+    @Override
+    public int compareTo(MessageType messageType) {
+        return FQPN.compareTo((messageType.getFQPN()));
     }
 }
