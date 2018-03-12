@@ -20,6 +20,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.env.Environment;
+import org.springframework.http.converter.protobuf.ProtobufHttpMessageConverter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,6 +31,12 @@ import java.util.Map;
 @Configuration
 @EnableConfigurationProperties({ServletEndpointProperties.class})
 public class RaptorServiceAutoConfiguration {
+
+    @Bean
+    ProtobufHttpMessageConverter protobufHttpMessageConverter() {
+        return new ProtobufHttpMessageConverter();
+    }
+
     @Autowired
     private Environment env;
 
