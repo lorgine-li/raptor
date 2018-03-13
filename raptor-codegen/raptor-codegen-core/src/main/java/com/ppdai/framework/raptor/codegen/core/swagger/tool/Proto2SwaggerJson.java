@@ -3,7 +3,6 @@ package com.ppdai.framework.raptor.codegen.core.swagger.tool;
 import com.google.protobuf.DescriptorProtos;
 import com.ppdai.framework.raptor.codegen.core.swagger.container.MetaContainer;
 import com.ppdai.framework.raptor.codegen.core.swagger.template.Swagger2Template;
-import com.ppdai.framework.raptor.codegen.core.swagger.template.Swagger3Template;
 import com.ppdai.framework.raptor.codegen.core.swagger.template.SwaggerTemplate;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
@@ -46,11 +45,8 @@ public class Proto2SwaggerJson {
         this.swaggerVersion = swaggerVersion;
         this.apiVersion = apiVersion;
 
-        if (this.swaggerVersion.startsWith("3")) {
-            swaggerTemplate = new Swagger3Template();
-        } else {
-            swaggerTemplate = new Swagger2Template();
-        }
+        swaggerTemplate = new Swagger2Template();
+
     }
 
     public static Proto2SwaggerJson forConfig(String discoveryRoot,
