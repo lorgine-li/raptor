@@ -48,6 +48,11 @@ raptor是一套高性能、易于使用的分布式远程服务调用(RPC)框架
     ```
     执行成功后，会在当前目录下生成一个名为demo-project的maven工程，并将当前目录下所有的proto文件copy到maven工程的src/main/proto。
     
+    执行maven命令，编译该maven工程：
+    ```cmd
+    mvn clean compile
+    ```
+    
     可以根据需要修改demo-project pom中的的相关配置。
     
 3. 增加maven依赖

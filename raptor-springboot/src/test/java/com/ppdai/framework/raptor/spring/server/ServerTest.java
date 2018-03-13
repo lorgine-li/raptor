@@ -23,7 +23,6 @@ import java.io.IOException;
 /**
  * 测试只接入服务端
  */
-@RestController
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = TestApplication.class, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class ServerTest {
