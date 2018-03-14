@@ -116,10 +116,12 @@ public class TypeFormatUtil {
 
         if (typeFormat.getRef() == null) { // primitive type
             typeSchema.put("type", typeFormat.getType());
-            if (typeFormat.getFormat() != null)
+            if (typeFormat.getFormat() != null) {
                 typeSchema.put("format", typeFormat.getFormat());
-            if (typeFormat.getAdditionalProperties() != null) // Dictionaries
+            }
+            if (typeFormat.getAdditionalProperties() != null) {// Dictionaries
                 typeSchema.put("additionalProperties", typeFormat.getAdditionalProperties());
+            }
         } else { // complex type
             typeSchema.put("$ref", typeFormat.getRef());
         }

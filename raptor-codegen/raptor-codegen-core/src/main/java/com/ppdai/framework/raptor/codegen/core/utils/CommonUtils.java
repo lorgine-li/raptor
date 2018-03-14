@@ -12,7 +12,9 @@ public final class CommonUtils {
         int lastDotIndex = FQPN.lastIndexOf('.');
         String result =  StringUtils.substring(FQPN, 0, lastDotIndex);
         lastDotIndex = result.lastIndexOf('.');
-        if(lastDotIndex == -1 ) return "";
+        if(lastDotIndex == -1 ) {
+            return "";
+        }
         if(CharUtils.isAsciiAlphaUpper(FQPN.charAt(lastDotIndex+1))){
             return getPackageNameFromFQPN(result);
         }else{

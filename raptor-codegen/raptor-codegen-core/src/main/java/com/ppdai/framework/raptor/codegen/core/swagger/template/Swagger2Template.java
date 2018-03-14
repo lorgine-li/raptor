@@ -169,6 +169,7 @@ public class Swagger2Template implements SwaggerTemplate {
      * @param apiVersion
      * @return
      */
+    @Override
     public String applyTemplate(DescriptorProtos.FileDescriptorProto fdp,
                                 MetaContainer metaContainer,
                                 String apiVersion) throws JsonProcessingException {

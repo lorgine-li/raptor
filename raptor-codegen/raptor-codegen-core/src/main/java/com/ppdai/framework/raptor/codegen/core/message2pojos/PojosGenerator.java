@@ -106,8 +106,9 @@ public class PojosGenerator {
 
         File stdTypeDir = null;
         if ((protocCommand == null && protocArtifact == null) || includeStdTypes) {
-            if (protocVersion == null || protocVersion.length() < 1)
+            if (protocVersion == null || protocVersion.length() < 1) {
                 protocVersion = ProtocVersion.PROTOC_VERSION.mVersion;
+            }
             LOGGER.info("Protoc version: " + protocVersion);
 
             try {
@@ -152,7 +153,9 @@ public class PojosGenerator {
             inputDirectories = new File[]{inputDir};
         }
         LOGGER.info("Input directories:");
-        for (File input : inputDirectories) LOGGER.info("    " + input);
+        for (File input : inputDirectories) {
+            LOGGER.info("    " + input);
+        }
         LOGGER.info("Output directories:");
         LOGGER.info("    " + outputDirectory);
         if (includeStdTypes) {
@@ -169,8 +172,9 @@ public class PojosGenerator {
 
         if (includeDirectories != null && includeDirectories.length > 0) {
             LOGGER.info("Include directories:");
-            for (File include : includeDirectories)
+            for (File include : includeDirectories) {
                 LOGGER.info("    " + include);
+            }
         }
 
         preprocessTarget();
@@ -192,14 +196,16 @@ public class PojosGenerator {
     private void processTarget() throws Exception {
         boolean shaded = false;
         String targetType = type;
-        if (targetType.equals("java-shaded") || targetType.equals("java_shaded")) {
+        if ("java-shaded".equals(targetType) || "java_shaded".equals(targetType)) {
             targetType = "java";
             shaded = true;
         }
 
         FileFilter fileFilter = new FileFilter(extension);
         for (File input : inputDirectories) {
-            if (input == null) continue;
+            if (input == null) {
+                continue;
+            }
 
             if (input.exists() && input.isDirectory()) {
                 Collection<File> protoFiles = FileUtils.listFiles(input, fileFilter, TrueFileFilter.INSTANCE);
@@ -207,8 +213,11 @@ public class PojosGenerator {
                     processFile(protoFile, protocVersion, targetType, pluginPath, outputDirectory, null);
                 }
             } else {
-                if (input.exists()) LOGGER.warn(input + " is not a directory");
-                else LOGGER.warn(input + " does not exist");
+                if (input.exists()) {
+                    LOGGER.warn(input + " is not a directory");
+                } else {
+                    LOGGER.warn(input + " does not exist");
+                }
             }
         }
 
@@ -231,10 +240,15 @@ public class PojosGenerator {
         Collection<String> cmd = buildCommand(file, version, type, pluginPath, outputDir, outputOptions);
         try {
             int ret = 0;
-            if (protocCommand == null) ret = Protoc.runProtoc(cmd.toArray(new String[0]));
-            else ret = Protoc.runProtoc(protocCommand, cmd.toArray(new String[0]));
-            if (ret != 0) throw new Exception(
-                    "protoc-jar failed for " + file + ". Exit code " + ret);
+            if (protocCommand == null) {
+                ret = Protoc.runProtoc(cmd.toArray(new String[0]));
+            } else {
+                ret = Protoc.runProtoc(protocCommand, cmd.toArray(new String[0]));
+            }
+            if (ret != 0) {
+                throw new Exception(
+                        "protoc-jar failed for " + file + ". Exit code " + ret);
+            }
         } catch (InterruptedException e) {
             throw new Exception(
                     "Interrupted", e);
@@ -253,7 +267,9 @@ public class PojosGenerator {
             cmd.add("--descriptor_set_out=" + FilenameUtils.removeExtension(outFile.toString()) + ".desc");
             cmd.add("--include_imports");
             if (outputOptions != null) {
-                for (String arg : outputOptions.split("\\s+")) cmd.add(arg);
+                for (String arg : outputOptions.split("\\s+")) {
+                    cmd.add(arg);
+                }
             }
         } else {
             if (outputOptions != null) {
@@ -268,16 +284,22 @@ public class PojosGenerator {
             }
         }
         cmd.add(file.getAbsolutePath());
-        if (version != null) cmd.add("-v" + version);
+        if (version != null) {
+            cmd.add("-v" + version);
+        }
         return cmd;
     }
 
     private void populateIncludes(Collection<String> args) throws Exception {
         for (File include : includeDirectories) {
-            if (!include.exists()) throw new Exception(
-                    "Include path '" + include.getPath() + "' does not exist");
-            if (!include.isDirectory()) throw new Exception(
-                    "Include path '" + include.getPath() + "' is not a directory");
+            if (!include.exists()) {
+                throw new Exception(
+                        "Include path '" + include.getPath() + "' does not exist");
+            }
+            if (!include.isDirectory()) {
+                throw new Exception(
+                        "Include path '" + include.getPath() + "' is not a directory");
+            }
             args.add("-I" + include.getPath());
         }
     }
@@ -312,10 +334,16 @@ public class PojosGenerator {
             os = new FileOutputStream(destFile);
             int read = 0;
             byte[] buf = new byte[4096];
-            while ((read = is.read(buf)) > 0) os.write(buf, 0, read);
+            while ((read = is.read(buf)) > 0) {
+                os.write(buf, 0, read);
+            }
         } finally {
-            if (is != null) is.close();
-            if (os != null) os.close();
+            if (is != null) {
+                is.close();
+            }
+            if (os != null) {
+                os.close();
+            }
         }
         return destFile;
     }
@@ -327,10 +355,12 @@ public class PojosGenerator {
             this.extension = extension;
         }
 
+        @Override
         public boolean accept(File dir, String name) {
             return name.endsWith(extension);
         }
 
+        @Override
         public boolean accept(File file) {
             return file.getName().endsWith(extension);
         }

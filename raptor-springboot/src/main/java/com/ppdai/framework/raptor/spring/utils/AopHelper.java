@@ -9,15 +9,17 @@ import java.lang.reflect.Field;
 public class AopHelper {
     public static Object getTarget(Object proxy) throws Exception {
         if (!AopUtils.isAopProxy(proxy)) {
-            return proxy;//不是代理对象
+            //不是代理对象
+            return proxy;
         }
 
         Object target;
 
         if (AopUtils.isJdkDynamicProxy(proxy)) {
-            target =  getJdkDynamicProxyTargetObject(proxy);
-        } else { //cglib
-            target =  getCglibProxyTargetObject(proxy);
+            target = getJdkDynamicProxyTargetObject(proxy);
+        } else {
+            //cglib
+            target = getCglibProxyTargetObject(proxy);
         }
 
         return getTarget(target);

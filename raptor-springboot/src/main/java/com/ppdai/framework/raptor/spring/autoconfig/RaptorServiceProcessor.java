@@ -65,15 +65,15 @@ public class RaptorServiceProcessor implements BeanPostProcessor {
 
 
     private List<Class<?>> findAllInterfaces(Object bean) {
-        List<Class<?>> RaptorInterfaces = new ArrayList<>();
+        List<Class<?>> raptorInterfaces = new ArrayList<>();
         Set<Class<?>> interfaceClasses = ClassUtils.getAllInterfacesAsSet(bean);
         for (Class<?> interfaceClass : interfaceClasses) {
             Annotation annotation = AnnotationUtils.findAnnotation(interfaceClass, RaptorInterface.class);
             if (annotation != null) {
-                RaptorInterfaces.add(interfaceClass);
+                raptorInterfaces.add(interfaceClass);
             }
         }
-        return RaptorInterfaces;
+        return raptorInterfaces;
     }
 
     @SuppressWarnings("unchecked")

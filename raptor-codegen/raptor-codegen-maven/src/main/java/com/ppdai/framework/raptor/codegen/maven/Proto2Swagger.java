@@ -115,11 +115,13 @@ public class Proto2Swagger extends AbstractMojo {
     private SwaggerGenConfiguration getConfiguration() {
         SwaggerGenConfiguration configuration = new SwaggerGenConfiguration();
 
-        if (isNotEmpty(protocVersion))
+        if (isNotEmpty(protocVersion)) {
             configuration.setProtocVersion(protocVersion);
+        }
 
-        if (outputDirectory != null)
+        if (outputDirectory != null) {
             configuration.setOutputDirectory(outputDirectory);
+        }
 
         if (inputDirectories != null) {
             if (inputDirectories.length == 0) {
@@ -129,20 +131,25 @@ public class Proto2Swagger extends AbstractMojo {
             configuration.setInputDirectories(inputDirectories);
         }
 
-        if (includeDirectories != null)
+        if (includeDirectories != null) {
             configuration.setIncludeDirectories(includeDirectories);
+        }
 
-        if (includeStdTypes != null)
+        if (includeStdTypes != null) {
             configuration.setIncludeStdTypes(includeStdTypes);
+        }
 
-        if (isNotEmpty(extension))
+        if (isNotEmpty(extension)) {
             configuration.setExtension(extension);
+        }
 
-        if (protocDependenciesPath != null)
+        if (protocDependenciesPath != null) {
             configuration.setProtocDependenciesPath(protocDependenciesPath);
+        }
 
-        if (project != null)
+        if (project != null) {
             configuration.setApiVersion(project.getVersion());
+        }
 
         if (swaggerVersion != null) {
             configuration.setSwaggerVersion(swaggerVersion);

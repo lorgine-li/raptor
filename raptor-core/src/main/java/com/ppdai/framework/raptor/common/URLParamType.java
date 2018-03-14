@@ -1,21 +1,21 @@
 package com.ppdai.framework.raptor.common;
 
 
-import com.ppdai.framework.raptor.exception.RaptorServiceException;
 import com.ppdai.framework.raptor.serialize.ProtobufBinSerialization;
 
 public enum URLParamType {
 
+    /**
+     * URLParamType
+     */
     version("version", "1.0"),
     serialization("x-serialization", ProtobufBinSerialization.NAME),
     httpVersion("statusLine.protocolVersion", "1.1"),
     httpStatusCode("statusLine.code", 0),
     httpReasonPhrase("statusLine.reasonPhrase", ""),
     accessLog("accessLog", true),
-    filter("filter", false),
     requestId("requestId", "0"),
     basePath("basePath", "raptor"),
-    exceptionClassHeader("x-exception-class", RaptorServiceException.class.getName()),
     connectTimeout("connectTimeout", 2000),
     socketTimeout("socketTimeout", 10000),
     connectionRequestTimeout("connectionRequestTimeout", -1),

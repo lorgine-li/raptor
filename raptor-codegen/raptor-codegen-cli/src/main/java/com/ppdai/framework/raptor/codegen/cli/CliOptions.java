@@ -51,8 +51,9 @@ public class CliOptions {
             //config from config.json
             try {
                 File configFile = new File(getCliJarPath(this.getClass()) + File.separatorChar + "config.json");
-                if(configFile.exists())
+                if(configFile.exists()) {
                     result.resolveConfigFile(CodegenConfiguration.fromFile(configFile));
+                }
             }catch (Exception e){
                 System.out.println(e.toString());
             }
@@ -62,8 +63,9 @@ public class CliOptions {
                 String confPath = cli.getOptionValue("c");
                 try{
                     File configFile = new File(confPath);
-                    if(configFile.exists())
+                    if(configFile.exists()) {
                         result.resolveConfigFile(CodegenConfiguration.fromFile(configFile));
+                    }
                 }catch (Exception e){
                     System.out.println(e.toString());
                 }

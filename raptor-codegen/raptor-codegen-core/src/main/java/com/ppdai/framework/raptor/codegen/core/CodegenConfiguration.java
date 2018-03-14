@@ -56,19 +56,25 @@ public class CodegenConfiguration {
     }
 
     public void resolveConfigFile(CodegenConfiguration codegenConfiguration) {
-        if(codegenConfiguration == null)
+        if(codegenConfiguration == null) {
             return;
+        }
 
-        if (codegenConfiguration.getInputDirectories() != null)
+        if (codegenConfiguration.getInputDirectories() != null) {
             this.inputDirectories = codegenConfiguration.getInputDirectories();
-        if (codegenConfiguration.getOutputDirectory() != null)
+        }
+        if (codegenConfiguration.getOutputDirectory() != null) {
             this.outputDirectory = codegenConfiguration.getOutputDirectory();
-        if (codegenConfiguration.getGroupId() != null)
+        }
+        if (codegenConfiguration.getGroupId() != null) {
             this.groupId = codegenConfiguration.getGroupId();
-        if (codegenConfiguration.getArtifactId() != null)
+        }
+        if (codegenConfiguration.getArtifactId() != null) {
             this.artifactId = codegenConfiguration.getArtifactId();
-        if (codegenConfiguration.getArtifactVersion() != null)
+        }
+        if (codegenConfiguration.getArtifactVersion() != null) {
             this.artifactVersion = codegenConfiguration.getArtifactVersion();
+        }
     }
     //getter & setter
 

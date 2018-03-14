@@ -75,8 +75,9 @@ public class Utils {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        if (filePath.endsWith(".jar"))
+        if (filePath.endsWith(".jar")) {
             filePath = filePath.substring(0, filePath.lastIndexOf("/") + 1);
+        }
         File file = new File(filePath);
         filePath = file.getAbsolutePath();
         return filePath;

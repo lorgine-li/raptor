@@ -41,6 +41,7 @@ public class ErrorMessage implements Serializable, ExceptionAttachment {
         return this.attachments.get(name);
     }
 
+    @Override
     public Map<String, String> getAttachments() {
         return this.attachments;
     }

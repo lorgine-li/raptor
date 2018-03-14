@@ -193,16 +193,18 @@ public class Proto2Java extends AbstractMojo {
     public void execute() throws MojoExecutionException {
         log("Generating a POJOs&RaptorInterface for each *.proto file.");
         CodegenConfiguration codegenConfiguration = new CodegenConfiguration();
-        if(isNotEmpty(snapshotUrl)){
+        if (isNotEmpty(snapshotUrl)) {
             Protoc.setSnapshotUrlStr(snapshotUrl);
         }
-        if(isNotEmpty(releaseUrl)){
+        if (isNotEmpty(releaseUrl)) {
             Protoc.setReleaseUrlStr(releaseUrl);
         }
-        if (isNotEmpty(protocVersion))
+        if (isNotEmpty(protocVersion)) {
             codegenConfiguration.setProtocVersion(protocVersion);
-        if (outputDirectory != null)
+        }
+        if (outputDirectory != null) {
             codegenConfiguration.setOutputDirectory(outputDirectory);
+        }
         if (inputDirectories != null) {
             if (inputDirectories.length == 0) {
                 File inputDir = new File(project.getBasedir().getAbsolutePath() + DEFAULT_INPUT_DIR);
@@ -210,34 +212,48 @@ public class Proto2Java extends AbstractMojo {
             }
             codegenConfiguration.setInputDirectories(inputDirectories);
         }
-        if (includeDirectories != null)
+        if (includeDirectories != null) {
             codegenConfiguration.setIncludeDirectories(includeDirectories);
-        if (includeStdTypes != null)
+        }
+        if (includeStdTypes != null) {
             codegenConfiguration.setIncludeStdTypes(includeStdTypes);
-        if (isNotEmpty(type))
+        }
+        if (isNotEmpty(type)) {
             codegenConfiguration.setType(type);
-        if (isNotEmpty(extension))
+        }
+        if (isNotEmpty(extension)) {
             codegenConfiguration.setExtension(extension);
-        if (isNotEmpty(pluginPath))
+        }
+        if (isNotEmpty(pluginPath)) {
             codegenConfiguration.setPluginPath(pluginPath);
-        if (isNotEmpty(pluginArtifact))
+        }
+        if (isNotEmpty(pluginArtifact)) {
             codegenConfiguration.setPluginArtifact(pluginArtifact);
-        if (isNotEmpty(protocCommand))
+        }
+        if (isNotEmpty(protocCommand)) {
             codegenConfiguration.setProtocCommand(protocCommand);
-        if (isNotEmpty(protocArtifact))
+        }
+        if (isNotEmpty(protocArtifact)) {
             codegenConfiguration.setProtocArtifact(protocArtifact);
-        if (project != null)
+        }
+        if (project != null) {
             codegenConfiguration.setProject(project);
-        if (localRepository != null)
+        }
+        if (localRepository != null) {
             codegenConfiguration.setLocalRepository(localRepository);
-        if (remoteRepositories != null)
+        }
+        if (remoteRepositories != null) {
             codegenConfiguration.setRemoteRepositories(remoteRepositories);
-        if (artifactFactory != null)
+        }
+        if (artifactFactory != null) {
             codegenConfiguration.setArtifactFactory(artifactFactory);
-        if (artifactResolver != null)
+        }
+        if (artifactResolver != null) {
             codegenConfiguration.setArtifactResolver(artifactResolver);
-        if (protocDependenciesPath != null)
+        }
+        if (protocDependenciesPath != null) {
             codegenConfiguration.setProtocDependenciesPath(protocDependenciesPath);
+        }
 
         try {
             new DefaultCodegen()

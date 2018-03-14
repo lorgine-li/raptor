@@ -4,14 +4,16 @@ public class ProtocVersion {
     public static final ProtocVersion PROTOC_VERSION = new ProtocVersion(null, null, "3.4.0");
 
     public static ProtocVersion getVersion(String spec) {
-        if (!spec.startsWith("-v"))
+        if (!spec.startsWith("-v")) {
             return null;
+        }
         ProtocVersion version = null;
         String[] as = spec.split(":");
-        if (as.length == 4 && as[0].equals("-v"))
+        if (as.length == 4 && "-v".equals(as[0])) {
             version = new ProtocVersion(as[1], as[2], as[3]);
-        else
+        } else {
             version = new ProtocVersion(null, null, spec.substring(2));
+        }
 
         if (version.mVersion.length() == 3) { // "123" -> "1.2.3"
             String dotVersion = version.mVersion.charAt(0) + "." + version.mVersion.charAt(1) + "." + version.mVersion.charAt(2);
@@ -28,7 +30,9 @@ public class ProtocVersion {
 
     @Override
     public String toString() {
-        if (mArtifact == null) return mVersion;
+        if (mArtifact == null) {
+            return mVersion;
+        }
         return mGroup + ":" + mArtifact + ":" + mVersion;
     }
 

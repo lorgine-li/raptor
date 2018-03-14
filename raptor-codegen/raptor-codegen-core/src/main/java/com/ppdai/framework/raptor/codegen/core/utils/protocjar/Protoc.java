@@ -70,8 +70,12 @@ public class Protoc {
         //two arg: version & includeStdTypes
         for (String arg : args) {
             ProtocVersion v = getVersion(arg);
-            if (v != null) protocVersion = v;
-            if (arg.equals("--include_std_types")) includeStdTypes = true;
+            if (v != null) {
+                protocVersion = v;
+            }
+            if (arg.equals("--include_std_types")) {
+                includeStdTypes = true;
+            }
         }
 
         try {
@@ -107,8 +111,11 @@ public class Protoc {
                 protocCmd.add("-I" + stdTypeDir.getAbsolutePath());
             } else {
                 ProtocVersion v = getVersion(arg);
-                if (v != null) protocVersion = v;
-                else protocCmd.add(arg);
+                if (v != null) {
+                    protocVersion = v;
+                } else {
+                    protocCmd.add(arg);
+                }
             }
         }
         //重试三次 process todo
@@ -120,7 +127,9 @@ public class Protoc {
                 ProcessBuilder pb = new ProcessBuilder(protocCmd);
                 protoc = pb.start();
             } catch (IOException ioe) {
-                if (numTries++ >= 3) throw ioe; // retry loop, workaround text file busy issue
+                if (numTries++ >= 3) {
+                    throw ioe; // retry loop, workaround text file busy issue
+                }
                 log("caught exception, retrying: " + ioe);
                 Thread.sleep(1000);
             }
@@ -139,7 +148,9 @@ public class Protoc {
     }
 
     public static void doShading(File dir, String version) throws IOException {
-        if (dir.listFiles() == null) return;
+        if (dir.listFiles() == null) {
+            return;
+        }
         for (File file : dir.listFiles()) {
             if (file.isDirectory()) {
                 doShading(file, version);
@@ -161,7 +172,9 @@ public class Protoc {
                     pw.close();
                     br.close();
                     // tmpFile.renameTo(file) only works on same filesystem, make copy instead:
-                    if (!file.delete()) log("Failed to delete: " + file.getName());
+                    if (!file.delete()) {
+                        log("Failed to delete: " + file.getName());
+                    }
                     is = new FileInputStream(tmpFile);
                     os = new FileOutputStream(file);
                     streamCopy(is, os);
@@ -190,7 +203,9 @@ public class Protoc {
                         } catch (Exception e) {
                         }
                     }
-                    if (tmpFile != null) tmpFile.delete();
+                    if (tmpFile != null) {
+                        tmpFile.delete();
+                    }
                 }
             }
         }
@@ -202,8 +217,9 @@ public class Protoc {
 
     public static File extractProtoc(ProtocVersion protocVersion, boolean includeStdTypes, File dir) throws IOException {
         File protocTemp = extractProtoc(protocVersion, dir);
-        if (includeStdTypes)
+        if (includeStdTypes) {
             extractStdTypes(protocVersion, protocTemp.getParentFile().getParentFile());
+        }
         return protocTemp;
     }
 
@@ -242,8 +258,9 @@ public class Protoc {
             exeFile = downloadProtoc(protocVersion, downloadPath, true);
         }
 
-        if (exeFile == null)
+        if (exeFile == null) {
             throw new FileNotFoundException("Unsupported platform: " + getProtocExeName(protocVersion));
+        }
 
         File protocTemp = new File(binDir, "protoc.exe");
         populateFile(exeFile.getAbsolutePath(), protocTemp);
@@ -257,7 +274,9 @@ public class Protoc {
         for (String downloadPath : sDdownloadPaths) {
             try {
                 File exeFile = downloadProtoc(protocVersion, downloadPath, false);
-                if (exeFile != null) return exeFile;
+                if (exeFile != null) {
+                    return exeFile;
+                }
             } catch (IOException e) {
                 //log(e);
             }
@@ -267,7 +286,9 @@ public class Protoc {
         for (String downloadPath : sDdownloadPaths) {
             try {
                 File exeFile = downloadProtoc(protocVersion, downloadPath, true);
-                if (exeFile != null) return exeFile;
+                if (exeFile != null) {
+                    return exeFile;
+                }
             } catch (IOException e) {
                 //log(e);
             }
@@ -323,7 +344,9 @@ public class Protoc {
 
         // parse exe name from maven-metadata.xml
         String exeName = parseSnapshotExeName(mdFile);
-        if (exeName == null) return null;
+        if (exeName == null) {
+            return null;
+        }
 
         // download exe
         String exeSubPath = protocVersion.mVersion + "/" + exeName;
@@ -356,10 +379,16 @@ public class Protoc {
             destFile.setLastModified(System.currentTimeMillis());
         } catch (IOException e) {
             tmpFile.delete();
-            if (!destFile.exists()) throw e; // if download failed but had cached version, ignore exception
+            if (!destFile.exists()) {
+                throw e; // if download failed but had cached version, ignore exception
+            }
         } finally {
-            if (is != null) is.close();
-            if (os != null) os.close();
+            if (is != null) {
+                is.close();
+            }
+            if (os != null) {
+                os.close();
+            }
         }
 
         log("saved: " + destFile);
@@ -397,15 +426,20 @@ public class Protoc {
 
         FileOutputStream os = null;
         InputStream is = Protoc.class.getResourceAsStream(resourcePath);
-        if (is == null)
+        if (is == null) {
             is = new FileInputStream(srcFilePath);
+        }
 
         try {
             os = new FileOutputStream(destFile);
             streamCopy(is, os);
         } finally {
-            if (is != null) is.close();
-            if (os != null) os.close();
+            if (is != null) {
+                is.close();
+            }
+            if (os != null) {
+                os.close();
+            }
         }
 
         return destFile;
@@ -414,7 +448,9 @@ public class Protoc {
     public static void streamCopy(InputStream in, OutputStream out) throws IOException {
         int read = 0;
         byte[] buf = new byte[4096];
-        while ((read = in.read(buf)) > 0) out.write(buf, 0, read);
+        while ((read = in.read(buf)) > 0) {
+            out.write(buf, 0, read);
+        }
     }
 
     static String parseLastReleaseBuild(File mdFile, ProtocVersion protocVersion) throws IOException {
@@ -430,13 +466,17 @@ public class Protoc {
                 if (verStr.startsWith(protocVersion.mVersion + "-build")) {
                     String buildStr = verStr.substring(verStr.indexOf("-build") + "-build".length());
                     int build = Integer.parseInt(buildStr);
-                    if (build > lastBuild) lastBuild = build;
+                    if (build > lastBuild) {
+                        lastBuild = build;
+                    }
                 }
             }
         } catch (Exception e) {
             throw new IOException(e);
         }
-        if (lastBuild > 0) return protocVersion.mVersion + "-build" + lastBuild;
+        if (lastBuild > 0) {
+            return protocVersion.mVersion + "-build" + lastBuild;
+        }
         return null;
     }
 
@@ -454,8 +494,12 @@ public class Protoc {
                 Node val = null;
                 for (int j = 0; j < ver.getChildNodes().getLength(); j++) {
                     Node n = ver.getChildNodes().item(j);
-                    if (n.getNodeName().equals("classifier")) cls = n;
-                    if (n.getNodeName().equals("value")) val = n;
+                    if (n.getNodeName().equals("classifier")) {
+                        cls = n;
+                    }
+                    if (n.getNodeName().equals("value")) {
+                        val = n;
+                    }
                 }
                 if (cls != null && val != null && cls.getTextContent().equals(clsStr)) {
                     exeName = "protoc-" + val.getTextContent() + "-" + clsStr + ".exe";
@@ -507,6 +551,7 @@ public class Protoc {
             mOut = out;
         }
 
+        @Override
         public void run() {
             try {
                 streamCopy(mIn, mOut);

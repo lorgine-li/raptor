@@ -42,16 +42,21 @@ public class ProjectGenerator {
     public void setGeneratorProperties() throws Exception {
         if (codegenConfiguration != null) {
             try {
-                if (codegenConfiguration.getInputDirectories() != null)
+                if (codegenConfiguration.getInputDirectories() != null) {
                     inputDirectories = codegenConfiguration.getInputDirectories();
-                if (codegenConfiguration.getOutputDirectory() != null)
+                }
+                if (codegenConfiguration.getOutputDirectory() != null) {
                     outputDirectory = codegenConfiguration.getOutputDirectory();
-                if (codegenConfiguration.getGroupId() != null)
+                }
+                if (codegenConfiguration.getGroupId() != null) {
                     groupId = codegenConfiguration.getGroupId();
-                if (codegenConfiguration.getArtifactId() != null)
+                }
+                if (codegenConfiguration.getArtifactId() != null) {
                     artifactId = codegenConfiguration.getArtifactId();
-                if (codegenConfiguration.getArtifactVersion() != null)
+                }
+                if (codegenConfiguration.getArtifactVersion() != null) {
                     artifactVersion = codegenConfiguration.getArtifactVersion();
+                }
             } catch (Exception e) {
                 System.out.println(e.toString());
                 throw new Exception("Exception happens at ProjectGenerator—setGeneratorProperties.");
@@ -79,8 +84,9 @@ public class ProjectGenerator {
         }
 
         System.out.println(">>>>>>>>>>>>>>>  Copying proto files to the project");
-        for (int i = 0; i < inputDirectories.length; i++)
+        for (int i = 0; i < inputDirectories.length; i++) {
             Utils.collectSpecificFiles(inputDirectories[i], ".proto", allProtoFiles);
+        }
         System.out.println("Number of protos :" + allProtoFiles.size());
 
         //Generate the src/main/java

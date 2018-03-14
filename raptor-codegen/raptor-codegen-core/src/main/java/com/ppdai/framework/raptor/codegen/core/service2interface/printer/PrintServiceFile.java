@@ -57,8 +57,9 @@ public final class PrintServiceFile extends AbstractPrint {
     private String inputTypeProcess(String inputType) {
         char[] temp = new char[1];
         temp[0] = inputType.charAt(0);
-        if (64 < temp[0] && temp[0] < 91)
+        if (64 < temp[0] && temp[0] < 91) {
             return inputType.replaceFirst(new String(temp), new String(temp).toLowerCase());
+        }
         return inputType;
     }
 
