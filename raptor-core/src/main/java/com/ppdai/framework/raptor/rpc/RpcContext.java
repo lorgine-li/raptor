@@ -13,14 +13,15 @@ public class RpcContext {
     private Response response;
     private String clientRequestId = null;
 
-    private static final ThreadLocal<RpcContext> localContext = new ThreadLocal<RpcContext>() {
+    private static final ThreadLocal<RpcContext> LOCAL_CONTEXT = new ThreadLocal<RpcContext>() {
+        @Override
         protected RpcContext initialValue() {
             return new RpcContext();
         }
     };
 
     public static RpcContext getContext() {
-        return localContext.get();
+        return LOCAL_CONTEXT.get();
     }
 
     public static RpcContext init(Request request) {
@@ -30,18 +31,18 @@ public class RpcContext {
             String requestIdFromClient = String.valueOf(request.getRequestId());
             context.setClientRequestId(requestIdFromClient);
         }
-        localContext.set(context);
+        LOCAL_CONTEXT.set(context);
         return context;
     }
 
     public static RpcContext init() {
         RpcContext context = new RpcContext();
-        localContext.set(context);
+        LOCAL_CONTEXT.set(context);
         return context;
     }
 
     public static void destroy() {
-        localContext.remove();
+        LOCAL_CONTEXT.remove();
     }
 
     public String getRequestId() {

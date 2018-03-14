@@ -5,7 +5,7 @@ import com.ppdai.framework.raptor.rpc.URL;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class LocalUrlRepository extends UrlRepository {
+public class LocalUrlRepository extends AbstractUrlRepository {
     private Map<String, URL> localRepository = new ConcurrentHashMap<>();
 
     @Override

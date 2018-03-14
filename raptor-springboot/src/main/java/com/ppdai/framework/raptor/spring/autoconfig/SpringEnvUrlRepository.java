@@ -1,11 +1,11 @@
 package com.ppdai.framework.raptor.spring.autoconfig;
 
-import com.ppdai.framework.raptor.refer.repository.UrlRepository;
+import com.ppdai.framework.raptor.refer.repository.AbstractUrlRepository;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.core.env.Environment;
 
-public class SpringEnvUrlRepository extends UrlRepository {
+public class SpringEnvUrlRepository extends AbstractUrlRepository {
 
     private Environment environment;
 

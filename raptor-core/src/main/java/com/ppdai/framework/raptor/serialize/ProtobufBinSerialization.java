@@ -3,9 +3,9 @@ package com.ppdai.framework.raptor.serialize;
 import com.google.protobuf.Message;
 import com.ppdai.framework.raptor.util.ProtoBuffUtils;
 
-public class ProtobufBinSerialization extends ProtobufSerialization {
+public class ProtobufBinSerialization extends AbstractProtobufSerialization {
 
-    public static final String name = "protobuf-bin";
+    public static final String NAME = "protobuf-bin";
 
     @Override
     public byte[] serializeMessage(Message message) {
@@ -19,6 +19,6 @@ public class ProtobufBinSerialization extends ProtobufSerialization {
 
     @Override
     public String getName() {
-        return name;
+        return NAME;
     }
 }

@@ -2,7 +2,7 @@ package com.ppdai.framework.raptor.exception;
 
 import com.ppdai.framework.raptor.common.RaptorMessageConstant;
 
-public class RaptorServiceException extends RaptorAbstractException {
+public class RaptorServiceException extends AbstractRaptorException {
 
 
     public RaptorServiceException(String message) {

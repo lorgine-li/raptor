@@ -2,11 +2,11 @@ package com.ppdai.framework.raptor.exception;
 
 import org.apache.commons.lang3.StringUtils;
 
-public abstract class RaptorAbstractException extends RuntimeException {
+public abstract class AbstractRaptorException extends RuntimeException {
 
     protected ErrorMessage errorMessage;
 
-    public RaptorAbstractException(ErrorMessage errorMessage, Throwable cause) {
+    public AbstractRaptorException(ErrorMessage errorMessage, Throwable cause) {
         super(errorMessage.getMessage(), cause);
         this.errorMessage = errorMessage;
     }

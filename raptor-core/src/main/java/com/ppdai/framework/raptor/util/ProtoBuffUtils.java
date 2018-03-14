@@ -107,7 +107,7 @@ public final class ProtoBuffUtils {
         }
     }
 
-    public static <TYPE extends Message> TYPE byteArrayToProtobuf(byte data[], Class<TYPE> messageClass) {
+    public static <TYPE extends Message> TYPE byteArrayToProtobuf(byte[] data, Class<TYPE> messageClass) {
         try {
             Message.Builder builder = getBuilder(messageClass);
             return (TYPE) builder.mergeFrom(data).build();

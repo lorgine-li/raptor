@@ -27,6 +27,7 @@ public class DefaultResponse implements Response, Serializable {
         this.requestId = requestId;
     }
 
+    @Override
     public Object getValue() {
         if (exception != null) {
             throw (exception instanceof RuntimeException) ? (RuntimeException) exception : new RaptorServiceException(exception.getMessage(), exception);

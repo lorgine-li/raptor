@@ -12,7 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * 根据一个urlKey保存Listener
  */
-public abstract class UrlRepository {
+public abstract class AbstractUrlRepository {
 
     protected Map<String, Set<UrlChangeListener>> listeners = new ConcurrentHashMap<>();
 

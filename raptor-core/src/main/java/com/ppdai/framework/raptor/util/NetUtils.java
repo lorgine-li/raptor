@@ -24,7 +24,7 @@ public class NetUtils {
     private static final Pattern IP_PATTERN = Pattern.compile("\\d{1,3}(\\.\\d{1,3}){3,5}$");
 
     public static boolean isInvalidLocalHost(String host) {
-        return host == null || host.length() == 0 || host.equalsIgnoreCase("localhost") || host.equals("0.0.0.0")
+        return host == null || host.length() == 0 || "localhost".equalsIgnoreCase(host) || "0.0.0.0".equals(host)
                 || (LOCAL_IP_PATTERN.matcher(host).matches());
     }
 
@@ -155,12 +155,18 @@ public class NetUtils {
     }
 
     public static boolean isValidAddress(InetAddress address) {
-        if (address == null || address.isLoopbackAddress()) return false;
+        if (address == null || address.isLoopbackAddress()) {
+            return false;
+        }
         String name = address.getHostAddress();
         return (name != null && !ANYHOST.equals(name) && !LOCALHOST.equals(name) && IP_PATTERN.matcher(name).matches());
     }
 
-    //return ip to avoid lookup dns
+    /**
+     * return ip to avoid lookup dns
+     * @param socketAddress
+     * @return
+     */
     public static String getHostName(SocketAddress socketAddress) {
         if (socketAddress == null) {
             return null;

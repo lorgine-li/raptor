@@ -15,8 +15,8 @@ public class ReflectUtil {
     public static final String EMPTY_PARAM = "void";
     private static final Class<?>[] EMPTY_CLASS_ARRAY = new Class<?>[0];
 
-    private static final ConcurrentMap<String, Class<?>> name2ClassCache = new ConcurrentHashMap<>();
-    private static final ConcurrentMap<Class<?>, String> class2NameCache = new ConcurrentHashMap<>();
+    private static final ConcurrentMap<String, Class<?>> NAME_CLASS_CACHE = new ConcurrentHashMap<>();
+    private static final ConcurrentMap<Class<?>, String> CLASS_NAME_CACHE = new ConcurrentHashMap<>();
 
     private static final String[] PRIMITIVE_NAMES = new String[]{"boolean", "byte", "char", "double", "float", "int", "long", "short",
             "void"};
@@ -78,7 +78,7 @@ public class ReflectUtil {
             return null;
         }
 
-        Class<?> clz = name2ClassCache.get(className);
+        Class<?> clz = NAME_CLASS_CACHE.get(className);
 
         if (clz != null) {
             return clz;
@@ -87,13 +87,14 @@ public class ReflectUtil {
         clz = forNameWithoutCache(className);
 
         // 应该没有内存消耗过多的可能，除非有些代码很恶心，创建特别多的类
-        name2ClassCache.putIfAbsent(className, clz);
+        NAME_CLASS_CACHE.putIfAbsent(className, clz);
 
         return clz;
     }
 
     private static Class<?> forNameWithoutCache(String className) throws ClassNotFoundException {
-        if (!className.endsWith("[]")) { // not array
+        if (!className.endsWith("[]")) {
+            // not array
             Class<?> clz = getPrimitiveClass(className);
             clz = (clz != null) ? clz : Class.forName(className, true, Thread.currentThread().getContextClassLoader());
             return clz;
@@ -118,13 +119,13 @@ public class ReflectUtil {
         if (clz == null) {
             return null;
         }
-        String className = class2NameCache.get(clz);
+        String className = CLASS_NAME_CACHE.get(clz);
         if (className != null) {
             return className;
         }
         className = getNameWithoutCache(clz);
         // 与name2ClassCache同样道理，如果没有恶心的代码，这块内存大小应该可控
-        class2NameCache.putIfAbsent(clz, className);
+        CLASS_NAME_CACHE.putIfAbsent(clz, className);
         return className;
     }
 
@@ -182,12 +183,10 @@ public class ReflectUtil {
         return ret;
     }
 
-    public static Object getEmptyObject(Class<?> returnType) {
-        return getEmptyObject(returnType, new HashMap<>(), 0);
-    }
-
     private static Object getEmptyObject(Class<?> returnType, Map<Class<?>, Object> emptyInstances, int level) {
-        if (level > 2) return null;
+        if (level > 2) {
+            return null;
+        }
         if (returnType == null) {
             return null;
         } else if (returnType == boolean.class || returnType == Boolean.class) {

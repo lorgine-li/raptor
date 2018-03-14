@@ -8,8 +8,8 @@ public class HttpErrorConverter {
         if (e == null) {
             return new ErrorMessage(RaptorMessageConstant.SUCCESS, "SUCCESS");
         }
-        if (e instanceof RaptorAbstractException) {
-            return ((RaptorAbstractException) e).getErrorMessage();
+        if (e instanceof AbstractRaptorException) {
+            return ((AbstractRaptorException) e).getErrorMessage();
         }
         return new ErrorMessage(RaptorMessageConstant.SERVICE_DEFAULT_ERROR_CODE, e.getMessage());
     }
@@ -18,8 +18,8 @@ public class HttpErrorConverter {
         if (e == null) {
             return 200;
         }
-        if (e instanceof RaptorAbstractException) {
-            int code = ((RaptorAbstractException) e).getErrorMessage().getCode();
+        if (e instanceof AbstractRaptorException) {
+            int code = ((AbstractRaptorException) e).getErrorMessage().getCode();
             return getHttpStatusCode(code);
         }
         return getDefaultErrorHttpStatusCode();

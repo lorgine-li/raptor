@@ -3,7 +3,7 @@ package com.ppdai.framework.raptor.serialize;
 import com.google.protobuf.Message;
 import com.ppdai.framework.raptor.exception.RaptorServiceException;
 
-public abstract class ProtobufSerialization implements Serialization {
+public abstract class AbstractProtobufSerialization implements Serialization {
 
     public abstract byte[] serializeMessage(Message message);
 
@@ -11,8 +11,9 @@ public abstract class ProtobufSerialization implements Serialization {
 
     @Override
     public byte[] serialize(Object obj) {
-        if (obj instanceof Message)
+        if (obj instanceof Message) {
             return serializeMessage((Message) obj);
+        }
         throw new RaptorServiceException(String.format("object [%s] is not protobuf Message, can not serialize.", obj));
     }
 
