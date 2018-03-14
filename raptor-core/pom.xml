@@ -89,6 +89,23 @@
             </resource>
         </resources>
         <plugins>
+
+            <plugin>
+                <groupId>com.ppdai.framework</groupId>
+                <artifactId>raptor-codegen-maven</artifactId>
+                <version>${project.version}</version>
+                <configuration>
+                    <includeStdTypes>true</includeStdTypes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>proto2java</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId><executions>

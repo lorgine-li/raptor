@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ErrorMessage implements Serializable {
+public class ErrorMessage implements Serializable, ExceptionAttachment {
 
     private int code;
     private String message;
@@ -26,6 +26,14 @@ public class ErrorMessage implements Serializable {
 
     public ErrorMessage addAttachment(String name, String value) {
         this.attachments.put(name, value);
+        return this;
+    }
+
+
+    public ErrorMessage addAttachments(Map<String, String> attachments) {
+        if (attachments != null) {
+            this.attachments.putAll(attachments);
+        }
         return this;
     }
 
