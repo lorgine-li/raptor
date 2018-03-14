@@ -2,6 +2,7 @@ package com.ppdai.framework.raptor.codegen.maven;
 
 import com.ppdai.framework.raptor.codegen.core.CodegenConfiguration;
 import com.ppdai.framework.raptor.codegen.core.DefaultCodegen;
+import com.ppdai.framework.raptor.codegen.core.utils.protocjar.Protoc;
 import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.artifact.resolver.ArtifactResolver;
@@ -160,6 +161,27 @@ public class Proto2Java extends AbstractMojo {
     )
     private File protocDependenciesPath;
 
+    /**
+     * 下载protoc-snapshots的地址
+     */
+    @Parameter(
+            property = "snapshotUrl",
+            readonly = true,
+            defaultValue = "https://oss.sonatype.org/content/repositories/snapshots/"
+    )
+    private String snapshotUrl;
+
+    /**
+     * 下载proto的地址
+     */
+    @Parameter(
+            property = "releaseUrl",
+            readonly = true,
+            defaultValue = "http://repo1.maven.org/maven2/"
+
+    )
+    private String releaseUrl;
+
     @Component
     private ArtifactFactory artifactFactory;
 
@@ -171,6 +193,12 @@ public class Proto2Java extends AbstractMojo {
     public void execute() throws MojoExecutionException {
         log("Generating a POJOs&BeamInterface for each *.proto file.");
         CodegenConfiguration codegenConfiguration = new CodegenConfiguration();
+        if(isNotEmpty(snapshotUrl)){
+            Protoc.setSnapshotUrlStr(snapshotUrl);
+        }
+        if(isNotEmpty(releaseUrl)){
+            Protoc.setReleaseUrlStr(releaseUrl);
+        }
         if (isNotEmpty(protocVersion))
             codegenConfiguration.setProtocVersion(protocVersion);
         if (outputDirectory != null)

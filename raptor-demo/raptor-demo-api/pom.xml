@@ -31,6 +31,7 @@
                 <version>${project.version}</version>
                 <configuration>
                     <includeStdTypes>true</includeStdTypes>
+                    <releaseUrl>http://maven.repo.ppdai.com/nexus/content/groups/public/</releaseUrl>
                 </configuration>
                 <executions>
                     <execution>

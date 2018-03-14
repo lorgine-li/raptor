@@ -12,6 +12,43 @@ import java.net.URLConnection;
 import java.util.*;
 
 public class Protoc {
+    static String[] sDdownloadPaths = {
+            "com/google/protobuf/protoc/",
+            "com/github/os72/protoc/",
+    };
+    static String[] sStdTypesProto2 = {
+            "include/google/protobuf/descriptor.proto",
+    };
+    static String[] sStdTypesProto3 = {
+            "include/google/protobuf/any.proto",
+            "include/google/protobuf/api.proto",
+            "include/google/protobuf/descriptor.proto",
+            "include/google/protobuf/duration.proto",
+            "include/google/protobuf/empty.proto",
+            "include/google/protobuf/field_mask.proto",
+            "include/google/protobuf/source_context.proto",
+            "include/google/protobuf/struct.proto",
+            "include/google/protobuf/timestamp.proto",
+            "include/google/protobuf/type.proto",
+            "include/google/protobuf/wrappers.proto",
+    };
+    static Map<String, String[]> sStdTypesMap = new HashMap<String, String[]>();
+    private static String snapshotUrlStr = "https://oss.sonatype.org/content/repositories/snapshots/";
+    private static String releaseUrlStr = "http://maven.repo.ppdai.com/nexus/content/groups/public/";
+
+    static {
+        sStdTypesMap.put("2", sStdTypesProto2);
+        sStdTypesMap.put("3", sStdTypesProto3);
+    }
+
+    public static void setSnapshotUrlStr(String snapshotUrlStr) {
+        Protoc.snapshotUrlStr = snapshotUrlStr;
+    }
+
+    public static void setReleaseUrlStr(String releaseUrlStr) {
+        Protoc.releaseUrlStr = releaseUrlStr;
+    }
+
     public static void main(String[] args) {
         try {
             if (args.length > 0 && args[0].equals("-pp")) { // print platform
@@ -53,6 +90,7 @@ public class Protoc {
     public static int runProtoc(String cmd, String[] args) throws IOException, InterruptedException {
         return runProtoc(cmd, Arrays.asList(args));
     }
+
     //cmd is the exe in windows,
     public static int runProtoc(String cmd, List<String> argList) throws IOException, InterruptedException {
         ProtocVersion protocVersion = ProtocVersion.PROTOC_VERSION;
@@ -243,7 +281,6 @@ public class Protoc {
             return downloadProtocSnapshot(protocVersion, downloadPath);
         }
 
-        String releaseUrlStr = "http://maven.repo.ppdai.com/nexus/content/groups/public/";
         File webcacheDir = getWebcacheDir();
 
         // download maven-metadata.xml (cache for 8hrs)
@@ -276,7 +313,6 @@ public class Protoc {
     }
 
     public static File downloadProtocSnapshot(ProtocVersion protocVersion, String downloadPath) throws IOException {
-        String snapshotUrlStr = "https://oss.sonatype.org/content/repositories/snapshots/";
         File webcacheDir = getWebcacheDir();
 
         // download maven-metadata.xml (cache for 8hrs)
@@ -463,6 +499,9 @@ public class Protoc {
     }
 
     static class StreamCopier implements Runnable {
+        private InputStream mIn;
+        private OutputStream mOut;
+
         public StreamCopier(InputStream in, OutputStream out) {
             mIn = in;
             mOut = out;
@@ -475,37 +514,5 @@ public class Protoc {
                 e.printStackTrace();
             }
         }
-
-        private InputStream mIn;
-        private OutputStream mOut;
-    }
-
-    static String[] sDdownloadPaths = {
-            "com/google/protobuf/protoc/",
-            "com/github/os72/protoc/",
-    };
-
-    static String[] sStdTypesProto2 = {
-            "include/google/protobuf/descriptor.proto",
-    };
-    static String[] sStdTypesProto3 = {
-            "include/google/protobuf/any.proto",
-            "include/google/protobuf/api.proto",
-            "include/google/protobuf/descriptor.proto",
-            "include/google/protobuf/duration.proto",
-            "include/google/protobuf/empty.proto",
-            "include/google/protobuf/field_mask.proto",
-            "include/google/protobuf/source_context.proto",
-            "include/google/protobuf/struct.proto",
-            "include/google/protobuf/timestamp.proto",
-            "include/google/protobuf/type.proto",
-            "include/google/protobuf/wrappers.proto",
-    };
-
-    static Map<String, String[]> sStdTypesMap = new HashMap<String, String[]>();
-
-    static {
-        sStdTypesMap.put("2", sStdTypesProto2);
-        sStdTypesMap.put("3", sStdTypesProto3);
     }
 }
