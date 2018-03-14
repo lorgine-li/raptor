@@ -40,7 +40,7 @@ public class SerializationProviders {
     }
 
     public Serialization getDefault() {
-        return providers.getSerialization(ProtobufBinSerialization.name);
+        return providers.getSerialization(ProtobufBinSerialization.NAME);
     }
 
     public Serialization getSerialization(String name) {

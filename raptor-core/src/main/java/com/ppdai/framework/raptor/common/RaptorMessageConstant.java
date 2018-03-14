@@ -4,14 +4,22 @@ import com.ppdai.framework.raptor.exception.ErrorMessage;
 
 public class RaptorMessageConstant {
     public static final int SUCCESS = 0;
-    // service error
+    /**
+     * service error
+     */
     public static final int SERVICE_DEFAULT_ERROR_CODE = 10001;
     public static final int SERVICE_NOTFOUND_ERROR_CODE = 10101;
     public static final int SERVICE_REDIRECT_ERROR_CODE = 10300;
     public static final int SERVICE_UNKNOW_ERROR_CODE = 10000;
-    // framework error
+
+    /**
+     * framework error
+     */
     public static final int FRAMEWORK_DEFAULT_ERROR_CODE = 20001;
-    // biz exception
+
+    /**
+     *  biz exception
+     */
     public static final int BIZ_DEFAULT_ERROR_CODE = 30001;
 
     public static final ErrorMessage SERVICE_DEFAULT_ERROR = new ErrorMessage(SERVICE_DEFAULT_ERROR_CODE, "service error");

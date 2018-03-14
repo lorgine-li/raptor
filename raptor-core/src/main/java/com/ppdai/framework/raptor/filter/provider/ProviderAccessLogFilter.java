@@ -43,7 +43,6 @@ public class ProviderAccessLogFilter extends AbstractAccessLogFilter implements 
         return RaptorConstants.NODE_TYPE_SERVICE;
     }
 
-    //TODO 此处逻辑放到provider中
     @Override
     protected String getStatusCode(Response response) {
         Exception e = response.getException();

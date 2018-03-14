@@ -25,6 +25,7 @@ public class DefaultRequest implements Serializable, Request {
         this.attachments.put(key, value);
     }
 
+    @Override
     public String toString() {
         return RaptorFrameworkUtil.toString(this);
     }

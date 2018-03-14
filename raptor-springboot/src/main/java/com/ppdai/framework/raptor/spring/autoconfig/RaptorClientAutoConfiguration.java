@@ -6,7 +6,7 @@ import com.ppdai.framework.raptor.filter.refer.ReferMetricsFilter;
 import com.ppdai.framework.raptor.refer.ReferProxyBuilder;
 import com.ppdai.framework.raptor.refer.client.ApacheHttpClient;
 import com.ppdai.framework.raptor.refer.client.Client;
-import com.ppdai.framework.raptor.refer.repository.UrlRepository;
+import com.ppdai.framework.raptor.refer.repository.AbstractUrlRepository;
 import com.ppdai.framework.raptor.spring.properties.ApacheHttpClientProperties;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.ObjectProvider;
@@ -37,7 +37,7 @@ public class RaptorClientAutoConfiguration implements EnvironmentAware {
 
     @Bean
     @ConditionalOnProperty(name = "raptor.urlRepository", havingValue = "springEnv", matchIfMissing = true)
-    public UrlRepository createUrlRepository() {
+    public AbstractUrlRepository createUrlRepository() {
         SpringEnvUrlRepository springEnvUrlRepository = new SpringEnvUrlRepository(environment);
         springEnvUrlRepository.setKeyPrefix(environment.getProperty(PREFIX_KEY, DEFAULT_PREFIX));
         return springEnvUrlRepository;
@@ -59,7 +59,7 @@ public class RaptorClientAutoConfiguration implements EnvironmentAware {
     }
 
     @Bean
-    public RaptorClientRegistry createClientRegistry(UrlRepository urlRepository, ReferProxyBuilder referProxyBuilder) {
+    public RaptorClientRegistry createClientRegistry(AbstractUrlRepository urlRepository, ReferProxyBuilder referProxyBuilder) {
         return new RaptorClientRegistry(urlRepository, referProxyBuilder);
     }
 

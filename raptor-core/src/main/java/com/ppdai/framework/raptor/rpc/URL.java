@@ -1,17 +1,13 @@
 package com.ppdai.framework.raptor.rpc;
 
-import com.ppdai.framework.raptor.util.StringTools;
 import com.ppdai.framework.raptor.common.RaptorConstants;
 import com.ppdai.framework.raptor.common.URLParamType;
 import com.ppdai.framework.raptor.exception.RaptorServiceException;
+import com.ppdai.framework.raptor.util.StringTools;
 import lombok.Builder;
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -57,7 +53,8 @@ public class URL {
         int port = 0;
         String path = null;
         Map<String, String> parameters = new HashMap<>();
-        int i = url.indexOf("?"); // seperator between body and parameters
+        // seperator between body and parameters
+        int i = url.indexOf("?");
         if (i >= 0) {
             String[] parts = url.substring(i + 1).split("\\&");
 
@@ -76,13 +73,17 @@ public class URL {
         }
         i = url.indexOf("://");
         if (i >= 0) {
-            if (i == 0) throw new IllegalStateException("serviceUrl missing protocol: \"" + url + "\"");
+            if (i == 0) {
+                throw new IllegalStateException("serviceUrl missing protocol: \"" + url + "\"");
+            }
             protocol = url.substring(0, i);
             url = url.substring(i + 3);
         } else {
             i = url.indexOf(":/");
             if (i >= 0) {
-                if (i == 0) throw new IllegalStateException("serviceUrl missing protocol: \"" + url + "\"");
+                if (i == 0) {
+                    throw new IllegalStateException("serviceUrl missing protocol: \"" + url + "\"");
+                }
                 protocol = url.substring(0, i);
                 url = url.substring(i + 1);
             }
@@ -99,7 +100,9 @@ public class URL {
             port = Integer.parseInt(url.substring(i + 1));
             url = url.substring(0, i);
         }
-        if (url.length() > 0) host = url;
+        if (url.length() > 0) {
+            host = url;
+        }
         return new URL(protocol, host, port, path, parameters);
     }
 
@@ -294,6 +297,7 @@ public class URL {
         return StringUtils.isNotBlank(getParameter(key));
     }
 
+    @Override
     public String toString() {
         return getUri();
     }
@@ -302,11 +306,11 @@ public class URL {
     public int hashCode() {
         int factor = 31;
         int rs = 1;
-        rs = factor * rs + ObjectUtils.hashCode(protocol);
-        rs = factor * rs + ObjectUtils.hashCode(host);
-        rs = factor * rs + ObjectUtils.hashCode(port);
-        rs = factor * rs + ObjectUtils.hashCode(path);
-        rs = factor * rs + ObjectUtils.hashCode(parameters);
+        rs = factor * rs + Objects.hashCode(protocol);
+        rs = factor * rs + Objects.hashCode(host);
+        rs = factor * rs + Objects.hashCode(port);
+        rs = factor * rs + Objects.hashCode(path);
+        rs = factor * rs + Objects.hashCode(parameters);
         return rs;
     }
 
@@ -316,19 +320,19 @@ public class URL {
             return false;
         }
         URL ou = (URL) obj;
-        if (!ObjectUtils.equals(this.protocol, ou.protocol)) {
+        if (!Objects.equals(this.protocol, ou.protocol)) {
             return false;
         }
-        if (!ObjectUtils.equals(this.host, ou.host)) {
+        if (!Objects.equals(this.host, ou.host)) {
             return false;
         }
-        if (!ObjectUtils.equals(this.port, ou.port)) {
+        if (!Objects.equals(this.port, ou.port)) {
             return false;
         }
-        if (!ObjectUtils.equals(this.path, ou.path)) {
+        if (!Objects.equals(this.path, ou.path)) {
             return false;
         }
-        return ObjectUtils.equals(this.parameters, ou.parameters);
+        return Objects.equals(this.parameters, ou.parameters);
     }
 
     private Map<String, Number> getNumbers() {

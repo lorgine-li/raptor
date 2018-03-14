@@ -4,9 +4,9 @@ import com.codahale.metrics.MetricRegistry;
 
 public class MetricContext {
 
-    private final static MetricRegistry metricRegistry = new MetricRegistry();
+    private final static MetricRegistry METRIC_REGISTRY = new MetricRegistry();
 
     public static MetricRegistry getMetricRegistry() {
-        return metricRegistry;
+        return METRIC_REGISTRY;
     }
 }

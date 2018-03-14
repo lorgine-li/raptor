@@ -2,7 +2,7 @@ package com.ppdai.framework.raptor.exception;
 
 import com.ppdai.framework.raptor.common.RaptorMessageConstant;
 
-public class RaptorBizException extends RaptorAbstractException {
+public class RaptorBizException extends AbstractRaptorException {
 
     public RaptorBizException(String message) {
         super(new ErrorMessage(RaptorMessageConstant.BIZ_DEFAULT_ERROR_CODE, message), null);

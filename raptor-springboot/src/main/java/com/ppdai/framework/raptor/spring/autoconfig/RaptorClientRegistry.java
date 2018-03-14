@@ -3,7 +3,7 @@ package com.ppdai.framework.raptor.spring.autoconfig;
 import com.ppdai.framework.raptor.exception.RaptorFrameworkException;
 import com.ppdai.framework.raptor.exception.RaptorServiceException;
 import com.ppdai.framework.raptor.refer.ReferProxyBuilder;
-import com.ppdai.framework.raptor.refer.repository.UrlRepository;
+import com.ppdai.framework.raptor.refer.repository.AbstractUrlRepository;
 import com.ppdai.framework.raptor.rpc.URL;
 import com.ppdai.framework.raptor.util.ReflectUtil;
 import lombok.Getter;
@@ -20,12 +20,12 @@ import java.util.concurrent.ConcurrentHashMap;
 @Setter
 public class RaptorClientRegistry {
 
-    private UrlRepository urlRepository;
+    private AbstractUrlRepository urlRepository;
     private ReferProxyBuilder referProxyBuilder;
 
     private Map<String, Object> clientCache = new ConcurrentHashMap<>();
 
-    public RaptorClientRegistry(UrlRepository urlRepository, ReferProxyBuilder referProxyBuilder) {
+    public RaptorClientRegistry(AbstractUrlRepository urlRepository, ReferProxyBuilder referProxyBuilder) {
         this.urlRepository = urlRepository;
         this.referProxyBuilder = referProxyBuilder;
     }

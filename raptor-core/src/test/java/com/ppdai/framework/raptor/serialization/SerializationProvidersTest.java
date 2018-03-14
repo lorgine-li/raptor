@@ -11,12 +11,12 @@ public class SerializationProvidersTest {
 
     @Test
     public void testSpi() {
-        Serialization serialization = SerializationProviders.getInstance().getSerialization(ProtobufBinSerialization.name);
+        Serialization serialization = SerializationProviders.getInstance().getSerialization(ProtobufBinSerialization.NAME);
         Assert.assertNotNull(serialization);
         Assert.assertTrue(serialization instanceof ProtobufBinSerialization);
 
 
-        serialization = SerializationProviders.getInstance().getSerialization(ProtobufJsonSerialization.name);
+        serialization = SerializationProviders.getInstance().getSerialization(ProtobufJsonSerialization.NAME);
         Assert.assertNotNull(serialization);
         Assert.assertTrue(serialization instanceof ProtobufJsonSerialization);
     }

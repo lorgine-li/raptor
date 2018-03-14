@@ -159,7 +159,7 @@ public class ServletEndpoint extends HttpServlet implements Endpoint {
             return SerializationProviders.getInstance().getSerialization(serializationName);
         }
         if (StringUtils.contains(httpRequest.getContentType(), "json")) {
-            return SerializationProviders.getInstance().getSerialization(ProtobufJsonSerialization.name);
+            return SerializationProviders.getInstance().getSerialization(ProtobufJsonSerialization.NAME);
         } else {
             return SerializationProviders.getInstance().getDefault();
         }

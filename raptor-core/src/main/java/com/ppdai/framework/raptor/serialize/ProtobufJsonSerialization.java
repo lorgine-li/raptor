@@ -6,9 +6,9 @@ import com.ppdai.framework.raptor.util.ProtoBuffUtils;
 
 import java.io.UnsupportedEncodingException;
 
-public class ProtobufJsonSerialization extends ProtobufSerialization {
+public class ProtobufJsonSerialization extends AbstractProtobufSerialization {
 
-    public static final String name = "protobuf-json";
+    public static final String NAME = "protobuf-json";
 
     @Override
     public byte[] serializeMessage(Message message) {
@@ -31,6 +31,6 @@ public class ProtobufJsonSerialization extends ProtobufSerialization {
 
     @Override
     public String getName() {
-        return name;
+        return NAME;
     }
 }
