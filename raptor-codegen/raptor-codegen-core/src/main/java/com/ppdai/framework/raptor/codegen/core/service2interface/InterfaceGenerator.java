@@ -33,9 +33,9 @@ public class InterfaceGenerator {
     }
 
     public void generate() throws Exception {
-        performService2BeamInterface();
+        performService2RaptorInterface();
     }
-    private void performService2BeamInterface() {
+    private void performService2RaptorInterface() {
         LOGGER.info(">>>>>>>>>>>>>>>  Started performing SERVICEs -> INTERFACEs   ");
         List<File> allProtoFile = Lists.newArrayList();
         for (File inputDirectory : inputDirectories) {

@@ -66,7 +66,7 @@ public class ProjectGenerator {
         mustacheParameters.put("groupId", groupId);
         mustacheParameters.put("artifactId", artifactId);
         mustacheParameters.put("artifactVersion", artifactVersion);
-        mustacheParameters.put("beamVersion", RaptorCodegenInfo.getInstance().getVersion());
+        mustacheParameters.put("raptorVersion", RaptorCodegenInfo.getInstance().getVersion());
 
         try {
             outputDirectory.mkdirs();

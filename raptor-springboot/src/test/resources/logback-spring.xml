@@ -14,7 +14,7 @@
         <prudent>true</prudent>
         <!-- 按天来回滚，如果需要按小时来回滚，则设置为{yyyy-MM-dd_HH} -->
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>/opt/logs/beam/access.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <fileNamePattern>/opt/logs/raptor/access.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <!-- 如果按天来回滚，则最大保存时间为1天，1天之前的都将被清理掉 -->
             <maxHistory>30</maxHistory>
             <!-- 按时间回滚的同时，按文件大小来回滚 -->
@@ -28,11 +28,6 @@
             <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %msg%n</pattern>
         </layout>
     </appender>
-
-    <!--<logger name="com.ppdai.framework.beam.filter" level="INFO" additivity="false">-->
-        <!--<appender-ref ref="file"/>-->
-        <!--&lt;!&ndash;<appender-ref ref="KafkaAppender"/>&ndash;&gt;-->
-    <!--</logger>-->
 
     <root>
         <level value="info"/>

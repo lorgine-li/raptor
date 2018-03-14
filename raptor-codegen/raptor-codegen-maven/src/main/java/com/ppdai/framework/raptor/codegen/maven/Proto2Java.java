@@ -191,7 +191,7 @@ public class Proto2Java extends AbstractMojo {
 
     @Override
     public void execute() throws MojoExecutionException {
-        log("Generating a POJOs&BeamInterface for each *.proto file.");
+        log("Generating a POJOs&RaptorInterface for each *.proto file.");
         CodegenConfiguration codegenConfiguration = new CodegenConfiguration();
         if(isNotEmpty(snapshotUrl)){
             Protoc.setSnapshotUrlStr(snapshotUrl);
@@ -244,7 +244,7 @@ public class Proto2Java extends AbstractMojo {
                     .setCodegenConfiguration(codegenConfiguration)
                     .generate();
 
-            log("Succeed in generating a POJOs&BeamInterface for each *.proto file.");
+            log("Succeed in generating a POJOs&RaptorInterface for each *.proto file.");
 
         } catch (Exception e) {
             getLog().error(e);
