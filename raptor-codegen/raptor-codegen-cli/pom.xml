@@ -10,7 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>raptor-codegen-cli</artifactId>
-    
+
     <properties>
         <commons-cli.version>1.2</commons-cli.version>
         <slf4j.version>1.7.21</slf4j.version>
@@ -78,7 +78,7 @@
                         <id>make-assembly</id>
                         <phase>package</phase>
                         <goals>
-                            <goal>assembly</goal>
+                            <goal>single</goal>
                         </goals>
                     </execution>
                 </executions>
