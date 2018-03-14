@@ -2,7 +2,7 @@ package com.ppdai.framework.raptor.exception;
 
 import com.ppdai.framework.raptor.common.RaptorMessageConstant;
 
-public class HttpErrorConvertor {
+public class HttpErrorConverter {
 
     public static ErrorMessage getErrorMessage(Exception e) {
         if (e == null) {

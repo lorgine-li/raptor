@@ -3,7 +3,7 @@ package com.ppdai.framework.raptor.service;
 import com.ppdai.framework.raptor.common.RaptorConstants;
 import com.ppdai.framework.raptor.common.URLParamType;
 import com.ppdai.framework.raptor.exception.ErrorMessage;
-import com.ppdai.framework.raptor.exception.HttpErrorConvertor;
+import com.ppdai.framework.raptor.exception.HttpErrorConverter;
 import com.ppdai.framework.raptor.exception.RaptorFrameworkException;
 import com.ppdai.framework.raptor.exception.RaptorServiceException;
 import com.ppdai.framework.raptor.rpc.*;
@@ -181,9 +181,9 @@ public class ServletEndpoint extends HttpServlet implements Endpoint {
     }
 
     protected void transportException(Exception exception, Request request, HttpServletRequest httpRequest, HttpServletResponse httpResponse) throws IOException {
-        httpResponse.setStatus(HttpErrorConvertor.getHttpStatusCode(exception));
+        httpResponse.setStatus(HttpErrorConverter.getHttpStatusCode(exception));
         Serialization serialization = this.getSerialization(httpRequest);
-        ErrorMessage message = HttpErrorConvertor.getErrorMessage(exception);
+        ErrorMessage message = HttpErrorConverter.getErrorMessage(exception);
         byte[] data = serialization.serialize(message.toErrorProto());
         try (OutputStream out = httpResponse.getOutputStream()) {
             out.write(data);
