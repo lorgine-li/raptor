@@ -7,11 +7,14 @@ import com.ppdai.framework.raptor.filter.provider.ProviderMetricsFilter;
 import com.ppdai.framework.raptor.rpc.URL;
 import com.ppdai.framework.raptor.service.ProviderBuilder;
 import com.ppdai.framework.raptor.service.ServletEndpoint;
+import com.ppdai.framework.raptor.spring.endpoint.RaptorProvidersActuatorEndpoint;
 import com.ppdai.framework.raptor.spring.properties.ServletEndpointProperties;
 import com.ppdai.framework.raptor.util.NetUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.actuate.endpoint.AbstractEndpoint;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -88,5 +91,11 @@ public class RaptorServiceAutoConfiguration {
     @ConditionalOnProperty(name = "raptor.provider.filter.metrics", havingValue = "true", matchIfMissing = true)
     public ProviderMetricsFilter createProviderMetricFilter() {
         return new ProviderMetricsFilter();
+    }
+
+    @Bean
+    @ConditionalOnClass(AbstractEndpoint.class)
+    public RaptorProvidersActuatorEndpoint createRaptorServiceActuatorEndpoint(ServletEndpoint servletEndpoint) {
+        return new RaptorProvidersActuatorEndpoint(servletEndpoint.getProviders());
     }
 }

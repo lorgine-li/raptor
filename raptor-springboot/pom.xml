@@ -18,6 +18,11 @@
         </dependency>
 
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
             <groupId>com.ppdai.framework</groupId>
             <artifactId>raptor-core</artifactId>
             <version>${project.version}</version>

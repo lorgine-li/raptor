@@ -7,10 +7,13 @@ import com.ppdai.framework.raptor.refer.ReferProxyBuilder;
 import com.ppdai.framework.raptor.refer.client.ApacheHttpClient;
 import com.ppdai.framework.raptor.refer.client.Client;
 import com.ppdai.framework.raptor.refer.repository.AbstractUrlRepository;
+import com.ppdai.framework.raptor.spring.endpoint.RaptorRefersActuatorEndpoint;
 import com.ppdai.framework.raptor.spring.properties.ApacheHttpClientProperties;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.actuate.endpoint.AbstractEndpoint;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -78,5 +81,12 @@ public class RaptorClientAutoConfiguration implements EnvironmentAware {
     @ConditionalOnProperty(name = "raptor.refer.filter.metrics", havingValue = "true", matchIfMissing = true)
     public ReferMetricsFilter createReferMetricFilter() {
         return new ReferMetricsFilter();
+    }
+
+
+    @Bean
+    @ConditionalOnClass(AbstractEndpoint.class)
+    public RaptorRefersActuatorEndpoint createRaptorReferActuatorEndpoint(RaptorClientRegistry raptorClientRegistry) {
+        return new RaptorRefersActuatorEndpoint(raptorClientRegistry.getClientCache());
     }
 }
