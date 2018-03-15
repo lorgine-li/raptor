@@ -8,7 +8,7 @@ public class JdkProxyFactory implements ProxyFactory {
     @Override
     @SuppressWarnings("unchecked")
     public <T> T getProxy(Class<T> clz, InvocationHandler invocationHandler) {
-        return (T) Proxy.newProxyInstance(this.getClass().getClassLoader(), new Class[]{clz}, invocationHandler);
+        return (T) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), new Class[]{clz}, invocationHandler);
     }
 
 }
