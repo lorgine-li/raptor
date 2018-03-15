@@ -8,7 +8,10 @@ import java.util.Map;
  */
 public class MessageType implements Comparable<MessageType> {
     private String name;
+    private String className;
     private String FQPN;
+    private String FQCN;
+    private String packageName;
     private Map<String, FieldType> fields;
 
     public String getName() {
@@ -42,5 +45,30 @@ public class MessageType implements Comparable<MessageType> {
     @Override
     public int compareTo(MessageType messageType) {
         return FQPN.compareTo((messageType.getFQPN()));
+    }
+
+    public String getFQCN() {
+        return FQCN;
+    }
+
+    public void setFQCN(String FQCN) {
+        this.FQCN = FQCN;
+    }
+
+    public String getClassName() {
+        return className;
+    }
+
+    public void setClassName(String className) {
+        this.className = className;
+    }
+
+
+    public String getPackageName() {
+        return packageName;
+    }
+
+    public void setPackageName(String packageName) {
+        this.packageName = packageName;
     }
 }

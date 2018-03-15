@@ -2,7 +2,11 @@ package com.ppdai.framework.raptor.codegen.core.service2interface;
 
 import com.google.common.collect.Lists;
 import com.ppdai.framework.raptor.codegen.core.CodegenConfiguration;
-import com.ppdai.framework.raptor.codegen.core.utils.Utils;
+import com.ppdai.framework.raptor.codegen.core.service2interface.printer.InterfacePrinter;
+import com.ppdai.framework.raptor.codegen.core.swagger.container.MetaContainer;
+import com.ppdai.framework.raptor.codegen.core.swagger.container.ServiceContainer;
+import com.ppdai.framework.raptor.codegen.core.swagger.tool.ContainerUtil;
+import com.ppdai.framework.raptor.codegen.core.swagger.type.ServiceType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,12 +25,12 @@ public class InterfaceGenerator {
     private File[] inputDirectories;
     private File protocDependenciesPath;
 
-    public InterfaceGenerator codegenConfigure(CodegenConfiguration codegenConfiguration){
-        if(Objects.nonNull(codegenConfiguration)){
+    public InterfaceGenerator codegenConfigure(CodegenConfiguration codegenConfiguration) {
+        if (Objects.nonNull(codegenConfiguration)) {
             this.outputDirectory = codegenConfiguration.getOutputDirectory();
             this.inputDirectories = codegenConfiguration.getInputDirectories();
             this.protocDependenciesPath = codegenConfiguration.getProtocDependenciesPath();
-        }else{
+        } else {
             throw new NullPointerException("CodegenConfiguration is null");
         }
         return this;
@@ -35,22 +39,20 @@ public class InterfaceGenerator {
     public void generate() throws Exception {
         performService2RaptorInterface();
     }
+
     private void performService2RaptorInterface() {
         LOGGER.info(">>>>>>>>>>>>>>>  Started performing SERVICEs -> INTERFACEs   ");
-        List<File> allProtoFile = Lists.newArrayList();
-        for (File inputDirectory : inputDirectories) {
-            Utils.collectSpecificFiles(inputDirectory, "proto", allProtoFile);
-            CommonProto2Java proto2ServicePojo = CommonProto2Java.forConfig(inputDirectory.getAbsolutePath(),
-                    outputDirectory.getAbsolutePath(), protocDependenciesPath);
-            for (File file : allProtoFile) {
-                if (file.exists()) {
-                    String protoFilePath = file.getPath();
-                    proto2ServicePojo.generateFile(protoFilePath);
-                } else {
-                    LOGGER.warn(file.getName() + " does not exist.");
-                }
-            }
+        //收集所有proto中message 和enum信息
+        MetaContainer metaContainer = ContainerUtil.getMetaContainer(inputDirectories, protocDependenciesPath);
+
+        ServiceContainer serviceContainer = metaContainer.getServiceContainer();
+        for (ServiceType serviceType : serviceContainer.getServiceTypeList()) {
+            InterfacePrinter interfacePrinter = new InterfacePrinter(outputDirectory.getAbsolutePath(), serviceType.getPackageName(), serviceType.getName());
+            interfacePrinter.setServiceType(serviceType);
+            interfacePrinter.setMetaContainer(metaContainer);
+            interfacePrinter.print();
         }
+
     }
 
 }

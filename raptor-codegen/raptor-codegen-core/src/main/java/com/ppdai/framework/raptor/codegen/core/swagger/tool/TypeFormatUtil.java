@@ -140,8 +140,6 @@ public class TypeFormatUtil {
 
 
     private static Property formatProperty(FieldType fieldType, String typeDefPrefix, String basePackage) {
-        Map<String, Object> typeSchema = new HashMap<>(2);
-
         Property property = wktProperties.get(fieldType.getTypeName());
 
         if (!fieldType.getTypeName().startsWith("google.protobuf") && property == null) {

@@ -11,6 +11,7 @@ public class ServiceType {
     private String name;
     private String FQPN;
     private Map<String, MethodType> methods;
+    private String packageName;
 
     public String getName() {
         return name;
@@ -38,5 +39,13 @@ public class ServiceType {
 
     public Collection<MethodType> getMethodTypeList() {
         return methods.values();
+    }
+
+    public void setPackageName(String packageName) {
+        this.packageName = packageName;
+    }
+
+    public String getPackageName() {
+        return packageName;
     }
 }

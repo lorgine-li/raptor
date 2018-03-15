@@ -2,55 +2,38 @@ package com.ppdai.framework.raptor.codegen.core.swagger.container;
 
 import com.ppdai.framework.raptor.codegen.core.swagger.type.EnumType;
 import com.ppdai.framework.raptor.codegen.core.swagger.type.MessageType;
-import com.ppdai.framework.raptor.codegen.core.utils.CommonUtils;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 /**
  * Created by zhangyicong on 18-3-2.
  */
 public class MetaContainer {
-    private Map<String, EnumContainer> enumContainerMap = new HashMap<>();
-    private Map<String, MessageContainer> messageContainerMap = new HashMap<>();
+    private EnumContainer enumContainer = new EnumContainer();
+    private MessageContainer messageContainer = new MessageContainer();
+    private ServiceContainer serviceContainer = new ServiceContainer();
 
-    public Map<String, EnumContainer> getEnumContainerMap() {
-        return enumContainerMap;
+    public ServiceContainer getServiceContainer() {
+        return serviceContainer;
     }
 
-    public Map<String, MessageContainer> getMessageContainerMap() {
-        return messageContainerMap;
+    public EnumContainer getEnumContainer() {
+        return enumContainer;
     }
 
-    public MessageType findMessageTypeByFQPN(String FQPN, String basePackage) {
-        MessageContainer messageContainer = messageContainerMap.get(basePackage);
+    public MessageContainer getMessageContainer() {
+        return messageContainer;
+    }
+
+    public MessageType findMessageTypeByFQPN(String FQPN) {
         MessageType message = messageContainer.findMessageTypeByFQPN(FQPN);
-        return Optional.ofNullable(message).orElse(findMessageTypeByFQPN(FQPN));
-
+        return Optional.ofNullable(message).orElse(null);
     }
 
-    public EnumType findEnumTypeByFQPN(String FQPN, String basePackage) {
-        EnumContainer enumContainer = enumContainerMap.get(basePackage);
+    public EnumType findEnumTypeByFQPN(String FQPN) {
         EnumType enumType = enumContainer.findEnumTypeByFQPN(FQPN);
-        return Optional.ofNullable(enumType).orElse(findEnumTypeByFQPN(FQPN));
-
+        return Optional.ofNullable(enumType).orElse(null);
     }
 
-    private EnumType findEnumTypeByFQPN(String FQPN) {
-        String packageName = CommonUtils.getPackageNameFromFQPN(FQPN);
-        EnumContainer messageContainer = enumContainerMap.get(packageName);
-        return Optional.ofNullable(messageContainer)
-                .map(container -> container.findEnumTypeByFQPN(FQPN))
-                .orElse(null);
-    }
 
-    private MessageType findMessageTypeByFQPN(String FQPN) {
-        String packageName = CommonUtils.getPackageNameFromFQPN(FQPN);
-        MessageContainer messageContainer = messageContainerMap.get(packageName);
-        return Optional.ofNullable(messageContainer)
-                .map(container -> container.findMessageTypeByFQPN(FQPN))
-                .orElse(null);
-
-    }
 }

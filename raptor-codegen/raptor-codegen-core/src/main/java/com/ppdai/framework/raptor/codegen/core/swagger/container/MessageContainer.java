@@ -1,8 +1,10 @@
 package com.ppdai.framework.raptor.codegen.core.swagger.container;
 
 import com.google.protobuf.DescriptorProtos;
+import com.ppdai.framework.raptor.codegen.core.constant.ProtobufConstant;
 import com.ppdai.framework.raptor.codegen.core.swagger.type.FieldType;
 import com.ppdai.framework.raptor.codegen.core.swagger.type.MessageType;
+import org.codehaus.plexus.util.StringUtils;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -14,21 +16,19 @@ import java.util.Map;
  */
 public class MessageContainer {
 
-    private String packageName;
     private Map<String, MessageType> messageTypeMap = new LinkedHashMap<>();
 
-    public MessageContainer(String packageName) {
-        this.packageName = packageName;
-    }
 
-    public void addMessageProto(String parent, DescriptorProtos.DescriptorProto descriptorProto) {
+    public void addMessageProto(String packageName, String className, String parent, DescriptorProtos.DescriptorProto descriptorProto) {
         MessageType messageType = new MessageType();
-        messageType.setName((parent != null ? parent + "." : "") + descriptorProto.getName());
+        messageType.setName((parent != null ? parent + ProtobufConstant.PACKAGE_SEPARATOR : "") + descriptorProto.getName());
         // TODO: 2018/3/6 packageName 为空的话会多一个点
-        messageType.setFQPN(packageName + "." + messageType.getName());
-
+        messageType.setFQPN(packageName + ProtobufConstant.PACKAGE_SEPARATOR + messageType.getName());
+        messageType.setFQCN(StringUtils.join(new String[]{packageName, className, messageType.getName()}, ProtobufConstant.PACKAGE_SEPARATOR));
+        messageType.setClassName(className);
         Map<String, FieldType> fieldTypeMap = new LinkedHashMap<>();
         messageType.setFields(fieldTypeMap);
+        messageType.setPackageName(packageName);
 
         for (DescriptorProtos.FieldDescriptorProto ffdp : descriptorProto.getFieldList()) {
             FieldType fieldType = new FieldType();

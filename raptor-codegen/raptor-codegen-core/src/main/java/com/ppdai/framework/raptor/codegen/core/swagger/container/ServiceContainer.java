@@ -14,17 +14,13 @@ import java.util.*;
  */
 public class ServiceContainer {
 
-    private String packageName;
     private Map<String, ServiceType> serviceTypeMap = new LinkedHashMap<>();
 
-    public ServiceContainer(String packageName) {
-        this.packageName = packageName;
-    }
-
-    public void addServiceProto(DescriptorProtos.ServiceDescriptorProto sdp, List<DescriptorProtos.SourceCodeInfo.Location> locationList, final List<Integer> parentpath) {
+    public void addServiceProto(String packageName,DescriptorProtos.ServiceDescriptorProto sdp, List<DescriptorProtos.SourceCodeInfo.Location> locationList, final List<Integer> parentpath) {
         ServiceType serviceType = new ServiceType();
         serviceType.setName(sdp.getName());
         serviceType.setFQPN(packageName + "." + serviceType.getName());
+        serviceType.setPackageName(packageName);
 
         Map<String, MethodType> methodTypeMap = new LinkedHashMap<>();
         serviceType.setMethods(methodTypeMap);
@@ -63,9 +59,5 @@ public class ServiceContainer {
 
     public Collection<ServiceType> getServiceTypeList() {
         return serviceTypeMap.values();
-    }
-
-    public String getPackageName() {
-        return packageName;
     }
 }

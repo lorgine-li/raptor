@@ -1,19 +1,32 @@
 package com.ppdai.framework.raptor.codegen.core.swagger.tool;
 
+import com.google.common.collect.Lists;
 import com.google.protobuf.DescriptorProtos;
 import com.ppdai.framework.raptor.codegen.core.constant.DescriptorProtosTagNumbers;
+import com.ppdai.framework.raptor.codegen.core.constant.ProtobufConstant;
 import com.ppdai.framework.raptor.codegen.core.swagger.container.EnumContainer;
 import com.ppdai.framework.raptor.codegen.core.swagger.container.MessageContainer;
 import com.ppdai.framework.raptor.codegen.core.swagger.container.MetaContainer;
 import com.ppdai.framework.raptor.codegen.core.swagger.container.ServiceContainer;
+import com.ppdai.framework.raptor.codegen.core.utils.Utils;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+
 
 /**
  * Created by zhangyicong on 18-2-28.
  */
 public class ContainerUtil {
+
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(Proto2SwaggerJson.class);
 
     /**
      * 提取enum类型
@@ -21,20 +34,19 @@ public class ContainerUtil {
      * @param fdp
      * @return
      */
-    public static EnumContainer getEnums(DescriptorProtos.FileDescriptorProto fdp,
+    public static EnumContainer addEnums(DescriptorProtos.FileDescriptorProto fdp,
                                          MetaContainer metaContainer) {
 
-        EnumContainer enumContainer = metaContainer.getEnumContainerMap().get(fdp.getPackage());
-        if (enumContainer == null) {
-            enumContainer = new EnumContainer(fdp.getPackage());
-            metaContainer.getEnumContainerMap().put(fdp.getPackage(), enumContainer);
-        }
+        EnumContainer enumContainer = metaContainer.getEnumContainer();
 
+
+        String className = getClassName(fdp);
+        String packageName = fdp.getPackage();
         for (DescriptorProtos.EnumDescriptorProto edp : fdp.getEnumTypeList()) {
-            enumContainer.addEnumProto(null, edp);
+            enumContainer.addEnumProto(packageName, className, null, edp);
         }
 
-        addEnumProto(enumContainer, null, fdp.getMessageTypeList());
+        addEnumProto(enumContainer, packageName, className, null, fdp.getMessageTypeList());
 
         return enumContainer;
     }
@@ -47,6 +59,8 @@ public class ContainerUtil {
      * @param dpList
      */
     private static void addEnumProto(EnumContainer enumContainer,
+                                     String packageName,
+                                     String className,
                                      String parent,
                                      List<DescriptorProtos.DescriptorProto> dpList) {
 
@@ -54,10 +68,10 @@ public class ContainerUtil {
             String newParent = (parent != null ? parent + "." : "") + dp.getName();
 
             for (DescriptorProtos.EnumDescriptorProto edp : dp.getEnumTypeList()) {
-                enumContainer.addEnumProto(newParent, edp);
+                enumContainer.addEnumProto(packageName, className, newParent, edp);
             }
 
-            addEnumProto(enumContainer, newParent, dp.getNestedTypeList());
+            addEnumProto(enumContainer, packageName, className, newParent, dp.getNestedTypeList());
         }
     }
 
@@ -67,18 +81,21 @@ public class ContainerUtil {
      * @param fdp
      * @return
      */
-    public static MessageContainer getMessages(DescriptorProtos.FileDescriptorProto fdp,
+    public static MessageContainer addMessages(DescriptorProtos.FileDescriptorProto fdp,
                                                MetaContainer metaContainer) {
 
-        MessageContainer messageContainer = metaContainer.getMessageContainerMap().get(fdp.getPackage());
-        if (messageContainer == null) {
-            messageContainer = new MessageContainer(fdp.getPackage());
-            metaContainer.getMessageContainerMap().put(fdp.getPackage(), messageContainer);
-        }
+        MessageContainer messageContainer = metaContainer.getMessageContainer();
 
-        addMessageProto(messageContainer, null, fdp.getMessageTypeList());
+        addMessageProto(messageContainer, fdp.getPackage(), getClassName(fdp),null, fdp.getMessageTypeList());
 
         return messageContainer;
+    }
+
+    private static String getClassName(DescriptorProtos.FileDescriptorProto fdp) {
+        String fileName = StringUtils.removeEnd(fdp.getName(), ProtobufConstant.PROTO_SUFFIX);
+        fileName = StringUtils.capitalize(fileName);
+        boolean dupName = fdp.getMessageTypeList().stream().map(DescriptorProtos.DescriptorProto::getName).anyMatch(fileName::equals);
+        return dupName ? fileName + "OutClass" : fileName;
     }
 
     /**
@@ -89,14 +106,20 @@ public class ContainerUtil {
      * @param dpList
      */
     private static void addMessageProto(MessageContainer messageContainer,
+                                        String packageName,
+                                        String className,
                                         String parent,
                                         List<DescriptorProtos.DescriptorProto> dpList) {
-
         for (DescriptorProtos.DescriptorProto dp : dpList) {
-            messageContainer.addMessageProto(parent, dp);
-            addMessageProto(messageContainer, (parent != null ? parent + "." : "") + dp.getName(),
+            messageContainer.addMessageProto(packageName,className, parent, dp);
+            addMessageProto(messageContainer,packageName,className, (parent != null ? parent + "." : "") + dp.getName(),
                     dp.getNestedTypeList());
         }
+    }
+
+    public static void addServices(DescriptorProtos.FileDescriptorProto fdp, MetaContainer metaContainer) {
+        ServiceContainer serviceContainer = metaContainer.getServiceContainer();
+        getServiceContainer(fdp,serviceContainer);
     }
 
     /**
@@ -105,8 +128,8 @@ public class ContainerUtil {
      * @param fdp
      * @return
      */
-    public static ServiceContainer getServiceContainer(DescriptorProtos.FileDescriptorProto fdp) {
-        ServiceContainer serviceContainer = new ServiceContainer(fdp.getPackage());
+    public static ServiceContainer getServiceContainer(DescriptorProtos.FileDescriptorProto fdp,ServiceContainer serviceContainer) {
+        String packageName = fdp.getPackage();
 
         List<DescriptorProtos.SourceCodeInfo.Location> locationList = fdp.getSourceCodeInfo().getLocationList();
 
@@ -115,9 +138,38 @@ public class ContainerUtil {
             List<Integer> currentPath
                     = Arrays.asList(DescriptorProtosTagNumbers.FileDescriptorProto.SERVICE, serviceIndex++);
 
-            serviceContainer.addServiceProto(sdp, locationList, currentPath);
+            serviceContainer.addServiceProto(packageName,sdp, locationList, currentPath);
         }
 
         return serviceContainer;
     }
+
+
+    public static MetaContainer getMetaContainer(File[] inputDirectories, File protocDependenciesPath) {
+
+        MetaContainer metaContainer = new MetaContainer();
+        for (File inputDirectory : inputDirectories) {
+            CommandProtoc commandProtoc = CommandProtoc.configProtoPath(inputDirectory.getAbsolutePath(), protocDependenciesPath);
+            ArrayList<File> allProtoFile = Lists.newArrayList();
+            Utils.collectSpecificFiles(inputDirectory, ProtobufConstant.PROTO_SUFFIX, allProtoFile);
+            for (File file : allProtoFile) {
+                if (file.exists()) {
+                    DescriptorProtos.FileDescriptorSet fileDescriptorSet = commandProtoc.invoke(file.getPath());
+                    for (DescriptorProtos.FileDescriptorProto fileDescriptorProto : fileDescriptorSet.getFileList()) {
+                        addEnums(fileDescriptorProto, metaContainer);
+                        addMessages(fileDescriptorProto, metaContainer);
+                        addServices(fileDescriptorProto, metaContainer);
+                    }
+                } else {
+                    LOGGER.warn(file.getName() + " does not exist.");
+                }
+            }
+
+
+        }
+        return metaContainer;
+
+    }
 }
+
+

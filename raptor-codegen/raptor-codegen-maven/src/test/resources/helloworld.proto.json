@@ -21,14 +21,14 @@
           "description" : "",
           "required" : true,
           "schema" : {
-            "$ref" : "#/definitions/HelloRequest"
+            "$ref" : "#/definitions/Helloworld.HelloRequest"
           }
         } ],
         "responses" : {
           "200" : {
             "description" : "successful operation",
             "schema" : {
-              "$ref" : "#/definitions/HelloReply"
+              "$ref" : "#/definitions/Helloworld.HelloReply"
             }
           }
         }
@@ -36,7 +36,7 @@
     }
   },
   "definitions" : {
-    "com.ppdai.framework.raptor.proto.Result" : {
+    "com.ppdai.framework.raptor.proto.Common/Result.Result" : {
       "properties" : {
         "url" : {
           "type" : "string"
@@ -52,14 +52,14 @@
         }
       }
     },
-    "Cat" : {
+    "Helloworld.Cat" : {
       "properties" : {
         "color" : {
           "type" : "string"
         }
       }
     },
-    "HelloReply" : {
+    "Helloworld.HelloReply" : {
       "properties" : {
         "message" : {
           "type" : "string"
@@ -75,7 +75,7 @@
         }
       }
     },
-    "HelloRequest" : {
+    "Helloworld.HelloRequest" : {
       "properties" : {
         "name" : {
           "type" : "string"
@@ -174,7 +174,7 @@
         }
       }
     },
-    "HelloRequest.Result" : {
+    "Helloworld.HelloRequest.Result" : {
       "properties" : {
         "url" : {
           "type" : "string"

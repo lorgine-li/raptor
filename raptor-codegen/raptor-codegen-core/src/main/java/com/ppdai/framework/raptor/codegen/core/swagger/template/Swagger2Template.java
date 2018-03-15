@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.protobuf.DescriptorProtos;
+import com.ppdai.framework.raptor.codegen.core.constant.ProtobufConstant;
 import com.ppdai.framework.raptor.codegen.core.swagger.container.MetaContainer;
 import com.ppdai.framework.raptor.codegen.core.swagger.container.ServiceContainer;
 import com.ppdai.framework.raptor.codegen.core.swagger.tool.ContainerUtil;
@@ -77,7 +78,7 @@ public class Swagger2Template implements SwaggerTemplate {
 
                 // set schema
                 RefModel schema = new RefModel();
-                MessageType inputMessage = metaContainer.findMessageTypeByFQPN(methodType.getInputType(), basePackage);
+                MessageType inputMessage = metaContainer.findMessageTypeByFQPN(methodType.getInputType());
                 dependMessage.add(inputMessage);
                 schema.set$ref("#/definitions/" +
                         getRefName(inputMessage, basePackage));
@@ -91,7 +92,7 @@ public class Swagger2Template implements SwaggerTemplate {
                 // set responses schema
                 RefProperty reponseSchema = new RefProperty();
                 response.setSchema(reponseSchema);
-                MessageType outputMessage = metaContainer.findMessageTypeByFQPN(methodType.getOutputType(), basePackage);
+                MessageType outputMessage = metaContainer.findMessageTypeByFQPN(methodType.getOutputType());
                 dependMessage.add(outputMessage);
                 reponseSchema.set$ref("#/definitions/" +
                         getRefName(outputMessage, basePackage));
@@ -106,20 +107,18 @@ public class Swagger2Template implements SwaggerTemplate {
     }
 
     private String getRefName(EnumType inputEnum, String basePackage) {
-        String packageName = CommonUtils.getPackageNameFromFQPN(inputEnum.getFQPN());
-        if (basePackage.equals(packageName)) {
-            return inputEnum.getName();
+        if (basePackage.equals(inputEnum.getPackageName())) {
+            return inputEnum.getClassName() + ProtobufConstant.PACKAGE_SEPARATOR + inputEnum.getName();
         } else {
-            return inputEnum.getFQPN();
+            return inputEnum.getFQCN();
         }
     }
 
     private String getRefName(MessageType inputMessage, String basePackage) {
-        String packageName = CommonUtils.getPackageNameFromFQPN(inputMessage.getFQPN());
-        if (basePackage.equals(packageName)) {
-            return inputMessage.getName();
+        if (basePackage.equals(inputMessage.getPackageName())) {
+            return inputMessage.getClassName() + ProtobufConstant.PACKAGE_SEPARATOR + inputMessage.getName();
         } else {
-            return inputMessage.getFQPN();
+            return inputMessage.getFQCN();
         }
     }
 
@@ -174,7 +173,8 @@ public class Swagger2Template implements SwaggerTemplate {
                                 MetaContainer metaContainer,
                                 String apiVersion) throws JsonProcessingException {
         // 从pb中提取service
-        ServiceContainer serviceContainer = ContainerUtil.getServiceContainer(fdp);
+        ServiceContainer serviceContainer = new ServiceContainer();
+        ContainerUtil.getServiceContainer(fdp, serviceContainer);
 
         Swagger swagger = new Swagger().scheme(HTTP)
                 .consumes(Collections.singletonList("application/json"))
@@ -204,12 +204,12 @@ public class Swagger2Template implements SwaggerTemplate {
             MessageType next = messageTypeList.get(i);
             for (FieldType fieldType : next.getFieldTypeList()) {
                 if (StringUtils.isNotBlank(fieldType.getTypeName()) && !CommonUtils.isProtoBufType(fieldType.getTypeName())) {
-                    MessageType nestedMessageType = metaContainer.findMessageTypeByFQPN(fieldType.getFQPN(), basePackage);
+                    MessageType nestedMessageType = metaContainer.findMessageTypeByFQPN(fieldType.getFQPN());
                     if (!messageTypeList.contains(nestedMessageType) && Objects.nonNull(nestedMessageType)) {
                         listIterator.add(nestedMessageType);
                     }
 
-                    EnumType nestEnumType = metaContainer.findEnumTypeByFQPN(fieldType.getFQPN(), basePackage);
+                    EnumType nestEnumType = metaContainer.findEnumTypeByFQPN(fieldType.getFQPN());
                     if (!messageTypeList.contains(nestedMessageType) && Objects.nonNull(nestEnumType)) {
                         nestEnumTypes.add(nestEnumType);
                     }

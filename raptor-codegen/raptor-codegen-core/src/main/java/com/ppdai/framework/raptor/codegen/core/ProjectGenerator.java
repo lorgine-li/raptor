@@ -2,6 +2,7 @@ package com.ppdai.framework.raptor.codegen.core;
 
 import com.google.common.collect.Lists;
 import com.ppdai.framework.raptor.codegen.core.common.RaptorCodegenInfo;
+import com.ppdai.framework.raptor.codegen.core.constant.ProtobufConstant;
 import com.ppdai.framework.raptor.codegen.core.utils.mustache.MustacheProcessor;
 import com.ppdai.framework.raptor.codegen.core.utils.Utils;
 
@@ -85,7 +86,7 @@ public class ProjectGenerator {
 
         System.out.println(">>>>>>>>>>>>>>>  Copying proto files to the project");
         for (int i = 0; i < inputDirectories.length; i++) {
-            Utils.collectSpecificFiles(inputDirectories[i], ".proto", allProtoFiles);
+            Utils.collectSpecificFiles(inputDirectories[i], ProtobufConstant.PROTO_SUFFIX, allProtoFiles);
         }
         System.out.println("Number of protos :" + allProtoFiles.size());
 

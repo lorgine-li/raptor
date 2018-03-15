@@ -54,6 +54,7 @@ public class JsonApiDefinitionGenerator {
 
     public void generate() throws Exception {
         LOGGER.info(">>>>>>>>>>>>>>>  Started performing swagger generate   ");
+        // TODO: 2018/3/15 在这个for循环外收集所有proto文件的信息？
         for (int i = 0; i < inputDirectories.length; i++) {
             File inputDirectory = inputDirectories[i];
             Utils.collectSpecificFiles(inputDirectory, extension, allProtoFile);

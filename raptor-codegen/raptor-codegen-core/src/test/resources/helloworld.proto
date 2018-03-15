@@ -5,9 +5,16 @@ service Simple {
     rpc sayHello (HelloRequest) returns (HelloReply) {
     }
 }
+service AnotherSimple {
+    rpc sayHello (HelloRequest) returns (HelloReply) {
+    }
+}
 
 message HelloRequest {
     string name = 1;
+    message abc{
+        string ab =1 ;
+    }
 }
 
 message HelloReply {

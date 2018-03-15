@@ -98,8 +98,8 @@ public class Proto2SwaggerJson {
         DescriptorProtos.FileDescriptorSet fileDescriptorSet = commandProtoc.invoke(protoPath);
 
         for (DescriptorProtos.FileDescriptorProto fdp : fileDescriptorSet.getFileList()) {
-            ContainerUtil.getEnums(fdp, metaContainer);
-            ContainerUtil.getMessages(fdp, metaContainer);
+            ContainerUtil.addEnums(fdp, metaContainer);
+            ContainerUtil.addMessages(fdp, metaContainer);
         }
 
 
