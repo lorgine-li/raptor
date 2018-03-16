@@ -24,7 +24,7 @@ public class InterfaceGeneratorTest {
 
     @After
     public void after() throws Exception {
-//        cleanDestFile();
+        cleanDestFile();
     }
 
     private void setConfiguration() {
