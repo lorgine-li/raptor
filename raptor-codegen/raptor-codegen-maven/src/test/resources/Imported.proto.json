@@ -21,14 +21,14 @@
           "description" : "",
           "required" : true,
           "schema" : {
-            "$ref" : "#/definitions/Imported"
+            "$ref" : "#/definitions/ImportedOuterClass.Imported"
           }
         } ],
         "responses" : {
           "200" : {
             "description" : "successful operation",
             "schema" : {
-              "$ref" : "#/definitions/Imported2"
+              "$ref" : "#/definitions/ImportedOuterClass.Imported2"
             }
           }
         }
@@ -36,43 +36,29 @@
     }
   },
   "definitions" : {
-    "Imported" : {
+    "ImportedOuterClass.Imported" : {
       "properties" : {
-        "query" : {
-          "type" : "string"
-        },
-        "page_number" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "result_per_page" : {
           "type" : "integer",
           "format" : "int32"
         },
         "imported" : {
-          "$ref" : "#/definitions/Imported2"
+          "$ref" : "#/definitions/ImportedOuterClass.Imported2"
         },
         "enum" : {
-          "$ref" : "#/definitions/EnumNotAllowingAlias"
+          "$ref" : "#/definitions/ImportedOuterClass.EnumNotAllowingAlias"
         }
       }
     },
-    "Imported2" : {
+    "ImportedOuterClass.Imported2" : {
       "properties" : {
-        "query" : {
-          "type" : "string"
-        },
-        "page_number" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "result_per_page" : {
           "type" : "integer",
           "format" : "int32"
         }
       }
     },
-    "EnumNotAllowingAlias" : {
+    "ImportedOuterClass.EnumNotAllowingAlias" : {
       "type" : "string",
       "enum" : [ "UNKNOWN", "STARTED" ]
     }

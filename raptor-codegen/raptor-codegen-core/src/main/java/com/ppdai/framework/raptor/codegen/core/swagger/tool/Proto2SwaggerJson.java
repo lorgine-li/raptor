@@ -30,13 +30,14 @@ public class Proto2SwaggerJson {
 
     private final SwaggerTemplate swaggerTemplate;
 
-    private final MetaContainer metaContainer = new MetaContainer();
+    private final MetaContainer metaContainer ;
 
     private Proto2SwaggerJson(String discoveryRoot,
                               String generatePath,
                               final File protocDependenciesPath,
                               String swaggerVersion,
-                              String apiVersion) {
+                              String apiVersion,
+                              MetaContainer metaContainer) {
 
         this.discoveryRoot = discoveryRoot;
         this.generatePath = generatePath;
@@ -44,6 +45,7 @@ public class Proto2SwaggerJson {
                 CommandProtoc.configProtoPath(discoveryRoot, protocDependenciesPath);
         this.swaggerVersion = swaggerVersion;
         this.apiVersion = apiVersion;
+        this.metaContainer = metaContainer;
 
         swaggerTemplate = new Swagger2Template();
 
@@ -53,9 +55,10 @@ public class Proto2SwaggerJson {
                                               String generatePath,
                                               final File protocDependenciesPath,
                                               String swaggerVersion,
-                                              String apiVersion) {
+                                              String apiVersion,
+                                              MetaContainer metaContainer) {
         return new Proto2SwaggerJson(discoveryRoot,
-                generatePath, protocDependenciesPath, swaggerVersion, apiVersion);
+                generatePath, protocDependenciesPath, swaggerVersion, apiVersion,metaContainer);
     }
 
     public void generateFile(String protoPath) throws IOException {
@@ -85,23 +88,5 @@ public class Proto2SwaggerJson {
                 }
             }
         }
-    }
-
-    public void scanFile(String protoPath) {
-        logger.info("    Scan File : " + protoPath);
-
-        if (!new File(protoPath).exists()) {
-            logger.warn("protoPath:" + protoPath + " not exist, it may be in the third party jars.");
-            return;
-        }
-
-        DescriptorProtos.FileDescriptorSet fileDescriptorSet = commandProtoc.invoke(protoPath);
-
-        for (DescriptorProtos.FileDescriptorProto fdp : fileDescriptorSet.getFileList()) {
-            ContainerUtil.addEnums(fdp, metaContainer);
-            ContainerUtil.addMessages(fdp, metaContainer);
-        }
-
-
     }
 }

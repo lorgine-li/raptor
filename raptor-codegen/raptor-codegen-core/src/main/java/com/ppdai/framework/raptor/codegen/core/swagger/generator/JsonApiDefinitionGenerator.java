@@ -2,6 +2,8 @@ package com.ppdai.framework.raptor.codegen.core.swagger.generator;
 
 import com.google.common.collect.Lists;
 import com.ppdai.framework.raptor.codegen.core.swagger.SwaggerGenConfiguration;
+import com.ppdai.framework.raptor.codegen.core.swagger.container.MetaContainer;
+import com.ppdai.framework.raptor.codegen.core.swagger.tool.ContainerUtil;
 import com.ppdai.framework.raptor.codegen.core.swagger.tool.Proto2SwaggerJson;
 import com.ppdai.framework.raptor.codegen.core.utils.Utils;
 import org.slf4j.Logger;
@@ -54,7 +56,9 @@ public class JsonApiDefinitionGenerator {
 
     public void generate() throws Exception {
         LOGGER.info(">>>>>>>>>>>>>>>  Started performing swagger generate   ");
-        // TODO: 2018/3/15 在这个for循环外收集所有proto文件的信息？
+        // TODO: 2018/3/16  这里可以优化
+        MetaContainer metaContainer = ContainerUtil.getMetaContainer(inputDirectories, protocDependenciesPath);
+
         for (int i = 0; i < inputDirectories.length; i++) {
             File inputDirectory = inputDirectories[i];
             Utils.collectSpecificFiles(inputDirectory, extension, allProtoFile);
@@ -63,19 +67,10 @@ public class JsonApiDefinitionGenerator {
                     outputDirectory.getAbsolutePath(),
                     protocDependenciesPath,
                     swaggerVersion,
-                    apiVersion);
+                    apiVersion,
+                    metaContainer);
 
             List<File> sortedFile = allProtoFile.stream().sorted(Comparator.reverseOrder()).collect(Collectors.toList());
-
-            //收集所有proto文件的信息
-            for (File file : sortedFile) {
-                if (file.exists()) {
-                    String protoFilePath = file.getPath();
-                    proto2Swagger.scanFile(protoFilePath);
-                } else {
-                    LOGGER.warn(file.getName() + " does not exist.");
-                }
-            }
 
             //生成 proto 文件对应的 swagger json 文件
             for (File file : sortedFile) {

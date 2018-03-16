@@ -1,5 +1,6 @@
 package com.ppdai.framework.raptor.codegen.core.swagger.tool;
 
+import com.ppdai.framework.raptor.codegen.core.constant.ProtobufConstant;
 import com.ppdai.framework.raptor.codegen.core.swagger.exception.SwaggerGenException;
 import com.ppdai.framework.raptor.codegen.core.swagger.type.FieldType;
 import com.ppdai.framework.raptor.codegen.core.utils.CommonUtils;
@@ -47,102 +48,11 @@ public class TypeFormatUtil {
         wktSchemas.put("google.protobuf.Duration", new TypeFormat("string", "", null, null));
     }
 
-    private static Map<String, Object> formatType(FieldType fieldType, String typeDefPrefix, String basePackage) {
-        Map<String, Object> typeSchema = new HashMap<>(2);
-
-        TypeFormat typeFormat = wktSchemas.get(fieldType.getTypeName());
-
-        if (!fieldType.getTypeName().startsWith("google.protobuf") && typeFormat == null) {
-            typeFormat = new TypeFormat();
-
-            switch (fieldType.getType()) {
-                case TYPE_BYTES:
-                    typeFormat.setType("string");
-                    typeFormat.setFormat("byte");
-                    break;
-                case TYPE_INT32:
-                case TYPE_SINT32:
-                case TYPE_SFIXED32:
-                    typeFormat.setType("integer");
-                    typeFormat.setFormat("int32");
-                    break;
-                case TYPE_UINT32:
-                case TYPE_FIXED32:
-                case TYPE_INT64:
-                case TYPE_SINT64:
-                case TYPE_SFIXED64:
-                    typeFormat.setType("integer");
-                    typeFormat.setFormat("int64");
-                    break;
-                case TYPE_UINT64:
-                case TYPE_FIXED64:
-                    typeFormat.setType("string");
-                    typeFormat.setFormat("uint64");
-                    break;
-                case TYPE_FLOAT:
-                    typeFormat.setType("number");
-                    typeFormat.setFormat("float");
-                    break;
-                case TYPE_DOUBLE:
-                    typeFormat.setType("number");
-                    typeFormat.setFormat("double");
-                    break;
-                case TYPE_BOOL:
-                    typeFormat.setType("boolean");
-                    typeFormat.setFormat("boolean");
-                    break;
-                case TYPE_STRING:
-                    typeFormat.setType("string");
-                    typeFormat.setFormat("");
-                    break;
-                case TYPE_ENUM:
-                case TYPE_MESSAGE:
-                case TYPE_GROUP:
-                    if (CommonUtils.getPackageNameFromFQPN(fieldType.getFQPN()).equals(basePackage)) {
-                        typeFormat.setRef("#/" + typeDefPrefix + "/" + fieldType.getTypeName());
-                    } else {
-                        typeFormat.setRef("#/" + typeDefPrefix + "/" + fieldType.getFQPN());
-                    }
-                    break;
-            }
-        }
-
-        if (typeFormat == null) {
-            throw new SwaggerGenException("field name: " + fieldType.getName()
-                    + ", type: " + fieldType.getTypeName()
-                    + " in message: " + fieldType.getMessage()
-                    + " is unsupported");
-        }
-
-        if (typeFormat.getRef() == null) { // primitive type
-            typeSchema.put("type", typeFormat.getType());
-            if (typeFormat.getFormat() != null) {
-                typeSchema.put("format", typeFormat.getFormat());
-            }
-            if (typeFormat.getAdditionalProperties() != null) {// Dictionaries
-                typeSchema.put("additionalProperties", typeFormat.getAdditionalProperties());
-            }
-        } else { // complex type
-            typeSchema.put("$ref", typeFormat.getRef());
-        }
-
-        if (fieldType.getLabel().equals(LABEL_REPEATED)
-                || fieldType.getTypeName().equals("google.protobuf.ListValue")) {
-
-            Map<String, Object> subTypeSchema = new HashMap<>(typeSchema);
-            typeSchema.clear();
-            typeSchema.put("type", "array");
-            typeSchema.put("items", subTypeSchema);
-        }
-
-        return typeSchema;
-    }
-
 
     private static Property formatProperty(FieldType fieldType, String typeDefPrefix, String basePackage) {
-        Property property = wktProperties.get(fieldType.getTypeName());
+        Property property = wktProperties.get(fieldType.getFQPN());
 
-        if (!fieldType.getTypeName().startsWith("google.protobuf") && property == null) {
+        if (!fieldType.getFQPN().startsWith("google.protobuf") && property == null) {
 //            property = new AbstractProperty() {};
 
             switch (fieldType.getType()) {
@@ -182,9 +92,10 @@ public class TypeFormatUtil {
                 case TYPE_GROUP:
                     property = new RefProperty();
                     if (CommonUtils.getPackageNameFromFQPN(fieldType.getFQPN()).equals(basePackage)) {
-                        ((RefProperty) property).set$ref("#/" + typeDefPrefix + "/" + fieldType.getTypeName());
+                        ((RefProperty) property)
+                                .set$ref("#/" + typeDefPrefix + "/" + fieldType.getClassName() + ProtobufConstant.PACKAGE_SEPARATOR + fieldType.getTypeName());
                     } else {
-                        ((RefProperty) property).set$ref("#/" + typeDefPrefix + "/" + fieldType.getFQPN());
+                        ((RefProperty) property).set$ref("#/" + typeDefPrefix + "/" + fieldType.getFQCN());
                     }
                     break;
             }
@@ -192,13 +103,13 @@ public class TypeFormatUtil {
 
         if (property == null) {
             throw new SwaggerGenException("field name: " + fieldType.getName()
-                    + ", type: " + fieldType.getTypeName()
+                    + ", type: " + fieldType.getFQPN()
                     + " in message: " + fieldType.getMessage()
                     + " is unsupported");
         }
 
         if (fieldType.getLabel().equals(LABEL_REPEATED)
-                || fieldType.getTypeName().equals("google.protobuf.ListValue")) {
+                || fieldType.getFQPN().equals("google.protobuf.ListValue")) {
             property = new ArrayProperty(property);
         }
 
@@ -209,8 +120,4 @@ public class TypeFormatUtil {
         return formatProperty(fieldType, "definitions", basePackage);
     }
 
-    public static Map<String, Object> formatTypeSwagger3(FieldType fieldType) {
-        // TODO: 2018/3/7 处理 swagger3 不同包引用问题
-        return formatType(fieldType, "components/schemas", "");
-    }
 }

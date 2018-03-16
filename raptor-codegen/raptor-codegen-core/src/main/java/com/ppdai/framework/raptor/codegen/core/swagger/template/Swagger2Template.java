@@ -173,8 +173,12 @@ public class Swagger2Template implements SwaggerTemplate {
                                 MetaContainer metaContainer,
                                 String apiVersion) throws JsonProcessingException {
         // 从pb中提取service
-        ServiceContainer serviceContainer = new ServiceContainer();
+        ServiceContainer serviceContainer =
+//                metaContainer.getServiceContainer();
+                new ServiceContainer();
         ContainerUtil.getServiceContainer(fdp, serviceContainer);
+
+
 
         Swagger swagger = new Swagger().scheme(HTTP)
                 .consumes(Collections.singletonList("application/json"))
@@ -203,7 +207,7 @@ public class Swagger2Template implements SwaggerTemplate {
         for (int i = 0; i < messageTypeList.size(); i++) {
             MessageType next = messageTypeList.get(i);
             for (FieldType fieldType : next.getFieldTypeList()) {
-                if (StringUtils.isNotBlank(fieldType.getTypeName()) && !CommonUtils.isProtoBufType(fieldType.getTypeName())) {
+                if (StringUtils.isNotBlank(fieldType.getFQPN()) && !CommonUtils.isProtoBufType(fieldType.getFQPN())) {
                     MessageType nestedMessageType = metaContainer.findMessageTypeByFQPN(fieldType.getFQPN());
                     if (!messageTypeList.contains(nestedMessageType) && Objects.nonNull(nestedMessageType)) {
                         listIterator.add(nestedMessageType);

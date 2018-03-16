@@ -2,6 +2,7 @@ package com.ppdai.framework.raptor.codegen.core.swagger.container;
 
 import com.ppdai.framework.raptor.codegen.core.swagger.type.EnumType;
 import com.ppdai.framework.raptor.codegen.core.swagger.type.MessageType;
+import com.ppdai.framework.raptor.codegen.core.swagger.type.Type;
 
 import java.util.Optional;
 
@@ -35,5 +36,9 @@ public class MetaContainer {
         return Optional.ofNullable(enumType).orElse(null);
     }
 
-
+    public Type findTypeByFQPN(String FQPN) {
+        Type messageTypeByFQPN = findMessageTypeByFQPN(FQPN);
+        return Optional.ofNullable(messageTypeByFQPN)
+                .orElse(findEnumTypeByFQPN(FQPN));
+    }
 }

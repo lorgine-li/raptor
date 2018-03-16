@@ -1,43 +1,42 @@
 package com.ppdai.framework.raptor.codegen.core.swagger.type;
 
-import java.util.Collection;
-import java.util.Map;
 
-/**
- * Created by zhangyicong on 18-2-27.
- */
-public class ServiceType extends AbstractType {
+import com.ppdai.framework.raptor.codegen.core.constant.ProtobufConstant;
+import org.apache.commons.lang3.StringUtils;
+
+public abstract class AbstractType implements Type {
     private String name;
     private String FQPN;
-    private Map<String, MethodType> methods;
+    private String className;
     private String packageName;
 
+
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public void setName(String name) {
         this.name = name;
     }
 
+    @Override
     public String getFQPN() {
         return FQPN;
     }
 
+    @Override
     public void setFQPN(String FQPN) {
         this.FQPN = FQPN;
     }
 
-    public Map<String, MethodType> getMethods() {
-        return methods;
+    public String getClassName() {
+        return className;
     }
 
-    public void setMethods(Map<String, MethodType> methods) {
-        this.methods = methods;
-    }
-
-    public Collection<MethodType> getMethodTypeList() {
-        return methods.values();
+    public void setClassName(String className) {
+        this.className = className;
     }
 
     public String getPackageName() {
@@ -46,5 +45,9 @@ public class ServiceType extends AbstractType {
 
     public void setPackageName(String packageName) {
         this.packageName = packageName;
+    }
+
+    public String getFQCN() {
+        return StringUtils.join(new String[]{getPackageName(), getClassName(), getName()}, ProtobufConstant.PACKAGE_SEPARATOR);
     }
 }

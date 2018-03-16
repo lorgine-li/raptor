@@ -6,7 +6,7 @@ import 'Imported.proto';
 
 
 service ImportService {
-    rpc import (Import) returns (com.ppdai.framework.raptor.proto.test.import2.Imported) {
+    rpc importMethod (Import) returns (com.ppdai.framework.raptor.proto.test.import2.Imported) {
     }
 }
 

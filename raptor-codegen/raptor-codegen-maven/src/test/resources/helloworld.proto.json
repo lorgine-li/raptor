@@ -36,14 +36,8 @@
     }
   },
   "definitions" : {
-    "com.ppdai.framework.raptor.proto.Common/Result.Result" : {
+    "com.ppdai.framework.raptor.proto.ResultOuterClass.Result" : {
       "properties" : {
-        "url" : {
-          "type" : "string"
-        },
-        "title" : {
-          "type" : "string"
-        },
         "snippets" : {
           "type" : "array",
           "items" : {
@@ -65,93 +59,32 @@
           "type" : "string"
         },
         "corpus" : {
-          "$ref" : "#/definitions/HelloRequest.Corpus"
+          "$ref" : "#/definitions/Helloworld.HelloRequest.Corpus"
         },
         "results" : {
           "type" : "array",
           "items" : {
-            "$ref" : "#/definitions/com.ppdai.framework.raptor.proto.Result"
+            "$ref" : "#/definitions/com.ppdai.framework.raptor.proto.ResultOuterClass.Result"
           }
         }
       }
     },
     "Helloworld.HelloRequest" : {
       "properties" : {
-        "name" : {
-          "type" : "string"
+        "tbool" : {
+          "type" : "boolean"
         },
         "corpus" : {
-          "$ref" : "#/definitions/HelloRequest.Corpus"
-        },
-        "snippets" : {
-          "type" : "array",
-          "items" : {
-            "type" : "string"
-          }
+          "$ref" : "#/definitions/Helloworld.HelloRequest.Corpus"
         },
         "cats" : {
           "type" : "array",
           "items" : {
-            "$ref" : "#/definitions/Cat"
+            "$ref" : "#/definitions/Helloworld.Cat"
           }
         },
         "result" : {
-          "$ref" : "#/definitions/HelloRequest.Result"
-        },
-        "tDouble" : {
-          "type" : "number",
-          "format" : "double"
-        },
-        "tFloat" : {
-          "type" : "number",
-          "format" : "float"
-        },
-        "tint32" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "tint64" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
-        "tunit32" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
-        "tunit64" : {
-          "type" : "string",
-          "format" : "uint64"
-        },
-        "tsint32" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "tsint64" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
-        "tfixed32" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
-        "tfixed64" : {
-          "type" : "string",
-          "format" : "uint64"
-        },
-        "tsfixed32" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "tsfixed64" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
-        "tbytes" : {
-          "type" : "string",
-          "format" : "byte"
-        },
-        "tbool" : {
-          "type" : "boolean"
+          "$ref" : "#/definitions/Helloworld.HelloRequest.Result"
         },
         "time" : {
           "type" : "string",
@@ -180,15 +113,15 @@
           "type" : "string"
         },
         "corpus" : {
-          "$ref" : "#/definitions/HelloRequest.Result.Corpus"
+          "$ref" : "#/definitions/Helloworld.HelloRequest.Result.Corpus"
         }
       }
     },
-    "HelloRequest.Corpus" : {
+    "Helloworld.HelloRequest.Corpus" : {
       "type" : "string",
       "enum" : [ "UNIVERSAL", "WEB", "IMAGES", "LOCAL", "NEWS", "PRODUCTS", "VIDEO" ]
     },
-    "HelloRequest.Result.Corpus" : {
+    "Helloworld.HelloRequest.Result.Corpus" : {
       "type" : "string",
       "enum" : [ "UNIVERSAL", "WEB", "IMAGES", "LOCAL", "NEWS", "PRODUCTS", "VIDEO" ]
     }

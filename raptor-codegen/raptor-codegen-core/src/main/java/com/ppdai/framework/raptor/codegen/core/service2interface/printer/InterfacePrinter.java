@@ -45,7 +45,7 @@ public final class InterfacePrinter extends AbstractPrint {
             String outPutType = metaContainer.findMessageTypeByFQPN(method.getOutputType()).getFQCN();
             String inPutType = metaContainer.findMessageTypeByFQPN(method.getInputType()).getFQCN();
             String methodName = method.getName();
-            String inputValue = "a";
+            String inputValue = "param";
             String methodStr = generateMethod(inPutType, outPutType, methodName, inputValue);
             fileData.add(methodStr);
         }

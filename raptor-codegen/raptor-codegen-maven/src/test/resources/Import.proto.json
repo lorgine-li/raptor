@@ -8,11 +8,11 @@
   "consumes" : [ "application/json" ],
   "produces" : [ "application/json" ],
   "paths" : {
-    "/raptor/com.ppdai.framework.raptor.proto.test.import1.ImportService/import" : {
+    "/raptor/com.ppdai.framework.raptor.proto.test.import1.ImportService/importMethod" : {
       "post" : {
         "summary" : "",
         "description" : "",
-        "operationId" : "import",
+        "operationId" : "importMethod",
         "consumes" : [ "application/json" ],
         "produces" : [ "application/json" ],
         "parameters" : [ {
@@ -21,14 +21,14 @@
           "description" : "",
           "required" : true,
           "schema" : {
-            "$ref" : "#/definitions/Import"
+            "$ref" : "#/definitions/ImportOuterClass.Import"
           }
         } ],
         "responses" : {
           "200" : {
             "description" : "successful operation",
             "schema" : {
-              "$ref" : "#/definitions/com.ppdai.framework.raptor.proto.test.import2.Imported"
+              "$ref" : "#/definitions/com.ppdai.framework.raptor.proto.test.import2.ImportedOuterClass.Imported"
             }
           }
         }
@@ -36,53 +36,39 @@
     }
   },
   "definitions" : {
-    "Import" : {
+    "ImportOuterClass.Import" : {
       "properties" : {
         "request" : {
-          "$ref" : "#/definitions/com.ppdai.framework.raptor.proto.test.import2.Imported"
+          "$ref" : "#/definitions/com.ppdai.framework.raptor.proto.test.import2.ImportedOuterClass.Imported"
         },
         "enum" : {
-          "$ref" : "#/definitions/com.ppdai.framework.raptor.proto.test.import2.EnumNotAllowingAlias"
+          "$ref" : "#/definitions/com.ppdai.framework.raptor.proto.test.import2.ImportedOuterClass.EnumNotAllowingAlias"
         }
       }
     },
-    "com.ppdai.framework.raptor.proto.test.import2.Imported" : {
+    "com.ppdai.framework.raptor.proto.test.import2.ImportedOuterClass.Imported" : {
       "properties" : {
-        "query" : {
-          "type" : "string"
-        },
-        "page_number" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "result_per_page" : {
           "type" : "integer",
           "format" : "int32"
         },
         "imported" : {
-          "$ref" : "#/definitions/com.ppdai.framework.raptor.proto.test.import2.Imported2"
+          "$ref" : "#/definitions/com.ppdai.framework.raptor.proto.test.import2.ImportedOuterClass.Imported2"
         },
         "enum" : {
-          "$ref" : "#/definitions/com.ppdai.framework.raptor.proto.test.import2.EnumNotAllowingAlias"
+          "$ref" : "#/definitions/com.ppdai.framework.raptor.proto.test.import2.ImportedOuterClass.EnumNotAllowingAlias"
         }
       }
     },
-    "com.ppdai.framework.raptor.proto.test.import2.Imported2" : {
+    "com.ppdai.framework.raptor.proto.test.import2.ImportedOuterClass.Imported2" : {
       "properties" : {
-        "query" : {
-          "type" : "string"
-        },
-        "page_number" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "result_per_page" : {
           "type" : "integer",
           "format" : "int32"
         }
       }
     },
-    "com.ppdai.framework.raptor.proto.test.import2.EnumNotAllowingAlias" : {
+    "com.ppdai.framework.raptor.proto.test.import2.ImportedOuterClass.EnumNotAllowingAlias" : {
       "type" : "string",
       "enum" : [ "UNKNOWN", "STARTED" ]
     }
