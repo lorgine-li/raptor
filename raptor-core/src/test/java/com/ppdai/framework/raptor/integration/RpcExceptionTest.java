@@ -57,7 +57,7 @@ public class RpcExceptionTest extends RpcTestBase {
         String reply = EntityUtils.toString(response.getEntity());
         System.out.println(reply);
         ErrorProto.ErrorMessage errorMessage = ProtoBuffUtils.convertJsonToProtoBuff(reply, ErrorProto.ErrorMessage.class);
-        Assert.assertEquals(419, response.getStatusLine().getStatusCode());
+        Assert.assertEquals(500, response.getStatusLine().getStatusCode());
         Assert.assertEquals(RaptorMessageConstant.BIZ_DEFAULT_ERROR_CODE, errorMessage.getCode());
 
     }

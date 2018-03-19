@@ -169,7 +169,7 @@ public abstract class AbstractHttpClient implements Client {
         if (statusCode == 200) {
             response.setValue(deserializeResponseValue(request, content));
             response.setCode(RaptorMessageConstant.SUCCESS);
-        } else if (statusCode == 419) {
+        } else if (statusCode == 500) {
             //raptor异常
             ErrorProto.ErrorMessage errorProto = deserializeErrorMessage(request, content);
             ErrorMessage errorMessage = ErrorMessage.fromErrorProto(errorProto);

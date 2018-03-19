@@ -42,7 +42,7 @@ public class HttpErrorConverter {
     }
 
     public static int getDefaultErrorHttpStatusCode() {
-        //定义419为raptor异常
-        return 419;
+        //定义raptor异常的status code
+        return 500;
     }
 }
