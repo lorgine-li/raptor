@@ -60,7 +60,7 @@ Raptor框架基于扩展机制开发，增加新功能只需按照扩展机制�
 ## 示例插件
 
 ### Filter示例
-Filter分为ProviderFilter和ReferFilter，他们分别在服务端和客户端生效。在本示例中，我们实现一个ReferFilter。
+`Filter`分为`ProviderFilter`和`ReferFilter`，他们分别在服务端和客户端生效。在本示例中，我们实现一个ReferFilter。
 ```java
 public class DoNothingFilter implements ReferFilter {
 
@@ -79,7 +79,7 @@ public class DoNothingFilter implements ReferFilter {
 }
 ```
 
-在实现接口之后，我们需要创建一个Bean，并将它注入到Spring容器中。建议使用`@ConditionalOnProperty`等显限定条件的注解注入，方便业务方灵活配置：
+在实现接口之后，我们需要创建一个Bean，并将它注入到Spring容器中。建议使用`@ConditionalOnProperty`等限定条件的注解注入，方便业务方灵活配置：
 ```java
 @Bean
 @ConditionalOnProperty(name = "raptor.refer.filter.doNothing", havingValue = "true", matchIfMissing = true)
