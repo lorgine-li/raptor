@@ -12,18 +12,22 @@ public class ServiceType extends AbstractType {
     private Map<String, MethodType> methods;
     private String packageName;
 
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public void setName(String name) {
         this.name = name;
     }
 
+    @Override
     public String getFQPN() {
         return FQPN;
     }
 
+    @Override
     public void setFQPN(String FQPN) {
         this.FQPN = FQPN;
     }
@@ -40,10 +44,12 @@ public class ServiceType extends AbstractType {
         return methods.values();
     }
 
+    @Override
     public String getPackageName() {
         return packageName;
     }
 
+    @Override
     public void setPackageName(String packageName) {
         this.packageName = packageName;
     }

@@ -14,8 +14,6 @@ import java.io.Writer;
  */
 public class MustacheProcessor {
 
-    private static final MustacheFactory mf = new DefaultMustacheFactory();
-
     public static void process(String mustachePath,String outputDes,Object parameter)throws Exception{
         Writer writer = null;
         try {

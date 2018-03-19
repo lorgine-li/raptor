@@ -173,11 +173,8 @@ public class Swagger2Template implements SwaggerTemplate {
                                 MetaContainer metaContainer,
                                 String apiVersion) throws JsonProcessingException {
         // 从pb中提取service
-        ServiceContainer serviceContainer =
-//                metaContainer.getServiceContainer();
-                new ServiceContainer();
+        ServiceContainer serviceContainer = new ServiceContainer();
         ContainerUtil.getServiceContainer(fdp, serviceContainer);
-
 
 
         Swagger swagger = new Swagger().scheme(HTTP)

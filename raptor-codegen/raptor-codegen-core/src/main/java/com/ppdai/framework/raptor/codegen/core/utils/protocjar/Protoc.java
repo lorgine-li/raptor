@@ -51,7 +51,7 @@ public class Protoc {
 
     public static void main(String[] args) {
         try {
-            if (args.length > 0 && args[0].equals("-pp")) { // print platform
+            if (args.length > 0 && "-pp".equals(args[0])) { // print platform
                 PlatformDetector.main(args);
                 return;
             }
@@ -73,7 +73,7 @@ public class Protoc {
             if (v != null) {
                 protocVersion = v;
             }
-            if (arg.equals("--include_std_types")) {
+            if ("--include_std_types".equals(arg)) {
                 includeStdTypes = true;
             }
         }
@@ -106,7 +106,7 @@ public class Protoc {
             if (arg.startsWith("--java_shaded_out=")) {
                 javaShadedOutDir = arg.split("--java_shaded_out=")[1];
                 protocCmd.add("--java_out=" + javaShadedOutDir);
-            } else if (arg.equals("--include_std_types")) {
+            } else if ("--include_std_types".equals(arg)) {
                 File stdTypeDir = new File(new File(cmd).getParentFile().getParentFile(), "include");
                 protocCmd.add("-I" + stdTypeDir.getAbsolutePath());
             } else {
@@ -155,7 +155,6 @@ public class Protoc {
             if (file.isDirectory()) {
                 doShading(file, version);
             } else if (file.getName().endsWith(".java")) {
-                //log(file.getPath());
                 File tmpFile = null;
                 PrintWriter pw = null;
                 BufferedReader br = null;
@@ -494,10 +493,10 @@ public class Protoc {
                 Node val = null;
                 for (int j = 0; j < ver.getChildNodes().getLength(); j++) {
                     Node n = ver.getChildNodes().item(j);
-                    if (n.getNodeName().equals("classifier")) {
+                    if ("classifier".equals(n.getNodeName())) {
                         cls = n;
                     }
-                    if (n.getNodeName().equals("value")) {
+                    if ("value".equals(n.getNodeName())) {
                         val = n;
                     }
                 }

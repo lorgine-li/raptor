@@ -37,7 +37,7 @@ public class ShellCommand {
 
             runtime = Runtime.getRuntime();
 
-            if (workingDir != null && !workingDir.equalsIgnoreCase("")) {
+            if (workingDir != null && !"".equalsIgnoreCase(workingDir)) {
 
                 File workDir = new File(workingDir);
                 if (!workDir.exists()) {

@@ -31,18 +31,22 @@ public abstract class AbstractType implements Type {
         this.FQPN = FQPN;
     }
 
+    @Override
     public String getClassName() {
         return className;
     }
 
+    @Override
     public void setClassName(String className) {
         this.className = className;
     }
 
+    @Override
     public String getPackageName() {
         return packageName;
     }
 
+    @Override
     public void setPackageName(String packageName) {
         this.packageName = packageName;
     }

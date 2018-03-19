@@ -18,7 +18,7 @@ import java.util.List;
 
 public class CodegenConfiguration {
     public static final Logger LOGGER = LoggerFactory.getLogger(CodegenConfiguration.class);
-    private static final ObjectMapper mapper = new ObjectMapper();
+    private static final ObjectMapper MAPPER = new ObjectMapper();
 
 
     private String groupId;
@@ -47,7 +47,7 @@ public class CodegenConfiguration {
 
         if (configFile.exists()) {
             try {
-                return mapper.readValue(configFile, CodegenConfiguration.class);
+                return MAPPER.readValue(configFile, CodegenConfiguration.class);
             } catch (IOException e) {
                 System.out.println("【WARN】The config.json will have to be neglected for being unable to recognize the parameters from it.");
             }

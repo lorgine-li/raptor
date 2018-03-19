@@ -23,19 +23,19 @@ import static com.ppdai.framework.raptor.codegen.core.utils.Utils.getCliJarPath;
 public class CliOptions {
     private static final Logger logger = LoggerFactory.getLogger(CliOptions.class);
     private static HelpFormatter helpFormatter = new HelpFormatter();
-    private static final Options options = new Options();
+    private static final Options OPTIONS = new Options();
     private static BasicParser parser = new BasicParser();
     //todo Options need to be extended.
     public CliOptions() {
-        options.addOption("i", true, "the input directory where the proto files are");
-        options.addOption("o", true, "the output directory which is the output path");
-        options.addOption("c",true,"whether we use config.json or not");
+        OPTIONS.addOption("i", true, "the input directory where the proto files are");
+        OPTIONS.addOption("o", true, "the output directory which is the output path");
+        OPTIONS.addOption("c",true,"whether we use config.json or not");
 
-        options.addOption("s", false, "whether we will include the well-known google standard types");
+        OPTIONS.addOption("s", false, "whether we will include the well-known google standard types");
 
-        options.addOption("groupId",true,"maven project related parameter");
-        options.addOption("artifactId",true,"maven project related parameter");
-        options.addOption("artifactVersion",true,"maven project related parameter");
+        OPTIONS.addOption("groupId",true,"maven project related parameter");
+        OPTIONS.addOption("artifactId",true,"maven project related parameter");
+        OPTIONS.addOption("artifactVersion",true,"maven project related parameter");
     }
     /**
      * The priority of CodegenConfiguration:
@@ -58,7 +58,7 @@ public class CliOptions {
                 System.out.println(e.toString());
             }
 
-            CommandLine cli = parser.parse(options, args);
+            CommandLine cli = parser.parse(OPTIONS, args);
             if(cli.hasOption("c")){
                 String confPath = cli.getOptionValue("c");
                 try{
