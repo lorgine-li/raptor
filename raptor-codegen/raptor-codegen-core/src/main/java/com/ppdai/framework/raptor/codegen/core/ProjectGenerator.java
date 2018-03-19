@@ -68,7 +68,7 @@ public class ProjectGenerator {
     private void performProjectGenerator() throws Exception {
         System.out.println(">>>>>>>>>>>>>>>  Adding Pom to the maven project generated.");
 
-        HashMap<String, Object> mustacheParameters = new HashMap<String, Object>();
+        HashMap<String, Object> mustacheParameters = new HashMap<>();
         mustacheParameters.put("groupId", groupId);
         mustacheParameters.put("artifactId", artifactId);
         mustacheParameters.put("artifactVersion", artifactVersion);

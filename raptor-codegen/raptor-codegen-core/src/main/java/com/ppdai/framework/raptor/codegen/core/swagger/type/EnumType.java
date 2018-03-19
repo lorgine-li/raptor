@@ -24,11 +24,22 @@ public class EnumType extends AbstractType implements Comparable<EnumType>{
     }
 
 
+    @Override
     public String getFQCN() {
         return FQCN;
     }
 
     public void setFQCN(String FQCN) {
         this.FQCN = FQCN;
+    }
+
+    @Override
+    public int hashCode(){
+        return FQCN.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object anObject) {
+        return anObject instanceof MessageType && FQCN.equals(((MessageType) anObject).getFQCN());
     }
 }

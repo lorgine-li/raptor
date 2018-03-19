@@ -28,6 +28,7 @@ public class MessageType extends AbstractType implements Comparable<MessageType>
         return getFQPN().compareTo((messageType.getFQPN()));
     }
 
+    @Override
     public String getFQCN() {
         return FQCN;
     }
@@ -35,5 +36,16 @@ public class MessageType extends AbstractType implements Comparable<MessageType>
     public void setFQCN(String FQCN) {
         this.FQCN = FQCN;
     }
+
+    @Override
+    public int hashCode(){
+        return FQCN.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object anObject) {
+        return anObject instanceof MessageType && FQCN.equals(((MessageType) anObject).getFQCN());
+    }
+
 
 }

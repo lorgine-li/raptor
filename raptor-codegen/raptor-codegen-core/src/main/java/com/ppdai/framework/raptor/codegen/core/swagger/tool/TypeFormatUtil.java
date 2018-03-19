@@ -15,42 +15,27 @@ import static com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Label.LA
  * Created by zhangyicong on 18-3-1.
  */
 public class TypeFormatUtil {
-    private static final Map<String, Property> wktProperties;
-    private static final Map<String, TypeFormat> wktSchemas;
-
+    private static final Map<String, Property> DEFAULT_TYPE_PROPERTY;
 
     static {
-        wktProperties = new HashMap<>();
-        wktProperties.put("google.protobuf.Timestamp", new DateTimeProperty());
-        wktProperties.put("google.protobuf.StringValue", new StringProperty());
-        wktProperties.put("google.protobuf.Int32Value", new IntegerProperty());
-        wktProperties.put("google.protobuf.Int64Value", new LongProperty());
-        wktProperties.put("google.protobuf.FloatValue", new FloatProperty());
-        wktProperties.put("google.protobuf.DoubleValue", new DoubleProperty());
-        wktProperties.put("google.protobuf.BoolValue", new BooleanProperty());
-        wktProperties.put("google.protobuf.Struct", new ObjectProperty());
-        wktProperties.put("google.protobuf.Value", new ObjectProperty());
-        wktProperties.put("google.protobuf.ListValue", new ObjectProperty());
-        wktProperties.put("google.protobuf.Duration", new StringProperty());
+        DEFAULT_TYPE_PROPERTY = new HashMap<>();
+        DEFAULT_TYPE_PROPERTY.put("google.protobuf.Timestamp", new DateTimeProperty());
+        DEFAULT_TYPE_PROPERTY.put("google.protobuf.StringValue", new StringProperty());
+        DEFAULT_TYPE_PROPERTY.put("google.protobuf.Int32Value", new IntegerProperty());
+        DEFAULT_TYPE_PROPERTY.put("google.protobuf.Int64Value", new LongProperty());
+        DEFAULT_TYPE_PROPERTY.put("google.protobuf.FloatValue", new FloatProperty());
+        DEFAULT_TYPE_PROPERTY.put("google.protobuf.DoubleValue", new DoubleProperty());
+        DEFAULT_TYPE_PROPERTY.put("google.protobuf.BoolValue", new BooleanProperty());
+        DEFAULT_TYPE_PROPERTY.put("google.protobuf.Struct", new ObjectProperty());
+        DEFAULT_TYPE_PROPERTY.put("google.protobuf.Value", new ObjectProperty());
+        DEFAULT_TYPE_PROPERTY.put("google.protobuf.ListValue", new ObjectProperty());
+        DEFAULT_TYPE_PROPERTY.put("google.protobuf.Duration", new StringProperty());
 
-
-        wktSchemas = new HashMap<>();
-        wktSchemas.put("google.protobuf.Timestamp", new TypeFormat("string", "date-time", null, null));
-        wktSchemas.put("google.protobuf.StringValue", new TypeFormat("string", "", null, null));
-        wktSchemas.put("google.protobuf.Int32Value", new TypeFormat("integer", "int32", null, null));
-        wktSchemas.put("google.protobuf.Int64Value", new TypeFormat("integer", "int64", null, null));
-        wktSchemas.put("google.protobuf.FloatValue", new TypeFormat("number", "float", null, null));
-        wktSchemas.put("google.protobuf.DoubleValue", new TypeFormat("number", "double", null, null));
-        wktSchemas.put("google.protobuf.BoolValue", new TypeFormat("boolean", "boolean", null, null));
-        wktSchemas.put("google.protobuf.Struct", new TypeFormat("object", null, null, true));
-        wktSchemas.put("google.protobuf.Value", new TypeFormat("object", null, null, true));
-        wktSchemas.put("google.protobuf.ListValue", new TypeFormat("object", null, null, true));
-        wktSchemas.put("google.protobuf.Duration", new TypeFormat("string", "", null, null));
     }
 
 
     private static Property formatProperty(FieldType fieldType, String typeDefPrefix, String basePackage) {
-        Property property = wktProperties.get(fieldType.getFQPN());
+        Property property = DEFAULT_TYPE_PROPERTY.get(fieldType.getFQPN());
 
         if (!fieldType.getFQPN().startsWith("google.protobuf") && property == null) {
 //            property = new AbstractProperty() {};
@@ -98,6 +83,8 @@ public class TypeFormatUtil {
                         ((RefProperty) property).set$ref("#/" + typeDefPrefix + "/" + fieldType.getFQCN());
                     }
                     break;
+                default:
+                    break;
             }
         }
 
@@ -109,7 +96,7 @@ public class TypeFormatUtil {
         }
 
         if (fieldType.getLabel().equals(LABEL_REPEATED)
-                || fieldType.getFQPN().equals("google.protobuf.ListValue")) {
+                || "google.protobuf.ListValue".equals(fieldType.getFQPN())) {
             property = new ArrayProperty(property);
         }
 

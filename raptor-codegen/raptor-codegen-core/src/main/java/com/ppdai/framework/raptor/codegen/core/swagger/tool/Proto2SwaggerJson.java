@@ -81,7 +81,6 @@ public class Proto2SwaggerJson {
                     }
                     FileUtils.writeStringToFile(apiFile, json);
 
-                    //logger.info("Swagger API: {}", mapper.writeValueAsString(swaggerObject));
                     logger.info("Generate Swagger API file: {}", apiFile);
                 } catch (Exception e) {
                     throw e;
