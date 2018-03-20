@@ -93,9 +93,15 @@ public class RaptorServiceAutoConfiguration {
         return new ProviderMetricsFilter();
     }
 
-    @Bean
+    @Configuration
     @ConditionalOnClass(AbstractEndpoint.class)
-    public RaptorProvidersActuatorEndpoint createRaptorServiceActuatorEndpoint(ServletEndpoint servletEndpoint) {
-        return new RaptorProvidersActuatorEndpoint(servletEndpoint.getProviders());
+    static class EndpointConfig {
+
+        @Bean
+        @ConditionalOnClass(AbstractEndpoint.class)
+        public RaptorProvidersActuatorEndpoint createRaptorServiceActuatorEndpoint(ServletEndpoint servletEndpoint) {
+            return new RaptorProvidersActuatorEndpoint(servletEndpoint.getProviders());
+        }
     }
+
 }

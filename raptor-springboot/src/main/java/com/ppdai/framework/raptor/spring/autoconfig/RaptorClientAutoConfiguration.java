@@ -83,10 +83,14 @@ public class RaptorClientAutoConfiguration implements EnvironmentAware {
         return new ReferMetricsFilter();
     }
 
-
-    @Bean
+    @Configuration
     @ConditionalOnClass(AbstractEndpoint.class)
-    public RaptorRefersActuatorEndpoint createRaptorReferActuatorEndpoint(RaptorClientRegistry raptorClientRegistry) {
-        return new RaptorRefersActuatorEndpoint(raptorClientRegistry.getClientCache());
+    static class EndpointConfig {
+
+        @Bean
+        public RaptorRefersActuatorEndpoint createRaptorReferActuatorEndpoint(RaptorClientRegistry raptorClientRegistry) {
+            return new RaptorRefersActuatorEndpoint(raptorClientRegistry.getClientCache());
+        }
+
     }
 }
