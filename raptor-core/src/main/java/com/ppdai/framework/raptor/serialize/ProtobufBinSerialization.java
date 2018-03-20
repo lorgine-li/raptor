@@ -5,7 +5,7 @@ import com.ppdai.framework.raptor.util.ProtoBuffUtils;
 
 public class ProtobufBinSerialization extends AbstractProtobufSerialization {
 
-    public static final String NAME = "protobuf-bin";
+    public static final String NAME = "application/protobuf";
 
     @Override
     public byte[] serializeMessage(Message message) {

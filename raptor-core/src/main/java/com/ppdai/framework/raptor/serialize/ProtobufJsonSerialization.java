@@ -8,7 +8,7 @@ import java.io.UnsupportedEncodingException;
 
 public class ProtobufJsonSerialization extends AbstractProtobufSerialization {
 
-    public static final String NAME = "protobuf-json";
+    public static final String NAME = "application/json";
 
     @Override
     public byte[] serializeMessage(Message message) {

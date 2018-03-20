@@ -1,5 +1,6 @@
 package com.ppdai.framework.raptor.exception;
 
+import com.ppdai.framework.raptor.common.RaptorConstants;
 import com.ppdai.framework.raptor.common.RaptorMessageConstant;
 
 public class HttpErrorConverter {
@@ -43,6 +44,6 @@ public class HttpErrorConverter {
 
     public static int getDefaultErrorHttpStatusCode() {
         //定义raptor异常的status code
-        return 500;
+        return RaptorConstants.RAPTOR_ERROR;
     }
 }

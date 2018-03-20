@@ -1,10 +1,10 @@
 package com.ppdai.framework.raptor.service;
 
+import com.ppdai.framework.raptor.common.ParamNameConstants;
 import com.ppdai.framework.raptor.common.RaptorConstants;
 import com.ppdai.framework.raptor.common.URLParamType;
 import com.ppdai.framework.raptor.exception.*;
 import com.ppdai.framework.raptor.rpc.*;
-import com.ppdai.framework.raptor.serialize.ProtobufJsonSerialization;
 import com.ppdai.framework.raptor.serialize.Serialization;
 import com.ppdai.framework.raptor.serialize.SerializationProviders;
 import lombok.Getter;
@@ -151,15 +151,12 @@ public class ServletEndpoint extends HttpServlet implements Endpoint {
     }
 
     protected Serialization getSerialization(HttpServletRequest httpRequest) {
-        String serializationName = httpRequest.getHeader(URLParamType.serialization.getName());
+        String serializationName = httpRequest.getContentType();
         if (StringUtils.isNotBlank(serializationName)) {
+            serializationName = StringUtils.substringBefore(serializationName, RaptorConstants.SEPARATOR_CONTENT_TYPE).trim();
             return SerializationProviders.getInstance().getSerialization(serializationName);
         }
-        if (StringUtils.contains(httpRequest.getContentType(), "json")) {
-            return SerializationProviders.getInstance().getSerialization(ProtobufJsonSerialization.NAME);
-        } else {
-            return SerializationProviders.getInstance().getDefault();
-        }
+        return SerializationProviders.getInstance().getDefault();
     }
 
     protected String getProviderKey(Request request) {
@@ -179,6 +176,7 @@ public class ServletEndpoint extends HttpServlet implements Endpoint {
 
     protected void transportException(Exception exception, Request request, HttpServletRequest httpRequest, HttpServletResponse httpResponse) throws IOException {
         httpResponse.setStatus(HttpErrorConverter.getHttpStatusCode(exception));
+        httpResponse.setHeader(ParamNameConstants.RAPTOR_ERROR, RaptorConstants.TRUE);
         Serialization serialization = this.getSerialization(httpRequest);
         ErrorMessage errorMessage = HttpErrorConverter.getErrorMessage(exception);
         if (exception instanceof ExceptionAttachment) {

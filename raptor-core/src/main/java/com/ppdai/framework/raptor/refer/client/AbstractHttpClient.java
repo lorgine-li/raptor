@@ -1,5 +1,6 @@
 package com.ppdai.framework.raptor.refer.client;
 
+import com.ppdai.framework.raptor.common.ParamNameConstants;
 import com.ppdai.framework.raptor.common.RaptorConstants;
 import com.ppdai.framework.raptor.common.RaptorMessageConstant;
 import com.ppdai.framework.raptor.common.URLParamType;
@@ -25,6 +26,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.ContentType;
 import org.apache.http.message.BasicHeader;
+import org.apache.http.protocol.HTTP;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -68,15 +70,7 @@ public abstract class AbstractHttpClient implements Client {
             StatusLine statusLine = httpResponse.getStatusLine();
             setStatus(response, statusLine);
 
-            //设置响应body
-            HttpEntity entity = httpResponse.getEntity();
-            byte[] content;
-            try {
-                content = IOUtils.toByteArray(entity.getContent());
-            } catch (IOException e) {
-                throw new RaptorServiceException("Error read response content, requestId=" + response.getRequestId(), e);
-            }
-            setResponseValue(request, response, statusLine.getStatusCode(), content);
+            setResponseValue(request, response, httpResponse);
 
         } catch (Exception e) {
             response.setException(e);
@@ -99,12 +93,15 @@ public abstract class AbstractHttpClient implements Client {
         URI uri = buildUri(request, serviceUrl);
         HttpPost post = new HttpPost(uri);
 
+        String serializationType = this.serialization.getName();
+        ContentType contentType = ContentType.create(serializationType);
+
         HttpEntity entity;
         if (Objects.isNull(request.getArgument())) {
             entity = EntityBuilder.create().build();
         } else {
             byte[] data = this.buildContent(request);
-            entity = EntityBuilder.create().setBinary(data).build();
+            entity = EntityBuilder.create().setBinary(data).setContentType(contentType).build();
         }
         post.setEntity(entity);
         return post;
@@ -151,35 +148,47 @@ public abstract class AbstractHttpClient implements Client {
         }
         String requestId = String.valueOf(request.getRequestId());
         httpRequest.addHeader(new BasicHeader(URLParamType.requestId.name(), requestId));
-        httpRequest.addHeader(new BasicHeader("connection", "Keep-Alive"));
+        httpRequest.addHeader(new BasicHeader(HTTP.CONN_DIRECTIVE, HTTP.CONN_KEEP_ALIVE));
 
-        String serializationType = this.serialization.getName();
-        httpRequest.addHeader(new BasicHeader(URLParamType.serialization.getName(), serializationType));
-        if (StringUtils.contains(serializationType, "json")) {
-            httpRequest.addHeader("Content-Type", ContentType.APPLICATION_JSON.getMimeType());
-        }
     }
 
     protected byte[] buildContent(Request request) {
         return this.serialization.serialize(request.getArgument());
     }
 
-    protected void setResponseValue(Request request, DefaultResponse response, int statusCode, byte[] content) {
+    protected void setResponseValue(Request request, DefaultResponse response, HttpResponse httpResponse) {
+        //设置响应body
+        HttpEntity entity = httpResponse.getEntity();
+        byte[] content;
+        try {
+            content = IOUtils.toByteArray(entity.getContent());
+        } catch (IOException e) {
+            throw new RaptorServiceException("Error read response content, requestId=" + response.getRequestId(), e);
+        }
+        int statusCode = httpResponse.getStatusLine().getStatusCode();
+        Header raptorError = httpResponse.getFirstHeader(ParamNameConstants.RAPTOR_ERROR);
+        String errorStr = Objects.isNull(raptorError) ? null : raptorError.getValue();
         //  根据http状态码做不同的处理
-        if (statusCode == 200) {
+        if (statusCode == RaptorConstants.HTTP_OK && !RaptorConstants.TRUE.equalsIgnoreCase(errorStr)) {
             response.setValue(deserializeResponseValue(request, content));
             response.setCode(RaptorMessageConstant.SUCCESS);
-        } else if (statusCode == 500) {
-            //raptor异常
-            ErrorProto.ErrorMessage errorProto = deserializeErrorMessage(request, content);
-            ErrorMessage errorMessage = ErrorMessage.fromErrorProto(errorProto);
-            response.setException(getExceptionByErrorMessage(errorMessage));
-            response.setCode(errorMessage.getCode());
-        } else {
-            RaptorServiceException e = new RaptorServiceException(new String(content, StandardCharsets.UTF_8));
-            response.setException(e);
-            response.setCode(e.getErrorCode());
+            return;
         }
+        if (statusCode == RaptorConstants.RAPTOR_ERROR && RaptorConstants.TRUE.equalsIgnoreCase(errorStr)) {
+            //raptor异常
+            try {
+                ErrorProto.ErrorMessage errorProto = deserializeErrorMessage(request, content);
+                ErrorMessage errorMessage = ErrorMessage.fromErrorProto(errorProto);
+                response.setException(getExceptionByErrorMessage(errorMessage));
+                response.setCode(errorMessage.getCode());
+                return;
+            } catch (Exception e) {
+                log.error("Can not serialize raptor error:\n{}", new String(content, StandardCharsets.UTF_8));
+            }
+        }
+        RaptorServiceException e = new RaptorServiceException(new String(content, StandardCharsets.UTF_8));
+        response.setException(e);
+        response.setCode(e.getErrorCode());
     }
 
     protected ErrorProto.ErrorMessage deserializeErrorMessage(Request request, byte[] content) {
@@ -205,11 +214,11 @@ public abstract class AbstractHttpClient implements Client {
             return new RaptorServiceException("Unknow exception, errorMessage is null");
         }
         int code = errorMessage.getCode();
-        if (code >= 10000 && code < 20000) {
+        if (code >= RaptorMessageConstant.SERVICE_DEFAULT_ERROR_CODE && code < RaptorMessageConstant.FRAMEWORK_DEFAULT_ERROR_CODE) {
             return new RaptorServiceException(errorMessage, null);
-        } else if (code >= 20000 && code < 30000) {
+        } else if (code >= RaptorMessageConstant.FRAMEWORK_DEFAULT_ERROR_CODE && code < RaptorMessageConstant.BIZ_DEFAULT_ERROR_CODE) {
             return new RaptorFrameworkException(errorMessage, null);
-        } else if (code >= 30000) {
+        } else if (code >= RaptorMessageConstant.BIZ_DEFAULT_ERROR_CODE) {
             return new RaptorBizException(errorMessage, null);
         }
 

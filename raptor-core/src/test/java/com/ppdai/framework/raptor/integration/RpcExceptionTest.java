@@ -1,5 +1,6 @@
 package com.ppdai.framework.raptor.integration;
 
+import com.ppdai.framework.raptor.common.RaptorConstants;
 import com.ppdai.framework.raptor.common.RaptorMessageConstant;
 import com.ppdai.framework.raptor.exception.ErrorProto;
 import com.ppdai.framework.raptor.exception.RaptorBizException;
@@ -25,7 +26,7 @@ import org.junit.Test;
 public class RpcExceptionTest extends RpcTestBase {
 
     @Test(expected = RaptorBizException.class)
-    public void test1() {
+    public void testRpc() {
         Simple simple = new SimpleImpl();
         Provider<Simple> provider = ProviderBuilder.newBuilder().build(Simple.class, simple);
         servletEndpoint.export(provider);
@@ -57,7 +58,7 @@ public class RpcExceptionTest extends RpcTestBase {
         String reply = EntityUtils.toString(response.getEntity());
         System.out.println(reply);
         ErrorProto.ErrorMessage errorMessage = ProtoBuffUtils.convertJsonToProtoBuff(reply, ErrorProto.ErrorMessage.class);
-        Assert.assertEquals(500, response.getStatusLine().getStatusCode());
+        Assert.assertEquals(RaptorConstants.RAPTOR_ERROR, response.getStatusLine().getStatusCode());
         Assert.assertEquals(RaptorMessageConstant.BIZ_DEFAULT_ERROR_CODE, errorMessage.getCode());
 
     }
