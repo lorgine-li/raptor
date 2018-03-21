@@ -26,19 +26,19 @@ public class MetaContainer {
         return messageContainer;
     }
 
-    public MessageType findMessageTypeByFQPN(String FQPN) {
-        MessageType message = messageContainer.findMessageTypeByFQPN(FQPN);
+    public MessageType findMessageTypeByFullyQualifiedPathName(String fullyQualifiedPathName) {
+        MessageType message = messageContainer.findMessageTypeByFullyQualifiedPathName(fullyQualifiedPathName);
         return Optional.ofNullable(message).orElse(null);
     }
 
-    public EnumType findEnumTypeByFQPN(String FQPN) {
-        EnumType enumType = enumContainer.findEnumTypeByFQPN(FQPN);
+    public EnumType findEnumTypeByFullyQualifiedPathName(String fullyQualifiedPathName) {
+        EnumType enumType = enumContainer.findEnumTypeByFullyQualifiedPathName(fullyQualifiedPathName);
         return Optional.ofNullable(enumType).orElse(null);
     }
 
-    public Type findTypeByFQPN(String FQPN) {
-        Type messageTypeByFQPN = findMessageTypeByFQPN(FQPN);
-        return Optional.ofNullable(messageTypeByFQPN)
-                .orElse(findEnumTypeByFQPN(FQPN));
+    public Type findTypeByFullyQualifiedPathName(String fullyQualifiedPathName) {
+        Type messageTypeByFullyQualifiedPathName = findMessageTypeByFullyQualifiedPathName(fullyQualifiedPathName);
+        return Optional.ofNullable(messageTypeByFullyQualifiedPathName)
+                .orElse(findEnumTypeByFullyQualifiedPathName(fullyQualifiedPathName));
     }
 }

@@ -5,9 +5,9 @@ public interface Type {
 
     void setName(String name);
 
-    String getFQPN();
+    String getFullyQualifiedPathName();
 
-    void setFQPN(String FQPN);
+    void setFullyQualifiedPathName(String fullyQualifiedPathName);
 
     String getClassName();
 

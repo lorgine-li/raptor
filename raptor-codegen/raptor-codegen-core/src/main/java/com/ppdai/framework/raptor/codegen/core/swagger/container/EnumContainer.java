@@ -21,8 +21,8 @@ public class EnumContainer {
 
         EnumType enumType = new EnumType();
         enumType.setName((parent != null ? parent + "." : "") + descriptorProto.getName());
-        enumType.setFQPN(packageName + "." + enumType.getName());
-        enumType.setFQCN(StringUtils.join(new String[]{packageName, className, enumType.getName()}, ProtobufConstant.PACKAGE_SEPARATOR));
+        enumType.setFullyQualifiedPathName(packageName + "." + enumType.getName());
+        enumType.setFullyQualifiedClassName(StringUtils.join(new String[]{packageName, className, enumType.getName()}, ProtobufConstant.PACKAGE_SEPARATOR));
         enumType.setClassName(className);
         enumType.setPackageName(packageName);
         Set<String> values = new LinkedHashSet<>();
@@ -33,14 +33,10 @@ public class EnumContainer {
         }
 
 
-        enumTypeMap.put(enumType.getFQPN(), enumType);
+        enumTypeMap.put(enumType.getFullyQualifiedPathName(), enumType);
     }
 
-    public Collection<EnumType> getEnumTypeList() {
-        return enumTypeMap.values();
-    }
-
-    public EnumType findEnumTypeByFQPN(String FQPN) {
-        return enumTypeMap.get(FQPN);
+    public EnumType findEnumTypeByFullyQualifiedPathName(String fullyQualifiedPathName) {
+        return enumTypeMap.get(fullyQualifiedPathName);
     }
 }

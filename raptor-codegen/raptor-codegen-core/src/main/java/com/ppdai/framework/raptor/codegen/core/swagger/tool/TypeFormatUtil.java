@@ -35,9 +35,9 @@ public class TypeFormatUtil {
 
 
     private static Property formatProperty(FieldType fieldType, String typeDefPrefix, String basePackage) {
-        Property property = DEFAULT_TYPE_PROPERTY.get(fieldType.getFQPN());
+        Property property = DEFAULT_TYPE_PROPERTY.get(fieldType.getFullyQualifiedPathName());
 
-        if (!fieldType.getFQPN().startsWith("google.protobuf") && property == null) {
+        if (!fieldType.getFullyQualifiedPathName().startsWith("google.protobuf") && property == null) {
 //            property = new AbstractProperty() {};
 
             switch (fieldType.getType()) {
@@ -76,11 +76,11 @@ public class TypeFormatUtil {
                 case TYPE_MESSAGE:
                 case TYPE_GROUP:
                     property = new RefProperty();
-                    if (CommonUtils.getPackageNameFromFQPN(fieldType.getFQPN()).equals(basePackage)) {
+                    if (CommonUtils.getPackageNameFromFullyQualifiedPathName(fieldType.getFullyQualifiedPathName()).equals(basePackage)) {
                         ((RefProperty) property)
                                 .set$ref("#/" + typeDefPrefix + "/" + fieldType.getClassName() + ProtobufConstant.PACKAGE_SEPARATOR + fieldType.getTypeName());
                     } else {
-                        ((RefProperty) property).set$ref("#/" + typeDefPrefix + "/" + fieldType.getFQCN());
+                        ((RefProperty) property).set$ref("#/" + typeDefPrefix + "/" + fieldType.getFullyQualifiedClassName());
                     }
                     break;
                 default:
@@ -90,13 +90,13 @@ public class TypeFormatUtil {
 
         if (property == null) {
             throw new SwaggerGenException("field name: " + fieldType.getName()
-                    + ", type: " + fieldType.getFQPN()
+                    + ", type: " + fieldType.getFullyQualifiedPathName()
                     + " in message: " + fieldType.getMessage()
                     + " is unsupported");
         }
 
         if (fieldType.getLabel().equals(LABEL_REPEATED)
-                || "google.protobuf.ListValue".equals(fieldType.getFQPN())) {
+                || "google.protobuf.ListValue".equals(fieldType.getFullyQualifiedPathName())) {
             property = new ArrayProperty(property);
         }
 

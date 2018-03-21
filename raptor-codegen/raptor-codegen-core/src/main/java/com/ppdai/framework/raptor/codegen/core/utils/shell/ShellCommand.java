@@ -28,10 +28,10 @@ public class ShellCommand {
     public void runCommand(String command, String workingDir, boolean runAsync, boolean printOutputInConsole) {
         try {
 
-            String OSName = System.getProperty("os.name");
-            OSName = OSName.toLowerCase();
+            String osName = System.getProperty("os.name");
+            osName = osName.toLowerCase();
 
-            if (OSName.contains("windows")) {
+            if (osName.contains("windows")) {
                 command = "cmd /c " + command;
             }
 
@@ -45,7 +45,7 @@ public class ShellCommand {
                     return;
                 }
 
-                if (!OSName.contains("windows")) {
+                if (!osName.contains("windows")) {
                     process = runtime.exec(new String[]{"bash", "-c", command}, null, workDir);
                 } else {
                     process = runtime.exec(command, null, workDir);
@@ -53,7 +53,7 @@ public class ShellCommand {
 
             } else {
                 System.out.println("---------CMD: "+command);
-                if (!OSName.contains("windows")) {
+                if (!osName.contains("windows")) {
                     process = runtime.exec(new String[]{"bash", "-c", command});
                 } else {
                     process = runtime.exec(command);

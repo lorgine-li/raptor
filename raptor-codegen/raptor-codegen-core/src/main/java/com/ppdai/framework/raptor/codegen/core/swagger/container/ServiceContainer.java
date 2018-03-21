@@ -19,7 +19,7 @@ public class ServiceContainer {
     public void addServiceProto(String packageName,DescriptorProtos.ServiceDescriptorProto sdp, List<DescriptorProtos.SourceCodeInfo.Location> locationList, final List<Integer> parentpath) {
         ServiceType serviceType = new ServiceType();
         serviceType.setName(sdp.getName());
-        serviceType.setFQPN(packageName + "." + serviceType.getName());
+        serviceType.setFullyQualifiedPathName(packageName + "." + serviceType.getName());
         serviceType.setPackageName(packageName);
 
         Map<String, MethodType> methodTypeMap = new LinkedHashMap<>();

@@ -6,7 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 
 public abstract class AbstractType implements Type {
     private String name;
-    private String FQPN;
+    private String fullyQualifiedPathName;
     private String className;
     private String packageName;
 
@@ -22,13 +22,13 @@ public abstract class AbstractType implements Type {
     }
 
     @Override
-    public String getFQPN() {
-        return FQPN;
+    public String getFullyQualifiedPathName() {
+        return fullyQualifiedPathName;
     }
 
     @Override
-    public void setFQPN(String FQPN) {
-        this.FQPN = FQPN;
+    public void setFullyQualifiedPathName(String fullyQualifiedPathName) {
+        this.fullyQualifiedPathName = fullyQualifiedPathName;
     }
 
     @Override
@@ -51,7 +51,7 @@ public abstract class AbstractType implements Type {
         this.packageName = packageName;
     }
 
-    public String getFQCN() {
+    public String getFullyQualifiedClassName() {
         return StringUtils.join(new String[]{getPackageName(), getClassName(), getName()}, ProtobufConstant.PACKAGE_SEPARATOR);
     }
 }

@@ -1,5 +1,7 @@
 package com.ppdai.framework.raptor.codegen.core.utils.protocjar;
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -10,6 +12,7 @@ import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.*;
+import java.util.concurrent.*;
 
 public class Protoc {
     static String[] sDdownloadPaths = {
@@ -135,8 +138,17 @@ public class Protoc {
             }
         }
 
-        new Thread(new StreamCopier(protoc.getInputStream(), System.out)).start();
-        new Thread(new StreamCopier(protoc.getErrorStream(), System.err)).start();
+        ThreadFactory namedThreadFactory = new ThreadFactoryBuilder()
+                .setNameFormat("demo-pool-%d").build();
+
+        //Common Thread Pool
+        ExecutorService pool = new ThreadPoolExecutor(2, 2,
+                0L, TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<>(10), namedThreadFactory, new ThreadPoolExecutor.AbortPolicy());
+
+        pool.submit(new StreamCopier(protoc.getInputStream(), System.out));
+        pool.submit(new StreamCopier(protoc.getErrorStream(), System.err));
+
         int exitCode = protoc.waitFor();
 
         if (javaShadedOutDir != null) {

@@ -7,7 +7,7 @@ import java.util.Set;
  */
 public class EnumType extends AbstractType implements Comparable<EnumType>{
     private Set<String> values;
-    private String FQCN;
+    private String fullyQualifiedClassName;
 
 
     public Set<String> getValues() {
@@ -20,26 +20,26 @@ public class EnumType extends AbstractType implements Comparable<EnumType>{
 
     @Override
     public int compareTo(EnumType enumType) {
-        return getFQPN().compareTo(enumType.getFQPN());
+        return getFullyQualifiedPathName().compareTo(enumType.getFullyQualifiedPathName());
     }
 
 
     @Override
-    public String getFQCN() {
-        return FQCN;
+    public String getFullyQualifiedClassName() {
+        return fullyQualifiedClassName;
     }
 
-    public void setFQCN(String FQCN) {
-        this.FQCN = FQCN;
+    public void setFullyQualifiedClassName(String fullyQualifiedClassName) {
+        this.fullyQualifiedClassName = fullyQualifiedClassName;
     }
 
     @Override
     public int hashCode(){
-        return FQCN.hashCode();
+        return fullyQualifiedClassName.hashCode();
     }
 
     @Override
     public boolean equals(Object anObject) {
-        return anObject instanceof MessageType && FQCN.equals(((MessageType) anObject).getFQCN());
+        return anObject instanceof MessageType && fullyQualifiedClassName.equals(((MessageType) anObject).getFullyQualifiedClassName());
     }
 }

@@ -78,7 +78,7 @@ public class Swagger2Template implements SwaggerTemplate {
 
                 // set schema
                 RefModel schema = new RefModel();
-                MessageType inputMessage = metaContainer.findMessageTypeByFQPN(methodType.getInputType());
+                MessageType inputMessage = metaContainer.findMessageTypeByFullyQualifiedPathName(methodType.getInputType());
                 dependMessage.add(inputMessage);
                 schema.set$ref("#/definitions/" +
                         getRefName(inputMessage, basePackage));
@@ -92,14 +92,14 @@ public class Swagger2Template implements SwaggerTemplate {
                 // set responses schema
                 RefProperty reponseSchema = new RefProperty();
                 response.setSchema(reponseSchema);
-                MessageType outputMessage = metaContainer.findMessageTypeByFQPN(methodType.getOutputType());
+                MessageType outputMessage = metaContainer.findMessageTypeByFullyQualifiedPathName(methodType.getOutputType());
                 dependMessage.add(outputMessage);
                 reponseSchema.set$ref("#/definitions/" +
                         getRefName(outputMessage, basePackage));
 
                 responses.put("200", response);
                 operation.setResponses(responses);
-                swagger.path("/raptor/" + serviceType.getFQPN() + "/" + methodType.getName(),
+                swagger.path("/raptor/" + serviceType.getFullyQualifiedPathName() + "/" + methodType.getName(),
                         path);
             }
         }
@@ -110,7 +110,7 @@ public class Swagger2Template implements SwaggerTemplate {
         if (basePackage.equals(inputEnum.getPackageName())) {
             return inputEnum.getClassName() + ProtobufConstant.PACKAGE_SEPARATOR + inputEnum.getName();
         } else {
-            return inputEnum.getFQCN();
+            return inputEnum.getFullyQualifiedClassName();
         }
     }
 
@@ -118,7 +118,7 @@ public class Swagger2Template implements SwaggerTemplate {
         if (basePackage.equals(inputMessage.getPackageName())) {
             return inputMessage.getClassName() + ProtobufConstant.PACKAGE_SEPARATOR + inputMessage.getName();
         } else {
-            return inputMessage.getFQCN();
+            return inputMessage.getFullyQualifiedClassName();
         }
     }
 
@@ -204,13 +204,13 @@ public class Swagger2Template implements SwaggerTemplate {
         for (int i = 0; i < messageTypeList.size(); i++) {
             MessageType next = messageTypeList.get(i);
             for (FieldType fieldType : next.getFieldTypeList()) {
-                if (StringUtils.isNotBlank(fieldType.getFQPN()) && !CommonUtils.isProtoBufType(fieldType.getFQPN())) {
-                    MessageType nestedMessageType = metaContainer.findMessageTypeByFQPN(fieldType.getFQPN());
+                if (StringUtils.isNotBlank(fieldType.getFullyQualifiedPathName()) && !CommonUtils.isProtoBufType(fieldType.getFullyQualifiedPathName())) {
+                    MessageType nestedMessageType = metaContainer.findMessageTypeByFullyQualifiedPathName(fieldType.getFullyQualifiedPathName());
                     if (!messageTypeList.contains(nestedMessageType) && Objects.nonNull(nestedMessageType)) {
                         listIterator.add(nestedMessageType);
                     }
 
-                    EnumType nestEnumType = metaContainer.findEnumTypeByFQPN(fieldType.getFQPN());
+                    EnumType nestEnumType = metaContainer.findEnumTypeByFullyQualifiedPathName(fieldType.getFullyQualifiedPathName());
                     if (!messageTypeList.contains(nestedMessageType) && Objects.nonNull(nestEnumType)) {
                         nestEnumTypes.add(nestEnumType);
                     }

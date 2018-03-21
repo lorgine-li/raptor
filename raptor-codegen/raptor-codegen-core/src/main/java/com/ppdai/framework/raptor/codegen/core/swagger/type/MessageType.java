@@ -8,7 +8,7 @@ import java.util.Map;
  */
 public class MessageType extends AbstractType implements Comparable<MessageType>, Type {
 
-    private String FQCN;
+    private String fullyQualifiedClassName;
     private Map<String, FieldType> fields;
 
     public Map<String, FieldType> getFields() {
@@ -25,26 +25,26 @@ public class MessageType extends AbstractType implements Comparable<MessageType>
 
     @Override
     public int compareTo(MessageType messageType) {
-        return getFQPN().compareTo((messageType.getFQPN()));
+        return getFullyQualifiedPathName().compareTo((messageType.getFullyQualifiedPathName()));
     }
 
     @Override
-    public String getFQCN() {
-        return FQCN;
+    public String getFullyQualifiedClassName() {
+        return fullyQualifiedClassName;
     }
 
-    public void setFQCN(String FQCN) {
-        this.FQCN = FQCN;
+    public void setFullyQualifiedClassName(String fullyQualifiedClassName) {
+        this.fullyQualifiedClassName = fullyQualifiedClassName;
     }
 
     @Override
     public int hashCode(){
-        return FQCN.hashCode();
+        return fullyQualifiedClassName.hashCode();
     }
 
     @Override
     public boolean equals(Object anObject) {
-        return anObject instanceof MessageType && FQCN.equals(((MessageType) anObject).getFQCN());
+        return anObject instanceof MessageType && fullyQualifiedClassName.equals(((MessageType) anObject).getFullyQualifiedClassName());
     }
 
 

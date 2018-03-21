@@ -6,16 +6,16 @@ import org.apache.commons.lang3.StringUtils;
 
 public final class CommonUtils {
 
-    public static String getPackageNameFromFQPN(String FQPN){
+    public static String getPackageNameFromFullyQualifiedPathName(String fullyQualifiedPathName){
         // TODO: 2018/3/7 检查没有 package 的情况
-        int lastDotIndex = FQPN.lastIndexOf('.');
-        String result =  StringUtils.substring(FQPN, 0, lastDotIndex);
+        int lastDotIndex = fullyQualifiedPathName.lastIndexOf('.');
+        String result =  StringUtils.substring(fullyQualifiedPathName, 0, lastDotIndex);
         lastDotIndex = result.lastIndexOf('.');
         if(lastDotIndex == -1 ) {
             return "";
         }
-        if(CharUtils.isAsciiAlphaUpper(FQPN.charAt(lastDotIndex+1))){
-            return getPackageNameFromFQPN(result);
+        if(CharUtils.isAsciiAlphaUpper(fullyQualifiedPathName.charAt(lastDotIndex+1))){
+            return getPackageNameFromFullyQualifiedPathName(result);
         }else{
             return result;
         }

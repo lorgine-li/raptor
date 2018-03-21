@@ -42,8 +42,8 @@ public final class InterfacePrinter extends AbstractPrint {
         fileData.add("public interface " + className + "{");
         for (Map.Entry<String, MethodType> nameMethodEntry : serviceType.getMethods().entrySet()) {
             MethodType method = nameMethodEntry.getValue();
-            String outPutType = metaContainer.findMessageTypeByFQPN(method.getOutputType()).getFQCN();
-            String inPutType = metaContainer.findMessageTypeByFQPN(method.getInputType()).getFQCN();
+            String outPutType = metaContainer.findMessageTypeByFullyQualifiedPathName(method.getOutputType()).getFullyQualifiedClassName();
+            String inPutType = metaContainer.findMessageTypeByFullyQualifiedPathName(method.getInputType()).getFullyQualifiedClassName();
             String methodName = method.getName();
             String inputValue = "param";
             String methodStr = generateMethod(inPutType, outPutType, methodName, inputValue);
@@ -51,10 +51,6 @@ public final class InterfacePrinter extends AbstractPrint {
         }
         fileData.add("}");
         return fileData;
-    }
-
-    private String getFQCN(String type) {
-        return type;
     }
 
 

@@ -39,7 +39,7 @@ public class FieldType extends AbstractType{
     }
 
     @Override
-    public String getFQCN() {
+    public String getFullyQualifiedClassName() {
         return StringUtils.join(new String[]{getPackageName(), getClassName(), getTypeName()}, ProtobufConstant.PACKAGE_SEPARATOR);
     }
 

@@ -23,8 +23,8 @@ public class MessageContainer {
         MessageType messageType = new MessageType();
         messageType.setName((parent != null ? parent + ProtobufConstant.PACKAGE_SEPARATOR : "") + descriptorProto.getName());
         // TODO: 2018/3/6 packageName 为空的话会多一个点
-        messageType.setFQPN(packageName + ProtobufConstant.PACKAGE_SEPARATOR + messageType.getName());
-        messageType.setFQCN(StringUtils.join(new String[]{packageName, className, messageType.getName()}, ProtobufConstant.PACKAGE_SEPARATOR));
+        messageType.setFullyQualifiedPathName(packageName + ProtobufConstant.PACKAGE_SEPARATOR + messageType.getName());
+        messageType.setFullyQualifiedClassName(StringUtils.join(new String[]{packageName, className, messageType.getName()}, ProtobufConstant.PACKAGE_SEPARATOR));
         messageType.setClassName(className);
         Map<String, FieldType> fieldTypeMap = new LinkedHashMap<>();
         messageType.setFields(fieldTypeMap);
@@ -35,17 +35,17 @@ public class MessageContainer {
             fieldType.setName(ffdp.getName());
             fieldType.setType(ffdp.getType());
             fieldType.setLabel(ffdp.getLabel());
-            String FQPN = ffdp.getTypeName().replaceAll("^\\.", "");
-            fieldType.setFQPN(FQPN);
-            fieldType.setMessage(messageType.getFQPN());
-            fieldTypeMap.put(FQPN, fieldType);
+            String fullyQualifiedPathName = ffdp.getTypeName().replaceAll("^\\.", "");
+            fieldType.setFullyQualifiedPathName(fullyQualifiedPathName);
+            fieldType.setMessage(messageType.getFullyQualifiedPathName());
+            fieldTypeMap.put(fullyQualifiedPathName, fieldType);
         }
 
-        messageTypeMap.put(messageType.getFQPN(), messageType);
+        messageTypeMap.put(messageType.getFullyQualifiedPathName(), messageType);
     }
 
-    public MessageType findMessageTypeByFQPN(String FQPN) {
-        return messageTypeMap.get(FQPN);
+    public MessageType findMessageTypeByFullyQualifiedPathName(String fullyQualifiedPathName) {
+        return messageTypeMap.get(fullyQualifiedPathName);
     }
 
     public Collection<MessageType> getMessageTypeList() {

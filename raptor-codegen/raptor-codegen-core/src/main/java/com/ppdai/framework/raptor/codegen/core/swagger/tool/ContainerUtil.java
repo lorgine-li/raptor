@@ -100,8 +100,9 @@ public class ContainerUtil {
             fileName = StringUtils.substringAfterLast(fileName, ProtobufConstant.PATH_SEPARATOR);
         }
         fileName = StringUtils.capitalize(fileName);
-        boolean dupName = fdp.getMessageTypeList().stream().map(DescriptorProtos.DescriptorProto::getName).anyMatch(fileName::equals);
-        return dupName ? fileName + "OuterClass" : fileName;
+        boolean messageDup = fdp.getMessageTypeList().stream().map(DescriptorProtos.DescriptorProto::getName).anyMatch(fileName::equals);
+        boolean serviceDup = fdp.getServiceList().stream().map(DescriptorProtos.ServiceDescriptorProto::getName).anyMatch(fileName::equals);
+        return serviceDup || messageDup ? fileName + "OuterClass" : fileName;
     }
 
     /**
@@ -181,7 +182,7 @@ public class ContainerUtil {
         MessageContainer messageContainer = metaContainer.getMessageContainer();
         for (MessageType messageType : messageContainer.getMessageTypeList()) {
             for (FieldType fieldType : messageType.getFieldTypeList()) {
-                Type type = metaContainer.findTypeByFQPN(fieldType.getFQPN());
+                Type type = metaContainer.findTypeByFullyQualifiedPathName(fieldType.getFullyQualifiedPathName());
                 if (Objects.nonNull(type)) {
                     fieldType.setClassName(type.getClassName());
                     fieldType.setPackageName(type.getPackageName());

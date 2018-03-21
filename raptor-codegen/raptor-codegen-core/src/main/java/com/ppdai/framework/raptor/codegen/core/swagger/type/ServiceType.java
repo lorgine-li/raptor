@@ -8,7 +8,7 @@ import java.util.Map;
  */
 public class ServiceType extends AbstractType {
     private String name;
-    private String FQPN;
+    private String fullyQualifiedPathName;
     private Map<String, MethodType> methods;
     private String packageName;
 
@@ -23,13 +23,13 @@ public class ServiceType extends AbstractType {
     }
 
     @Override
-    public String getFQPN() {
-        return FQPN;
+    public String getFullyQualifiedPathName() {
+        return fullyQualifiedPathName;
     }
 
     @Override
-    public void setFQPN(String FQPN) {
-        this.FQPN = FQPN;
+    public void setFullyQualifiedPathName(String fullyQualifiedPathName) {
+        this.fullyQualifiedPathName = fullyQualifiedPathName;
     }
 
     public Map<String, MethodType> getMethods() {
