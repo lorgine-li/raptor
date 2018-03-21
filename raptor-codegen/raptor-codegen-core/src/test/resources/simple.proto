@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package com.ppdai.framework.raptor.proto.test;
+package com.ppdai.framework.raptor.proto;
 
 //Comment on Simple Service
 service Simple {

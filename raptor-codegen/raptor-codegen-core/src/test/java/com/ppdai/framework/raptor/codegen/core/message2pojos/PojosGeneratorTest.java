@@ -3,7 +3,6 @@ package com.ppdai.framework.raptor.codegen.core.message2pojos;
 import com.ppdai.framework.raptor.codegen.core.CodegenConfiguration;
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.project.MavenProject;
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,19 +11,15 @@ import java.io.File;
 
 public class PojosGeneratorTest {
 
-    private static final String DEST_PATH = "./target/generated-sources/";
+    private static final String DEST_PATH = "./target/generated-proto/";
     private static final String SRC_PATH = "./src/test/resources/";
 
     private CodegenConfiguration basicConfig = new CodegenConfiguration();
 
     @Before
-    public void before(){
-        setConfiguration();
-    }
-
-    @After
-    public void after() throws Exception {
+    public void before() throws Exception {
         cleanDestFile();
+        setConfiguration();
     }
 
     private void setConfiguration() {
