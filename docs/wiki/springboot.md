@@ -1,7 +1,9 @@
 # spring boot 集成示例
 
+分7步完成springboot集成demo：
+
 1. [编写proto文件和生成maven工程](#编写proto文件和生成maven工程)
-2. [新建springboot客户端/服务端maven工程](#新建springboot客户端/服务端maven工程)
+2. [新建springboot客户端和服务端maven工程](#新建springboot客户端和服务端maven工程)
 3. [服务端实现](#服务端实现)
 4. [服务端springboot配置](#服务端springboot配置)
 5. [客户端实现](#客户端实现)
@@ -11,7 +13,7 @@
 ## 编写proto文件和生成maven工程
 参考 [简单调用示例](quickstart) 完成proto文件生成和maven工程生成
 
-## 新建springboot客户端/服务端maven工程
+## 新建springboot客户端和服务端maven工程
 
 分别在服务端和客户端的spring boot maven工程中添加依赖
 ```xml
@@ -57,14 +59,14 @@ server.port=8080
 
 ## 客户端实现
 
-在spring bean中使用@RaptorClient注解接口的Field，自动注入代理，使用接口代理的方法进行rpc call
+在spring bean中，使用`@RaptorClient`注解Field，spring在启动时会自动注入代理对象
 
 ```java
 
 @RestController
 public class SayHelloController {
 
-    @raptorClient
+    @RaptorClient
     private Simple simple;
 
     @RequestMapping("/sayhello")
