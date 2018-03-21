@@ -47,8 +47,9 @@ public class InterfaceGeneratorTest {
         interfaceGenerator.codegenConfigure(basicConfig);
         interfaceGenerator.generate();
 
-        File simplePojo = new File(DEST_PATH + "com/ppdai/framework/raptor/proto/Simple.java");
+        File simplePojo = new File(DEST_PATH + "com/ppdai/framework/raptor/proto/test/Simple.java");
+        File hellowSimplePojo = new File(DEST_PATH + "com/ppdai/framework/raptor/codegen/proto/Simple.java");
         Assert.assertTrue(simplePojo.exists());
-
+        Assert.assertTrue(hellowSimplePojo.exists());
     }
 }

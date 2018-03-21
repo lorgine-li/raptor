@@ -16,12 +16,12 @@ public class ServiceContainer {
 
     private Map<String, ServiceType> serviceTypeMap = new LinkedHashMap<>();
 
-    public void addServiceProto(String packageName,DescriptorProtos.ServiceDescriptorProto sdp, List<DescriptorProtos.SourceCodeInfo.Location> locationList, final List<Integer> parentpath) {
+    public void addServiceProto(String packageName, DescriptorProtos.ServiceDescriptorProto sdp, List<DescriptorProtos.SourceCodeInfo.Location> locationList, final List<Integer> parentpath) {
         ServiceType serviceType = new ServiceType();
         serviceType.setName(sdp.getName());
         serviceType.setFullyQualifiedPathName(packageName + "." + serviceType.getName());
         serviceType.setPackageName(packageName);
-
+        serviceType.setClassName(sdp.getName());
         Map<String, MethodType> methodTypeMap = new LinkedHashMap<>();
         serviceType.setMethods(methodTypeMap);
 
@@ -50,11 +50,8 @@ public class ServiceContainer {
             methodTypeMap.put(methodType.getName(), methodType);
         }
 
-        serviceTypeMap.put(serviceType.getName(), serviceType);
-    }
-
-    public ServiceType findServiceTypeByName(String name) {
-        return serviceTypeMap.get(name);
+        // TODO: 2018/3/21 检查key是否冲突，冲突需要警告
+        serviceTypeMap.put(serviceType.getFullyQualifiedClassName(), serviceType);
     }
 
     public Collection<ServiceType> getServiceTypeList() {
