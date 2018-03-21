@@ -1,5 +1,8 @@
 package com.ppdai.framework.raptor.codegen.core.swagger.type;
 
+import com.ppdai.framework.raptor.codegen.core.constant.ProtobufConstant;
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.Collection;
 import java.util.Map;
 
@@ -52,5 +55,10 @@ public class ServiceType extends AbstractType {
     @Override
     public void setPackageName(String packageName) {
         this.packageName = packageName;
+    }
+
+    @Override
+    public String getFullyQualifiedClassName() {
+        return StringUtils.join(new String[]{getPackageName(), getClassName()}, ProtobufConstant.PACKAGE_SEPARATOR);
     }
 }
