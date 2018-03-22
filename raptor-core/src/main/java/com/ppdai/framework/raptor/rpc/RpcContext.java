@@ -1,15 +1,15 @@
 package com.ppdai.framework.raptor.rpc;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by yinzuolong on 2017/12/2.
  */
 public class RpcContext {
-    private Map<Object, Object> attributes = new HashMap<>();
-    private Map<String, String> requestAttachments = new HashMap<>();
-    private Map<String, String> responseAttachments = new HashMap<>();
+    private Map<Object, Object> attributes = new ConcurrentHashMap<>();
+    private Map<String, String> requestAttachments = new ConcurrentHashMap<>();
+    private Map<String, String> responseAttachments = new ConcurrentHashMap<>();
     private Request request;
     private Response response;
 
@@ -25,7 +25,7 @@ public class RpcContext {
     }
 
     /**
-     * 初始化RpcContext，用于线程之间传递
+     * 初始化RpcContext，用于线程之间共享
      *
      * @param context
      * @return

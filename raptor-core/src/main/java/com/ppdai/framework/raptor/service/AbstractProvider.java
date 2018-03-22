@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class AbstractProvider<T> implements Provider<T> {
     protected Class<T> interfaceClass;
@@ -77,7 +78,7 @@ public abstract class AbstractProvider<T> implements Provider<T> {
      * @param clazz
      */
     private void initMethodMap(Class<T> clazz) {
-        this.methodMap = new HashMap<>();
+        this.methodMap = new ConcurrentHashMap<>();
         Method[] methods = clazz.getMethods();
         Map<String, List<Method>> nameMethodMap = new HashMap<>();
         for (Method method : methods) {
