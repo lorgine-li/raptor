@@ -1,8 +1,6 @@
 package com.ppdai.framework.raptor.service;
 
-import com.ppdai.framework.raptor.rpc.Request;
-import com.ppdai.framework.raptor.rpc.Response;
-import com.ppdai.framework.raptor.rpc.URL;
+import com.ppdai.framework.raptor.rpc.*;
 import com.ppdai.framework.raptor.util.ReflectUtil;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class AbstractProvider<T> implements Provider<T> {
     protected Class<T> interfaceClass;
@@ -40,8 +39,15 @@ public abstract class AbstractProvider<T> implements Provider<T> {
 
     @Override
     public Response call(Request request) {
-        return invoke(request);
-        //TODO 将序列化提前到这里
+        RpcContext.getContext().setRequest(request);
+        RpcContextHelper.traceRequest(request);
+
+        Response response = invoke(request);
+
+        RpcContext.getContext().setResponse(response);
+        RpcContextHelper.traceResponse(response);
+
+        return response;
     }
 
     protected abstract Response invoke(Request request);
@@ -72,7 +78,7 @@ public abstract class AbstractProvider<T> implements Provider<T> {
      * @param clazz
      */
     private void initMethodMap(Class<T> clazz) {
-        this.methodMap = new HashMap<>();
+        this.methodMap = new ConcurrentHashMap<>();
         Method[] methods = clazz.getMethods();
         Map<String, List<Method>> nameMethodMap = new HashMap<>();
         for (Method method : methods) {

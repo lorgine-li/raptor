@@ -1,9 +1,7 @@
 package com.ppdai.framework.raptor.refer;
 
 import com.ppdai.framework.raptor.refer.client.Client;
-import com.ppdai.framework.raptor.rpc.Request;
-import com.ppdai.framework.raptor.rpc.Response;
-import com.ppdai.framework.raptor.rpc.URL;
+import com.ppdai.framework.raptor.rpc.*;
 
 public class DefaultRefer<T> implements Refer<T> {
     private Class<T> interfaceClass;
@@ -28,6 +26,15 @@ public class DefaultRefer<T> implements Refer<T> {
 
     @Override
     public Response call(Request request) {
-        return client.sendRequest(request, this.serviceUrl);
+
+        RpcContext.getContext().setRequest(request);
+        RpcContextHelper.traceRequest(request);
+
+        Response response = client.sendRequest(request, this.serviceUrl);
+
+        RpcContext.getContext().setResponse(response);
+        RpcContextHelper.traceResponse(response);
+
+        return response;
     }
 }

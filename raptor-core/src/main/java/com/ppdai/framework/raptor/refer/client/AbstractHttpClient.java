@@ -5,10 +5,7 @@ import com.ppdai.framework.raptor.common.RaptorConstants;
 import com.ppdai.framework.raptor.common.RaptorMessageConstant;
 import com.ppdai.framework.raptor.common.URLParamType;
 import com.ppdai.framework.raptor.exception.*;
-import com.ppdai.framework.raptor.rpc.DefaultResponse;
-import com.ppdai.framework.raptor.rpc.Request;
-import com.ppdai.framework.raptor.rpc.Response;
-import com.ppdai.framework.raptor.rpc.URL;
+import com.ppdai.framework.raptor.rpc.*;
 import com.ppdai.framework.raptor.serialize.Serialization;
 import com.ppdai.framework.raptor.serialize.SerializationProviders;
 import com.ppdai.framework.raptor.util.ReflectUtil;
@@ -25,7 +22,6 @@ import org.apache.http.client.entity.EntityBuilder;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.ContentType;
-import org.apache.http.message.BasicHeader;
 import org.apache.http.protocol.HTTP;
 
 import java.io.Closeable;
@@ -54,6 +50,7 @@ public abstract class AbstractHttpClient implements Client {
     @Override
     public Response sendRequest(Request request, URL serviceUrl) {
         DefaultResponse response = new DefaultResponse(request.getRequestId());
+
         HttpResponse httpResponse = null;
         HttpPost httpPost = null;
         try {
@@ -62,7 +59,6 @@ public abstract class AbstractHttpClient implements Client {
             buildHeaders(request, serviceUrl, httpPost);
 
             httpResponse = doSendRequest(httpPost, serviceUrl);
-
             //设置响应头
             setResponseHeaders(response, httpResponse);
 
@@ -137,19 +133,20 @@ public abstract class AbstractHttpClient implements Client {
         path = RaptorConstants.PATH_SEPARATOR + path + RaptorConstants.PATH_SEPARATOR + request.getMethodName();
 
         return path;
-
     }
 
     protected void buildHeaders(Request request, URL serviceUrl, HttpRequestBase httpRequest) {
-        Map<String, String> attachments = request.getAttachments();
-        for (String key : attachments.keySet()) {
-            Header header = new BasicHeader(key, attachments.get(key));
-            httpRequest.addHeader(header);
+        //header优先级 context > request > default
+        RpcContext context = RpcContext.getContext();
+        for (Map.Entry<String, String> entry : context.getRequestAttachments().entrySet()) {
+            httpRequest.addHeader(entry.getKey(), entry.getValue());
+        }
+        for (Map.Entry<String, String> entry : request.getAttachments().entrySet()) {
+            httpRequest.addHeader(entry.getKey(), entry.getValue());
         }
         String requestId = String.valueOf(request.getRequestId());
-        httpRequest.addHeader(new BasicHeader(URLParamType.requestId.name(), requestId));
-        httpRequest.addHeader(new BasicHeader(HTTP.CONN_DIRECTIVE, HTTP.CONN_KEEP_ALIVE));
-
+        httpRequest.addHeader(URLParamType.requestId.name(), requestId);
+        httpRequest.addHeader(HTTP.CONN_DIRECTIVE, HTTP.CONN_KEEP_ALIVE);
     }
 
     protected byte[] buildContent(Request request) {

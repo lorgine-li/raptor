@@ -1,19 +1,19 @@
 package com.ppdai.framework.raptor.rpc;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by yinzuolong on 2017/12/2.
  */
 public class RpcContext {
-    private Map<Object, Object> attributes = new HashMap<>();
-    private Map<String, String> attachments = new HashMap<>();
+    private Map<Object, Object> attributes = new ConcurrentHashMap<>();
+    private Map<String, String> requestAttachments = new ConcurrentHashMap<>();
+    private Map<String, String> responseAttachments = new ConcurrentHashMap<>();
     private Request request;
     private Response response;
-    private String clientRequestId = null;
 
-    private static final ThreadLocal<RpcContext> LOCAL_CONTEXT = new ThreadLocal<RpcContext>() {
+    private static final ThreadLocal<RpcContext> CONTEXT = new ThreadLocal<RpcContext>() {
         @Override
         protected RpcContext initialValue() {
             return new RpcContext();
@@ -21,36 +21,18 @@ public class RpcContext {
     };
 
     public static RpcContext getContext() {
-        return LOCAL_CONTEXT.get();
+        return CONTEXT.get();
     }
 
-    public static RpcContext init(Request request) {
-        RpcContext context = new RpcContext();
-        if (request != null) {
-            context.setRequest(request);
-            String requestIdFromClient = String.valueOf(request.getRequestId());
-            context.setClientRequestId(requestIdFromClient);
-        }
-        LOCAL_CONTEXT.set(context);
+    /**
+     * 初始化RpcContext，用于线程之间共享
+     *
+     * @param context
+     * @return
+     */
+    public static RpcContext init(RpcContext context) {
+        CONTEXT.set(context);
         return context;
-    }
-
-    public static RpcContext init() {
-        RpcContext context = new RpcContext();
-        LOCAL_CONTEXT.set(context);
-        return context;
-    }
-
-    public static void destroy() {
-        LOCAL_CONTEXT.remove();
-    }
-
-    public String getRequestId() {
-        if (clientRequestId != null) {
-            return clientRequestId;
-        } else {
-            return request == null ? null : String.valueOf(request.getRequestId());
-        }
     }
 
     public void putAttribute(Object key, Object value) {
@@ -69,20 +51,45 @@ public class RpcContext {
         return attributes;
     }
 
-    public void setRpcAttachment(String key, String value) {
-        attachments.put(key, value);
+    public void putRequestAttachment(String key, String value) {
+        requestAttachments.put(key, value);
     }
 
-    public String getRpcAttachment(String key) {
-        return attachments.get(key);
+    public void putAllRequestAttachments(Map<String, String> map) {
+        requestAttachments.putAll(map);
     }
 
-    public void removeRpcAttachment(String key) {
-        attachments.remove(key);
+    public String getRequestAttachment(String key) {
+        return requestAttachments.get(key);
     }
 
-    public Map<String, String> getRpcAttachments() {
-        return attachments;
+    public void removeRequestAttachment(String key) {
+        requestAttachments.remove(key);
+    }
+
+    public Map<String, String> getRequestAttachments() {
+        return requestAttachments;
+    }
+
+
+    public void putResponseAttachment(String key, String value) {
+        responseAttachments.put(key, value);
+    }
+
+    public void putAllResponseAttachments(Map<String, String> map) {
+        responseAttachments.putAll(map);
+    }
+
+    public String getResponseAttachment(String key) {
+        return responseAttachments.get(key);
+    }
+
+    public void removeResponseAttachment(String key) {
+        responseAttachments.remove(key);
+    }
+
+    public Map<String, String> getResponseAttachments() {
+        return responseAttachments;
     }
 
     public Request getRequest() {
@@ -99,14 +106,6 @@ public class RpcContext {
 
     public void setResponse(Response response) {
         this.response = response;
-    }
-
-    public String getClientRequestId() {
-        return clientRequestId;
-    }
-
-    public void setClientRequestId(String clientRequestId) {
-        this.clientRequestId = clientRequestId;
     }
 
 }
