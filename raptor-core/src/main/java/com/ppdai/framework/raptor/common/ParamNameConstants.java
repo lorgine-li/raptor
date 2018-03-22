@@ -6,5 +6,6 @@ public class ParamNameConstants {
     public static final String HOST_SERVER = "x-raptor-host-server";
 
     public static final String RAPTOR_ERROR = "x-raptor-error";
+    public static final String TRACE_HEADER_PREFIX = "x-raptortrace-";
 
 }

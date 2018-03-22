@@ -96,9 +96,9 @@ public class ServletEndpoint extends HttpServlet implements Endpoint {
         request.setRequestId(getRequestId(httpRequest));
         request.setInterfaceName(getInterfaceName(httpRequest));
         request.setMethodName(getMethodName(httpRequest));
-        request.setAttachments(getAttachments(httpRequest));
+        Map<String, String> attachments = getAttachments(httpRequest);
+        request.setAttachments(attachments);
 
-        RpcContext.getContext().setRequest(request);
         Provider<?> provider = this.providers.get(getProviderKey(request));
         if (provider != null) {
             request.setArgument(getRequestArgument(httpRequest, request, provider));
@@ -163,6 +163,7 @@ public class ServletEndpoint extends HttpServlet implements Endpoint {
         return getProviderKey(request.getInterfaceName());
     }
 
+
     protected void transportResponse(Request request, Response response, HttpServletRequest httpRequest, HttpServletResponse httpResponse) throws IOException {
         setHttpResponseHeader(response, httpResponse);
         httpResponse.setStatus(RaptorConstants.HTTP_OK);
@@ -175,6 +176,7 @@ public class ServletEndpoint extends HttpServlet implements Endpoint {
     }
 
     protected void transportException(Exception exception, Request request, HttpServletRequest httpRequest, HttpServletResponse httpResponse) throws IOException {
+        setHttpResponseHeader(null, httpResponse);
         httpResponse.setStatus(HttpErrorConverter.getHttpStatusCode(exception));
         httpResponse.setHeader(ParamNameConstants.RAPTOR_ERROR, RaptorConstants.TRUE);
         Serialization serialization = this.getSerialization(httpRequest);
@@ -191,9 +193,14 @@ public class ServletEndpoint extends HttpServlet implements Endpoint {
     }
 
     protected void setHttpResponseHeader(Response response, HttpServletResponse httpResponse) {
-        Map<String, String> attachments = response.getAttachments();
-        for (Map.Entry<String, String> entry : attachments.entrySet()) {
-            httpResponse.setHeader(entry.getKey(), entry.getValue());
+        RpcContext context = RpcContext.getContext();
+        for (Map.Entry<String, String> entry : context.getResponseAttachments().entrySet()) {
+            httpResponse.addHeader(entry.getKey(), entry.getValue());
+        }
+        if (response != null && response.getAttachments() != null) {
+            for (Map.Entry<String, String> entry : response.getAttachments().entrySet()) {
+                httpResponse.addHeader(entry.getKey(), entry.getValue());
+            }
         }
     }
 

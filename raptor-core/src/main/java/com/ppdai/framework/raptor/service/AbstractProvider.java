@@ -1,8 +1,6 @@
 package com.ppdai.framework.raptor.service;
 
-import com.ppdai.framework.raptor.rpc.Request;
-import com.ppdai.framework.raptor.rpc.Response;
-import com.ppdai.framework.raptor.rpc.URL;
+import com.ppdai.framework.raptor.rpc.*;
 import com.ppdai.framework.raptor.util.ReflectUtil;
 import lombok.Getter;
 import lombok.Setter;
@@ -40,8 +38,15 @@ public abstract class AbstractProvider<T> implements Provider<T> {
 
     @Override
     public Response call(Request request) {
-        return invoke(request);
-        //TODO 将序列化提前到这里
+        RpcContext.getContext().setRequest(request);
+        RpcContextHelper.traceRequest(request);
+
+        Response response = invoke(request);
+
+        RpcContext.getContext().setResponse(response);
+        RpcContextHelper.traceResponse(response);
+
+        return response;
     }
 
     protected abstract Response invoke(Request request);
