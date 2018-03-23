@@ -10,7 +10,7 @@ import java.lang.reflect.Field;
 
 public class AopHelper {
     public static Object getTarget(Object proxy) throws Exception {
-        if (proxy == null || !AopUtils.isAopProxy(proxy)) {
+        if (!AopUtils.isAopProxy(proxy)) {
             //不是代理对象
             return proxy;
         }
@@ -23,7 +23,9 @@ public class AopHelper {
             //cglib
             target = getCglibProxyTargetObject(proxy);
         }
-
+        if (target == null) {
+            return proxy;
+        }
         return getTarget(target);
     }
 
