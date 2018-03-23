@@ -23,29 +23,46 @@ import org.apache.http.util.EntityUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.Map;
+
 public class RpcExceptionTest extends RpcTestBase {
 
-    @Test(expected = RaptorBizException.class)
-    public void testRpc() {
-        Simple simple = new SimpleImpl();
+    private void registryService() {
+        Simple simple = new SimpleImpl() {
+            @Override
+            public Helloworld.HelloReply sayHello(Helloworld.HelloRequest request) {
+                throw new RaptorBizException(30001, "service error.", null)
+                        .putAttachment("myException", "myValue");
+            }
+        };
         Provider<Simple> provider = ProviderBuilder.newBuilder().build(Simple.class, simple);
         servletEndpoint.export(provider);
+
+    }
+
+    @Test
+    public void testRpc() {
+        registryService();
 
         String url = "http://localhost:8080";
 
         Simple proxy = ReferProxyBuilder.newBuilder()
                 .build(Simple.class, URL.valueOf(url));
-        Helloworld.HelloRequest helloRequest = Helloworld.HelloRequest.newBuilder().setName("exception").build();
-        Helloworld.HelloReply helloReply = proxy.sayHello(helloRequest);
-        System.out.println(helloReply);
+        Helloworld.HelloRequest helloRequest = Helloworld.HelloRequest.newBuilder().setName("ppdai").build();
+        try {
+            Helloworld.HelloReply helloReply = proxy.sayHello(helloRequest);
+            System.out.println(helloReply);
+        } catch (Exception e) {
+            Assert.assertTrue(e instanceof RaptorBizException);
+            RaptorBizException bizException = ((RaptorBizException) e);
+            Assert.assertEquals(30001, bizException.getCode());
+            Assert.assertEquals("myValue", bizException.getAttachments().get("myException"));
+        }
     }
 
     @Test
     public void testRestCall() throws Exception {
-        //启动服务端
-        Simple simple = new SimpleImpl();
-        Provider<Simple> provider = ProviderBuilder.newBuilder().build(Simple.class, simple);
-        servletEndpoint.export(provider);
+        registryService();
 
         // 请求测试
         CloseableHttpClient httpclient = HttpClients.createDefault();
@@ -58,8 +75,12 @@ public class RpcExceptionTest extends RpcTestBase {
         String reply = EntityUtils.toString(response.getEntity());
         System.out.println(reply);
         ErrorProto.ErrorMessage errorMessage = ProtoBuffUtils.convertJsonToProtoBuff(reply, ErrorProto.ErrorMessage.class);
+
         Assert.assertEquals(RaptorConstants.RAPTOR_ERROR, response.getStatusLine().getStatusCode());
-        Assert.assertEquals(RaptorMessageConstant.BIZ_DEFAULT_ERROR_CODE, errorMessage.getCode());
+        Assert.assertEquals(30001, errorMessage.getCode());
+
+        Map<String, String> attachment = errorMessage.getAttachmentsMap();
+        Assert.assertEquals("myValue", attachment.get("myException"));
 
     }
 

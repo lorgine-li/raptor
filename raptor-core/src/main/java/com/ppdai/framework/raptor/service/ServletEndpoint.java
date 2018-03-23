@@ -12,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -46,24 +45,24 @@ public class ServletEndpoint extends HttpServlet implements Endpoint {
     }
 
     @Override
-    protected void doPost(HttpServletRequest httpRequest, HttpServletResponse httpResponse) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest httpRequest, HttpServletResponse httpResponse) throws IOException {
         String key = getProviderKey(getInterfaceName(httpRequest));
         Provider<?> provider = this.providers.get(key);
-        Request request = convert(httpRequest);
         if (provider == null) {
-            transportException(new RaptorServiceException("Can not find provider by key: " + key), request, httpRequest, httpResponse);
+            transportException(new RaptorServiceException("Can not find provider by key: " + key), null, httpRequest, httpResponse);
             return;
         }
-        Response response;
+        Request request = convert(httpRequest);
+        Response response = null;
         try {
             response = provider.call(request);
             if (response.getException() != null) {
-                transportException(response.getException(), request, httpRequest, httpResponse);
+                transportException(response.getException(), response, httpRequest, httpResponse);
             } else {
                 transportResponse(request, response, httpRequest, httpResponse);
             }
         } catch (Exception e) {
-            transportException(e, request, httpRequest, httpResponse);
+            transportException(e, response, httpRequest, httpResponse);
             log.error("Request error, requestId={}", request, e);
         }
     }
@@ -175,17 +174,14 @@ public class ServletEndpoint extends HttpServlet implements Endpoint {
         }
     }
 
-    protected void transportException(Exception exception, Request request, HttpServletRequest httpRequest, HttpServletResponse httpResponse) throws IOException {
-        setHttpResponseHeader(null, httpResponse);
+    protected void transportException(Throwable exception, Response response, HttpServletRequest httpRequest, HttpServletResponse httpResponse) throws IOException {
+        setHttpResponseHeader(response, httpResponse);
         httpResponse.setStatus(HttpErrorConverter.getHttpStatusCode(exception));
         httpResponse.setHeader(ParamNameConstants.RAPTOR_ERROR, RaptorConstants.TRUE);
+        ErrorProto.ErrorMessage errorMessage = HttpErrorConverter.getErrorMessage(exception);
+
         Serialization serialization = this.getSerialization(httpRequest);
-        ErrorMessage errorMessage = HttpErrorConverter.getErrorMessage(exception);
-        if (exception instanceof ExceptionAttachment) {
-            Map<String, String> attachments = ((ExceptionAttachment) exception).getAttachments();
-            errorMessage.addAttachments(attachments);
-        }
-        byte[] data = serialization.serialize(errorMessage.toErrorProto());
+        byte[] data = serialization.serialize(errorMessage);
         try (OutputStream out = httpResponse.getOutputStream()) {
             out.write(data);
             out.flush();

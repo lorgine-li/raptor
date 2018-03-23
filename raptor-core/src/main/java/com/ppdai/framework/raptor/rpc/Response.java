@@ -9,7 +9,7 @@ public interface Response {
 
     Object getValue();
 
-    Exception getException();
+    Throwable getException();
 
     String getRequestId();
 
