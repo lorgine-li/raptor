@@ -1,3 +1,6 @@
+# 详细参考文档
+请参考[wiki](http://git.ppdaicorp.com/foundation-framework/raptor/wikis/home)
+
 # 拍拍贷微服务体系
 
 拍拍贷微服务体系是拍拍贷基础框架部总结内部微服务多年实践，参考、吸收大量业内解决方案形成的适合中型互联网公司的微服务解决方案。
@@ -46,6 +49,3 @@ raptor的核心是raptor core，raptor core实现了核心的服务定义、序�
 **Raptor的核心类图：**
 
 ![](docs/wiki/assets/readme-3.png)
-
-# 参考文档
-请参考[wiki](http://git.ppdaicorp.com/foundation-framework/raptor/wikis/home)
