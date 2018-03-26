@@ -47,15 +47,5 @@ raptor的核心是raptor core，raptor core实现了核心的服务定义、序�
 
 ![](docs/wiki/assets/readme-3.png)
 
-# 快速入门
-
-请参考[快速入门](docs/wiki/quickstart.md)
-
-# 协议说明
-
-请参考[协议说明](docs/wiki/protocol.md)
-
-# 用户指南
-
-请参考[用户指南](docs/wiki/userguide.md)
-
+# 参考文档
+请参考[wiki](wikis/home)
