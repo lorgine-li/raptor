@@ -3,7 +3,10 @@ package com.ppdai.framework.raptor.service;
 import com.ppdai.framework.raptor.common.ParamNameConstants;
 import com.ppdai.framework.raptor.common.RaptorConstants;
 import com.ppdai.framework.raptor.common.URLParamType;
-import com.ppdai.framework.raptor.exception.*;
+import com.ppdai.framework.raptor.exception.ErrorProto;
+import com.ppdai.framework.raptor.exception.HttpErrorConverter;
+import com.ppdai.framework.raptor.exception.RaptorFrameworkException;
+import com.ppdai.framework.raptor.exception.RaptorServiceException;
 import com.ppdai.framework.raptor.rpc.*;
 import com.ppdai.framework.raptor.serialize.Serialization;
 import com.ppdai.framework.raptor.serialize.SerializationProviders;
@@ -46,15 +49,16 @@ public class ServletEndpoint extends HttpServlet implements Endpoint {
 
     @Override
     protected void doPost(HttpServletRequest httpRequest, HttpServletResponse httpResponse) throws IOException {
-        String key = getProviderKey(getInterfaceName(httpRequest));
-        Provider<?> provider = this.providers.get(key);
-        if (provider == null) {
-            transportException(new RaptorServiceException("Can not find provider by key: " + key), null, httpRequest, httpResponse);
-            return;
-        }
-        Request request = convert(httpRequest);
         Response response = null;
+        Request request = null;
         try {
+            String key = getProviderKey(getInterfaceName(httpRequest));
+            Provider<?> provider = this.providers.get(key);
+            if (provider == null) {
+                transportException(new RaptorServiceException("Can not find provider by key: " + key), null, httpRequest, httpResponse);
+                return;
+            }
+            request = convert(httpRequest);
             response = provider.call(request);
             if (response.getException() != null) {
                 transportException(response.getException(), response, httpRequest, httpResponse);
@@ -63,7 +67,11 @@ public class ServletEndpoint extends HttpServlet implements Endpoint {
             }
         } catch (Exception e) {
             transportException(e, response, httpRequest, httpResponse);
-            log.error("Request error, requestId={}", request, e);
+            if (request != null) {
+                log.error("Raptor request error, request={}", request, e);
+            } else {
+                log.error("Raptor request error.", e);
+            }
         }
     }
 
