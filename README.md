@@ -48,4 +48,4 @@ raptor的核心是raptor core，raptor core实现了核心的服务定义、序�
 ![](docs/wiki/assets/readme-3.png)
 
 # 参考文档
-请参考[wiki](../wikis/home)
+请参考[wiki](http://git.ppdaicorp.com/foundation-framework/raptor/wikis/home)
