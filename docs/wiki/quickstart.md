@@ -35,7 +35,7 @@ message HelloReply {
 
 ```
 ## 获取代码生成器
-在maven仓库中下载代码生成器工具[raptor-codegen-cli-VERSION.jar]()
+在maven仓库中下载代码生成器工具[raptor-codegen-cli-VERSION.jar](http://maven.repo.ppdai.com/nexus/#nexus-search;quick~raptor-codegen-cli)
 
 或者通过源代码build，在源代码目录执行maven build命令：
 ```cmd
