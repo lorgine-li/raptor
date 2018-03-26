@@ -4,7 +4,10 @@ import com.ppdai.framework.raptor.common.ParamNameConstants;
 import com.ppdai.framework.raptor.common.RaptorConstants;
 import com.ppdai.framework.raptor.common.RaptorMessageConstant;
 import com.ppdai.framework.raptor.common.URLParamType;
-import com.ppdai.framework.raptor.exception.*;
+import com.ppdai.framework.raptor.exception.ErrorProto;
+import com.ppdai.framework.raptor.exception.RaptorBizException;
+import com.ppdai.framework.raptor.exception.RaptorFrameworkException;
+import com.ppdai.framework.raptor.exception.RaptorServiceException;
 import com.ppdai.framework.raptor.rpc.*;
 import com.ppdai.framework.raptor.serialize.Serialization;
 import com.ppdai.framework.raptor.serialize.SerializationProviders;
@@ -174,8 +177,7 @@ public abstract class AbstractHttpClient implements Client {
         if (statusCode == RaptorConstants.RAPTOR_ERROR && RaptorConstants.TRUE.equalsIgnoreCase(errorStr)) {
             //raptor异常
             try {
-                ErrorProto.ErrorMessage errorProto = deserializeErrorMessage(request, content);
-                ErrorMessage errorMessage = ErrorMessage.fromErrorProto(errorProto);
+                ErrorProto.ErrorMessage errorMessage = deserializeErrorMessage(request, content);
                 response.setException(getExceptionByErrorMessage(errorMessage));
                 response.setCode(errorMessage.getCode());
                 return;
@@ -185,7 +187,7 @@ public abstract class AbstractHttpClient implements Client {
         }
         RaptorServiceException e = new RaptorServiceException(new String(content, StandardCharsets.UTF_8));
         response.setException(e);
-        response.setCode(e.getErrorCode());
+        response.setCode(e.getCode());
     }
 
     protected ErrorProto.ErrorMessage deserializeErrorMessage(Request request, byte[] content) {
@@ -206,20 +208,20 @@ public abstract class AbstractHttpClient implements Client {
         }
     }
 
-    protected Exception getExceptionByErrorMessage(ErrorMessage errorMessage) {
+    protected Exception getExceptionByErrorMessage(ErrorProto.ErrorMessage errorMessage) {
         if (errorMessage == null) {
             return new RaptorServiceException("Unknow exception, errorMessage is null");
         }
         int code = errorMessage.getCode();
         if (code >= RaptorMessageConstant.SERVICE_DEFAULT_ERROR_CODE && code < RaptorMessageConstant.FRAMEWORK_DEFAULT_ERROR_CODE) {
-            return new RaptorServiceException(errorMessage, null);
+            return new RaptorServiceException(errorMessage.getCode(), errorMessage.getMessage(), errorMessage.getAttachmentsMap(), null);
         } else if (code >= RaptorMessageConstant.FRAMEWORK_DEFAULT_ERROR_CODE && code < RaptorMessageConstant.BIZ_DEFAULT_ERROR_CODE) {
-            return new RaptorFrameworkException(errorMessage, null);
+            return new RaptorFrameworkException(errorMessage.getCode(), errorMessage.getMessage(), errorMessage.getAttachmentsMap(), null);
         } else if (code >= RaptorMessageConstant.BIZ_DEFAULT_ERROR_CODE) {
-            return new RaptorBizException(errorMessage, null);
+            return new RaptorBizException(errorMessage.getCode(), errorMessage.getMessage(), errorMessage.getAttachmentsMap(), null);
         }
 
-        return new RaptorServiceException(errorMessage, null);
+        return new RaptorServiceException(errorMessage.getCode(), errorMessage.getMessage(), errorMessage.getAttachmentsMap(), null);
     }
 
     protected void setStatus(Response response, StatusLine statusLine) {

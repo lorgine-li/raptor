@@ -24,12 +24,10 @@ public class AopHelper {
             target = getCglibProxyTargetObject(proxy);
         }
 
-        if(target == null){
-            //不是代理对象
+        if (target == null) {
             return proxy;
-        }else{
-            return getTarget(target);
         }
+        return getTarget(target);
     }
 
     private static Object getCglibProxyTargetObject(Object proxy) throws Exception {

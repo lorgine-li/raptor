@@ -45,7 +45,7 @@ public class ProviderAccessLogFilter extends AbstractAccessLogFilter implements 
 
     @Override
     protected String getStatusCode(Response response) {
-        Exception e = response.getException();
+        Throwable e = response.getException();
         if (e != null) {
             if (e instanceof RaptorBizException) {
                 return String.valueOf(RaptorMessageConstant.BIZ_DEFAULT_ERROR_CODE);

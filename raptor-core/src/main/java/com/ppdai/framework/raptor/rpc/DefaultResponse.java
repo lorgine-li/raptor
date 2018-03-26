@@ -15,7 +15,7 @@ public class DefaultResponse implements Response, Serializable {
 
     private int code = -1;
     private Object value;
-    private Exception exception;
+    private Throwable exception;
     private String requestId;
 
     private Map<String, String> attachments = new HashMap<>();
