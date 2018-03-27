@@ -21,9 +21,9 @@ public class SimpleImpl implements Simple {
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
         String hello = "Hello " + "name: " + request.getName() + ", "
-                + "snippets: " + request.getSnippets(0) + ", "
+//                + "snippets: " + request.getSnippets(0) + ", "
                 + "corpus: " + request.getCorpus() + ", "
-                + "cats: " + request.getCats(0) + ", "
+//                + "cats: " + request.getCats(0) + ", "
                 + "result: " + request.getResult() + ", "
                 + "bool: " + request.getTbool() + ", "
                 + "bytes: " + request.getTbytes().toStringUtf8() + ", "
@@ -46,9 +46,10 @@ public class SimpleImpl implements Simple {
 
         LOGGER.info("request: {}", hello);
 
-        return Helloworld.HelloReply.newBuilder().setMessage(hello)
+        Helloworld.HelloReply build = Helloworld.HelloReply.newBuilder().setMessage(hello).setCode(0)
                 .setCorpus(Helloworld.HelloRequest.Corpus.PRODUCTS)
                 .addResults(ResultOuterClass.Result.newBuilder().setUrl("http://www.baidu.com").build()).build();
+        return build;
     }
 
 }
