@@ -14,6 +14,7 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.protocol.HTTP;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -175,6 +176,7 @@ public class ServletEndpoint extends HttpServlet implements Endpoint {
         setHttpResponseHeader(response, httpResponse);
         httpResponse.setStatus(RaptorConstants.HTTP_OK);
         Serialization serialization = this.getSerialization(httpRequest);
+        httpResponse.setHeader(HTTP.CONTENT_TYPE,serialization.getName());
         byte[] data = serialization.serialize(response.getValue());
         try (OutputStream out = httpResponse.getOutputStream()) {
             out.write(data);
@@ -189,6 +191,7 @@ public class ServletEndpoint extends HttpServlet implements Endpoint {
         ErrorProto.ErrorMessage errorMessage = HttpErrorConverter.getErrorMessage(exception);
 
         Serialization serialization = this.getSerialization(httpRequest);
+        httpResponse.setHeader(HTTP.CONTENT_TYPE,serialization.getName());
         byte[] data = serialization.serialize(errorMessage);
         try (OutputStream out = httpResponse.getOutputStream()) {
             out.write(data);

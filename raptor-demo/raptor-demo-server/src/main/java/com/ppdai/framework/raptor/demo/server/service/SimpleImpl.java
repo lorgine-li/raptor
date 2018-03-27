@@ -48,7 +48,7 @@ public class SimpleImpl implements Simple {
 
         Helloworld.HelloReply build = Helloworld.HelloReply.newBuilder().setMessage(hello).setCode(0)
                 .setCorpus(Helloworld.HelloRequest.Corpus.PRODUCTS)
-                .addResults(ResultOuterClass.Result.newBuilder().setUrl("http://www.baidu.com").build()).build();
+                .addResults(ResultOuterClass.Result.newBuilder().setUrl("http://www.ppdai.com").build()).build();
         return build;
     }
 
