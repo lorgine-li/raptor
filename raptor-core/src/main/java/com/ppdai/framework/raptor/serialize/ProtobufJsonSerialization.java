@@ -13,7 +13,7 @@ public class ProtobufJsonSerialization extends AbstractProtobufSerialization {
     @Override
     public byte[] serializeMessage(Message message) {
         try {
-            String jsonString = ProtoBuffUtils.convertProtoBuffToJson(message);
+            String jsonString = ProtoBuffUtils.convertProtoBuffToJsonWithDefaultValues(message);
             return jsonString.getBytes(RaptorConstants.DEFAULT_CHARACTER);
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException("Unsupported Encoding " + RaptorConstants.DEFAULT_CHARACTER, e);

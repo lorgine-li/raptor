@@ -65,6 +65,7 @@ message HelloReply {
     string message = 1;
     HelloRequest.Corpus corpus = 2;
     repeated Result results = 3;
+    int32 code =4 ;
 }
 
 message Cat {
