@@ -8,6 +8,7 @@ import com.ppdai.framework.raptor.exception.HttpErrorConverter;
 import com.ppdai.framework.raptor.exception.RaptorFrameworkException;
 import com.ppdai.framework.raptor.exception.RaptorServiceException;
 import com.ppdai.framework.raptor.rpc.*;
+import com.ppdai.framework.raptor.serialize.ProtobufJsonSerialization;
 import com.ppdai.framework.raptor.serialize.Serialization;
 import com.ppdai.framework.raptor.serialize.SerializationProviders;
 import lombok.Getter;
@@ -147,6 +148,9 @@ public class ServletEndpoint extends HttpServlet implements Endpoint {
             return null;
         } else if (method.getParameterCount() == 1) {
             Serialization serialization = this.getSerialization(httpRequest);
+            if (serialization == null) {
+                throw new RaptorServiceException(String.format("Can't find Serialization by ContentType %s.", httpRequest.getContentType()));
+            }
             try {
                 byte[] data = IOUtils.toByteArray(httpRequest.getInputStream());
                 return serialization.deserialize(data, method.getParameterTypes()[0]);
@@ -176,7 +180,7 @@ public class ServletEndpoint extends HttpServlet implements Endpoint {
         setHttpResponseHeader(response, httpResponse);
         httpResponse.setStatus(RaptorConstants.HTTP_OK);
         Serialization serialization = this.getSerialization(httpRequest);
-        httpResponse.setHeader(HTTP.CONTENT_TYPE,serialization.getName());
+        httpResponse.setHeader(HTTP.CONTENT_TYPE, serialization.getName());
         byte[] data = serialization.serialize(response.getValue());
         try (OutputStream out = httpResponse.getOutputStream()) {
             out.write(data);
@@ -191,7 +195,10 @@ public class ServletEndpoint extends HttpServlet implements Endpoint {
         ErrorProto.ErrorMessage errorMessage = HttpErrorConverter.getErrorMessage(exception);
 
         Serialization serialization = this.getSerialization(httpRequest);
-        httpResponse.setHeader(HTTP.CONTENT_TYPE,serialization.getName());
+        if (serialization == null) {
+            serialization = SerializationProviders.getInstance().getSerialization(ProtobufJsonSerialization.NAME);
+        }
+        httpResponse.setHeader(HTTP.CONTENT_TYPE, serialization.getName());
         byte[] data = serialization.serialize(errorMessage);
         try (OutputStream out = httpResponse.getOutputStream()) {
             out.write(data);
