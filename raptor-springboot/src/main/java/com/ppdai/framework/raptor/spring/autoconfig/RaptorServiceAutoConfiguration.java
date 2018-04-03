@@ -7,6 +7,7 @@ import com.ppdai.framework.raptor.filter.provider.ProviderMetricsFilter;
 import com.ppdai.framework.raptor.rpc.URL;
 import com.ppdai.framework.raptor.service.ProviderBuilder;
 import com.ppdai.framework.raptor.service.ServletEndpoint;
+import com.ppdai.framework.raptor.spring.converter.ProtobufHttpMessageConverter;
 import com.ppdai.framework.raptor.spring.endpoint.RaptorProvidersActuatorEndpoint;
 import com.ppdai.framework.raptor.spring.properties.ServletEndpointProperties;
 import com.ppdai.framework.raptor.util.NetUtils;
@@ -23,7 +24,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.env.Environment;
-import org.springframework.http.converter.protobuf.ProtobufHttpMessageConverter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
