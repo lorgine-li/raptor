@@ -1,7 +1,7 @@
 package com.ppdai.framework.raptor.codegen.core.swagger.type;
 
 import java.util.Collection;
-import java.util.Map;
+import java.util.List;
 
 /**
  * Created by zhangyicong on 18-2-27.
@@ -9,18 +9,15 @@ import java.util.Map;
 public class MessageType extends AbstractType implements Comparable<MessageType>, Type {
 
     private String fullyQualifiedClassName;
-    private Map<String, FieldType> fields;
+    private List<FieldType> fields;
 
-    public Map<String, FieldType> getFields() {
-        return fields;
-    }
 
-    public void setFields(Map<String, FieldType> fields) {
+    public void setFields(List<FieldType> fields) {
         this.fields = fields;
     }
 
     public Collection<FieldType> getFieldTypeList() {
-        return fields.values();
+        return fields;
     }
 
     @Override
@@ -38,7 +35,7 @@ public class MessageType extends AbstractType implements Comparable<MessageType>
     }
 
     @Override
-    public int hashCode(){
+    public int hashCode() {
         return fullyQualifiedClassName.hashCode();
     }
 

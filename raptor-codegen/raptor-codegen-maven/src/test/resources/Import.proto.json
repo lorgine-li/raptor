@@ -48,6 +48,13 @@
     },
     "com.ppdai.framework.raptor.proto.test.import2.ImportedOuterClass.Imported" : {
       "properties" : {
+        "query" : {
+          "type" : "string"
+        },
+        "page_number" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "result_per_page" : {
           "type" : "integer",
           "format" : "int32"
@@ -62,6 +69,13 @@
     },
     "com.ppdai.framework.raptor.proto.test.import2.ImportedOuterClass.Imported2" : {
       "properties" : {
+        "query" : {
+          "type" : "string"
+        },
+        "page_number" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "result_per_page" : {
           "type" : "integer",
           "format" : "int32"

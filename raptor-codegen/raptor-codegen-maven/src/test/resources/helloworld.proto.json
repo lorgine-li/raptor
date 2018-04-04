@@ -38,6 +38,12 @@
   "definitions" : {
     "com.ppdai.framework.raptor.proto.ResultOuterClass.Result" : {
       "properties" : {
+        "url" : {
+          "type" : "string"
+        },
+        "title" : {
+          "type" : "string"
+        },
         "snippets" : {
           "type" : "array",
           "items" : {
@@ -71,11 +77,17 @@
     },
     "Helloworld.HelloRequest" : {
       "properties" : {
-        "tbool" : {
-          "type" : "boolean"
+        "name" : {
+          "type" : "string"
         },
         "corpus" : {
           "$ref" : "#/definitions/Helloworld.HelloRequest.Corpus"
+        },
+        "snippets" : {
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          }
         },
         "cats" : {
           "type" : "array",
@@ -85,6 +97,61 @@
         },
         "result" : {
           "$ref" : "#/definitions/Helloworld.HelloRequest.Result"
+        },
+        "tDouble" : {
+          "type" : "number",
+          "format" : "double"
+        },
+        "tFloat" : {
+          "type" : "number",
+          "format" : "float"
+        },
+        "tint32" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "tint64" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "tunit32" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "tunit64" : {
+          "type" : "string",
+          "format" : "uint64"
+        },
+        "tsint32" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "tsint64" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "tfixed32" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "tfixed64" : {
+          "type" : "string",
+          "format" : "uint64"
+        },
+        "tsfixed32" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "tsfixed64" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "tbytes" : {
+          "type" : "string",
+          "format" : "byte"
+        },
+        "tbool" : {
+          "type" : "boolean"
         },
         "time" : {
           "type" : "string",
