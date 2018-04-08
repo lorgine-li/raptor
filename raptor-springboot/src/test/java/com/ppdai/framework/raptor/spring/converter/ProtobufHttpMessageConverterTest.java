@@ -1,23 +1,19 @@
 package com.ppdai.framework.raptor.spring.converter;
 
-import com.ppdai.framework.raptor.proto.Helloworld;
+import com.google.protobuf.Message;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpInputMessage;
 import org.springframework.http.MediaType;
 import org.springframework.http.StreamingHttpOutputMessage;
 
-import javax.validation.constraints.AssertTrue;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 
 import static com.ppdai.framework.raptor.proto.Test.TestProto;
 
 public class ProtobufHttpMessageConverterTest {
     private static MediaType PROTOBUF = new MediaType("application", "x-protobuf");
-
-    ;
     private static MediaType JSON = new MediaType("application", "json");
     private ProtobufHttpMessageConverter protobufHttpMessageConverter = new ProtobufHttpMessageConverter();
 
@@ -49,13 +45,41 @@ public class ProtobufHttpMessageConverterTest {
         Assert.assertTrue(result.contains("default"));
     }
 
+    @Test
+    public void testRead() throws IOException {
+        String jsonString = "{\n" +
+                "  \"camelCase\": \"value\",\n" +
+                "  \"defaultValue\": \"\"\n" +
+                "}";
+        byte[] bytes = jsonString.getBytes();
+        Message message = protobufHttpMessageConverter.readInternal(TestProto.class, new HttpInputMessage() {
+            private HttpHeaders httpHeaders;
+
+            @Override
+            public InputStream getBody() throws IOException {
+                return new ByteArrayInputStream(bytes);
+
+            }
+
+            @Override
+            public HttpHeaders getHeaders() {
+                httpHeaders = new HttpHeaders();
+
+                httpHeaders.setContentType(JSON);
+                return httpHeaders;
+            }
+        });
+        Assert.assertTrue(message instanceof TestProto && ((TestProto) message).getCamelCase().equals("value"));
+    }
+
+
     private class TestOutputMessage implements StreamingHttpOutputMessage {
 
         private OutputStream outputStream = new ByteArrayOutputStream();
 
-        private HttpHeaders httpHeaders ;
+        private HttpHeaders httpHeaders;
 
-        public TestOutputMessage(){
+        public TestOutputMessage() {
             httpHeaders = new HttpHeaders();
 
             httpHeaders.setContentType(JSON);

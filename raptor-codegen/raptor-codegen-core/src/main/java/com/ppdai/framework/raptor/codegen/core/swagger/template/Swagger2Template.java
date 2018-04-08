@@ -200,14 +200,13 @@ public class Swagger2Template implements SwaggerTemplate {
 
     private void collectNestType(MetaContainer metaContainer, Set<MessageType> messageTypes, Set<EnumType> nestEnumTypes, Set<MessageType> nestedMessageTypes, String basePackage) {
         List<MessageType> messageTypeList = new ArrayList<>(messageTypes);
-        ListIterator<MessageType> listIterator = messageTypeList.listIterator();
         for (int i = 0; i < messageTypeList.size(); i++) {
             MessageType next = messageTypeList.get(i);
             for (FieldType fieldType : next.getFieldTypeList()) {
                 if (StringUtils.isNotBlank(fieldType.getFullyQualifiedPathName()) && !CommonUtils.isProtoBufType(fieldType.getFullyQualifiedPathName())) {
                     MessageType nestedMessageType = metaContainer.findMessageTypeByFullyQualifiedPathName(fieldType.getFullyQualifiedPathName());
                     if (!messageTypeList.contains(nestedMessageType) && Objects.nonNull(nestedMessageType)) {
-                        listIterator.add(nestedMessageType);
+                        messageTypeList.add(i+1,nestedMessageType);
                     }
 
                     EnumType nestEnumType = metaContainer.findEnumTypeByFullyQualifiedPathName(fieldType.getFullyQualifiedPathName());

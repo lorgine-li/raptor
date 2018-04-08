@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package com.ppdai.onlinetravel.raptor.catalog;
+
+option java_package = "com.ppdai.onlinetravel.raptor.catalog";
+option java_outer_classname = "AccountModel";
+
+
+import "WarehouseModel.proto";
+
+message Account {
+    int64 id = 1;
+
+    string userId = 2;
+
+    string account_number = 3;
+
+    bool default_account = 4;
+
+    repeated CreditCard credit_cards = 5;
+
+    repeated Address addresses = 6;
+}
+
+message CreditCard {
+    int64 id = 1;
+    string number = 2;
+    CreditCardType type = 3;
+}
+
+enum CreditCardType {
+    VISA = 0;
+    MASTERCARD = 1;
+}

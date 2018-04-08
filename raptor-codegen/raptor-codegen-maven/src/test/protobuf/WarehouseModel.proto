@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+//import "inventory/AddressModel.proto";
+
+package com.ppdai.onlinetravel.raptor.catalog;
+
+option java_package = "com.ppdai.onlinetravel.raptor.catalog";
+option java_outer_classname = "WarehouseModel";
+
+message Warehouse {
+
+    int64 id = 1;
+
+    string name = 2;
+
+    Address address = 3;
+
+}
+
+//因为 Address 只在 Warehouse 中使用, 故将 Address 定义在 Warehouse 文件中
+message Address {
+
+    int64 id = 1;
+
+    string country = 2;
+
+    string province = 3;
+
+    string city = 4;
+
+    string district = 5;
+
+    string street1 = 6;
+
+    string street2 = 7;
+
+    int32 zipCode = 8;
+
+    AddressType address_type = 9;
+
+}
+
+enum AddressType {
+    SHIPPING = 0; // 配送地址
+    BILLING = 1; // 发票地址
+}
