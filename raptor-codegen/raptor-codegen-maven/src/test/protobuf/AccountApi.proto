@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+import "AccountModel.proto";
+
+package com.ppdai.onlinetravel.raptor.catalog;
+
+//定义 product 相关接口
+service AccountApi {
+    rpc getUserAccount (GetUserAccountRequest) returns (GetUserAccountResponse) {
+    }
+}
+
+message GetUserAccountRequest{
+
+}
+
+message GetUserAccountResponse {
+    repeated Account accounts = 1;
+}
+
+

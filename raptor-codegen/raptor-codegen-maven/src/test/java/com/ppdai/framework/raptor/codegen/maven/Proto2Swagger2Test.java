@@ -76,10 +76,26 @@ public class Proto2Swagger2Test extends AbstractMojoTestCase {
         assertTrue(importedSwaggerCorrect.exists());
 
         FileAssert.assertEquals(importedSwaggerCorrect, importedSwaggerGen);
+    }
 
+    @Test
+    public void testNestMessage() throws Exception{
+        Proto2Swagger mojo = new Proto2Swagger();
+        setVariableValueToObject(mojo, "swaggerVersion", "2.0");
+        setVariableValueToObject(mojo, "inputDirectories", new File[] {new File("src/test/protobuf")} );
+        setVariableValueToObject(mojo, "outputDirectory", new File( getBasedir(), "target/generated-sources" ));
+        setVariableValueToObject(mojo, "includeStdTypes", false);
+        setVariableValueToObject(mojo, "extension", ".proto");
+        setVariableValueToObject(mojo, "protocDependenciesPath", new File( getBasedir(), "target/protoc-dependencies" ));
+        mojo.execute();
 
+        File nestSwaggerGen = new File(getBasedir(), "target/generated-sources/AccountApi.proto.json");
+        assertTrue(nestSwaggerGen.exists());
 
+        File correctSwaggerCorrect = new File(getBasedir(), "src/test/resources/AccountApi.proto.json");
+        assertTrue(correctSwaggerCorrect.exists());
 
+        FileAssert.assertEquals(correctSwaggerCorrect, nestSwaggerGen);
 
 
     }
