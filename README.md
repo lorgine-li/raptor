@@ -1,5 +1,5 @@
 # 详细参考文档
-请参考[wiki](http://git.ppdaicorp.com/foundation-framework/raptor/wikis/home)
+请参考[wiki](https://github.com/ppdai-incubator/raptor/wiki)
 
 # 拍拍贷微服务体系
 
