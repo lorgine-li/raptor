@@ -23,7 +23,7 @@ public final class ProtoBuffUtils {
 
     public static String convertProtoBuffToJson(Message protoObject) {
         try {
-            return JsonFormat.printer().preservingProtoFieldNames().print(protoObject);
+            return JsonFormat.printer().print(protoObject);
         } catch (InvalidProtocolBufferException e) {
             throw new RuntimeException("Convert Protocol Buffers object to JSON error.", e);
         }
@@ -44,7 +44,7 @@ public final class ProtoBuffUtils {
 
     public static String convertProtoBuffToJsonWithDefaultValues(Message protoObject) {
         try {
-            return JsonFormat.printer().preservingProtoFieldNames().includingDefaultValueFields().print(protoObject);
+            return JsonFormat.printer().includingDefaultValueFields().print(protoObject);
         } catch (InvalidProtocolBufferException e) {
             throw new RuntimeException("Convert Protocol Buffers object to JSON error.", e);
         }

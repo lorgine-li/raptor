@@ -6,9 +6,7 @@ import com.ppdai.framework.raptor.codegen.core.swagger.type.FieldType;
 import com.ppdai.framework.raptor.codegen.core.swagger.type.MessageType;
 import org.codehaus.plexus.util.StringUtils;
 
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by zhangyicong on 18-2-27.
@@ -26,8 +24,9 @@ public class MessageContainer {
         messageType.setFullyQualifiedPathName(packageName + ProtobufConstant.PACKAGE_SEPARATOR + messageType.getName());
         messageType.setFullyQualifiedClassName(StringUtils.join(new String[]{packageName, className, messageType.getName()}, ProtobufConstant.PACKAGE_SEPARATOR));
         messageType.setClassName(className);
-        Map<String, FieldType> fieldTypeMap = new LinkedHashMap<>();
-        messageType.setFields(fieldTypeMap);
+//        Map<String, FieldType> fieldTypeMap = new LinkedHashMap<>();
+        List<FieldType> fieldTypeList = new ArrayList();
+        messageType.setFields(fieldTypeList);
         messageType.setPackageName(packageName);
 
         for (DescriptorProtos.FieldDescriptorProto ffdp : descriptorProto.getFieldList()) {
@@ -38,7 +37,7 @@ public class MessageContainer {
             String fullyQualifiedPathName = ffdp.getTypeName().replaceAll("^\\.", "");
             fieldType.setFullyQualifiedPathName(fullyQualifiedPathName);
             fieldType.setMessage(messageType.getFullyQualifiedPathName());
-            fieldTypeMap.put(fullyQualifiedPathName, fieldType);
+            fieldTypeList.add(fieldType);
         }
 
         messageTypeMap.put(messageType.getFullyQualifiedPathName(), messageType);

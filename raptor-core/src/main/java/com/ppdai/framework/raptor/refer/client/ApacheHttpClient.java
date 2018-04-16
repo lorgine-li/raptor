@@ -28,8 +28,8 @@ public class ApacheHttpClient extends AbstractHttpClient {
     private int connectionRequestTimeout = -1;
     private int retryCount = 0;
     private boolean requestSentRetryEnabled = false;
-    private int poolMaxTotal = 100;
-    private int poolMaxPreRoute = 10;
+    private int poolMaxTotal = 500;
+    private int poolMaxPreRoute = 100;
 
     private CloseableHttpClient client;
 

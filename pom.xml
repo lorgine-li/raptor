@@ -7,7 +7,7 @@
     <groupId>com.ppdai.framework</groupId>
     <artifactId>raptor</artifactId>
     <packaging>pom</packaging>
-    <version>0.1.0-RC2</version>
+    <version>0.1.0-SNAPSHOT</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
